@@ -1,7 +1,7 @@
 lua-aws
 =======
 
-### pure-lua AWS REST API binding
+### lua AWS REST API binding
 
 
 
@@ -40,13 +40,12 @@ and more code snippets help me to build authentication routines. thanks!
 
 ## Installing
 
-unfortunately there is no rockspec so please copy them directory like /usr/local/share/lua/5.1/ manually.
+now there is no rockspec so please copy them directory like /usr/local/share/lua/5.1/ manually.
+
 
 
 
 ## Usage
-
-need to add ${lua-aws path}/lib to package.path.
 
 see test/ec2.lua
 
@@ -55,10 +54,41 @@ local AWS = require ('aws')
 AWS = AWS.new({
 	accessKeyId = os.getenv('AWS_ACCESS_KEY'),
 	secretAccessKey = os.getenv('AWS_SECRET_KEY')
+	-- if you write your own http engin
+	http_engine = your_http_engine
 })
 
 local res,err = AWS.EC2:api():describeInstances()
 ```
+
+where http_engine is callable object of lua which input and output is like following:
+```lua
+-- input
+local req = {
+	path = endpoint:path(),
+	headers = {"header-name" = "header-value", ...},
+	params = {}, -- internal use
+	body = "body data",
+	host = endpoint:host(),
+	port = endpoint:port(),
+	protocol = endpoint:protocol(),
+	method = string
+}
+
+-- output
+local resp = {
+	status = number,
+	headers = {"header-name" = "header-value", ...},
+	body = string,
+}
+
+-- calling http_engine
+resp = http_engine(req)
+```
+
+or you just install luasocket, lua-aws detect it autometically and use socket.http to access AWS.
+
+
 
 you can get multiple version
 ```lua
