@@ -10,7 +10,7 @@ it heavily inspired by [aws-sdk-js](https://raw.github.com/aws/aws-sdk-js/),
 which main good point is define all AWS sevices by JS data structure. and library read these data and 
 building API code on the fly. so AWS JS SDK is:
 - less code to maintain
-- in almost case, only need to update JSON service definition to follow the new version or change of the service API.
+- in almost case, only need to update service definition (from aws-sdk-js :D) to follow the new version or change of the service API.
 
 also aws-sdk-js seems to be well designed, 
 so I decide to copy its architecture, without copying callback storm of aws-sdk-js (only vexing point of it)
