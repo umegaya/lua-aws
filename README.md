@@ -7,10 +7,10 @@ lua-aws
 
 ## Concept
 it heavily inspired by [aws-sdk-js](https://raw.github.com/aws/aws-sdk-js/),
-which main good point is define all AWS sevices by JSON. and library load these JSON and 
+which main good point is define all AWS sevices by JS data structure. and library read these data and 
 building API code on the fly. so AWS JS SDK is:
 - less code to maintain
-- only need to update JSON service definition to follow the new version or change of the service API.
+- in almost case, only need to update JSON service definition to follow the new version or change of the service API.
 
 also aws-sdk-js seems to be well designed, 
 so I decide to copy its architecture, without copying callback storm of aws-sdk-js (only vexing point of it)
@@ -19,6 +19,7 @@ so I decide to copy its architecture, without copying callback storm of aws-sdk-
 
 ## Current Status
 
+now it just Proof of Concept.
 only some API of EC2 tested. almost EC2 API is not tested and even entry does not exist most of AWS services.
 but I think almost code service-indepenent and well modularized, so it not so hard support other services
 if signers and requests are fully implemented.
