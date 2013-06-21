@@ -6,8 +6,8 @@ lua-aws
 
 
 ## Concept
-it heavily inspired by [aws-sdk-js](https://raw.github.com/aws/aws-sdk-js/).
-Main good point of aws-sdk-js is, Define all AWS sevices by JSON. and library mainly load these JSON and 
+it heavily inspired by [aws-sdk-js](https://raw.github.com/aws/aws-sdk-js/),
+which main good point is define all AWS sevices by JSON. and library load these JSON and 
 building API code on the fly. so AWS JS SDK is:
 - less code to maintain
 - only need to update JSON service definition to follow the new version or change of the service API.
@@ -28,6 +28,15 @@ after that, more services will be support and library itself will be more stable
 
 
 
+## External libs
+- [dkjson](http://dkolf.de/src/dkjson-lua.fsl/home) to decode/encode JSON
+- [SLAXML](https://github.com/Phrogz/SLAXML) currently not used, but will be used for encoding
+- [sha2](http://lua-users.org/wiki/SecureHashAlgorithm) to generate SHA-256 hash
+- [hmac](https://github.com/bjc/prosody/blob/master/util/hmac.lua) to implement Hmac_SHA256 routine
+
+and more code snippets help me to build authentication routines. thanks!
+
+
 ## Installing
 
 unfortunately there is no rockspec so please copy them directory like /usr/local/share/lua/5.1/ manually.
@@ -36,7 +45,7 @@ unfortunately there is no rockspec so please copy them directory like /usr/local
 
 ## Usage
 
-you need to get 
+need to add ${lua-aws path}/lib to package.path.
 
 see test/ec2.lua
 
