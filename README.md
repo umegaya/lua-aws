@@ -34,6 +34,7 @@ after that, more services will be support and library itself will be more stable
 - [SLAXML](https://github.com/Phrogz/SLAXML) currently not used, but will be used for encoding
 - [sha2](http://lua-users.org/wiki/SecureHashAlgorithm) to generate SHA-256 hash
 - [hmac](https://github.com/bjc/prosody/blob/master/util/hmac.lua) to implement Hmac_SHA256 routine
+- [base64](http://lua-users.org/wiki/BaseSixtyFour) for base64 encoder
 
 and more code snippets help me to build authentication routines. thanks!
 

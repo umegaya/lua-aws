@@ -95,6 +95,7 @@ _M.xml = (function ()
 	}
 end)()
 
+-- this code from lua-users.org/wiki/BaseSixtyFour. thanks!
 _M.b64 = (function ()
 	-- character table string
 	local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
