@@ -1,6 +1,6 @@
-local class = require ('class')
-local API = require ('api')
-local util = require ('util')
+local class = require ('lua-aws.class')
+local API = require ('lua-aws.api')
+local util = require ('lua-aws.util')
 
 return class.AWS_Service {
 	initialize = function (self, aws, service_name)
@@ -15,7 +15,7 @@ return class.AWS_Service {
 		local latest
 		local apis = {}
 		local service_name = self._service_name:lower()
-		util.dir(('services/definitions/%s*'):format(service_name)):each(function (path)
+		util.dir((util.script_path()..'/definitions/%s*'):format(service_name)):each(function (path)
 			--print('defintion file:', path)
 			local version
 			path:gsub('[^%-]*%-([%w%-]*)%.js', function (s) 

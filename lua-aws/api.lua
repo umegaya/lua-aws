@@ -1,6 +1,6 @@
-local class = require ('class')
-local util = require ('util')
-local Request = require ('request')
+local class = require ('lua-aws.class')
+local util = require ('lua-aws.util')
+local Request = require ('lua-aws.request')
 
 local get_endpoint_from_env = function ()
 	local ec2url = os.getenv('EC2_URL')

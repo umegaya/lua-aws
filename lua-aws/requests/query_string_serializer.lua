@@ -1,5 +1,5 @@
-local class = require ('class')
-local util = require ('util')
+local class = require ('lua-aws.class')
+local util = require ('lua-aws.util')
 
 return class.AWS_RequestSerializer {
 	initialize = function (self, api, rules)

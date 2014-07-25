@@ -1,6 +1,6 @@
-local class = require ('class')
-local Signer = require ('signers.base')
-local util = require ('util')
+local class = require ('lua-aws.class')
+local Signer = require ('lua-aws.signers.base')
+local util = require ('lua-aws.util')
 
 return class.AWS_V2Signer.extends(Signer) {
 	initialize = function (self)

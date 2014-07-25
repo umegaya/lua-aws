@@ -1,9 +1,9 @@
-local class = require ('class')
+local class = require ('lua-aws.class')
 local io = require ('io')
-local json = require ('deps.dkjson')
-local xml_parser_factory = require ('deps.slaxml')
-local xml_build = require ('deps.slaxdom')
-local sha1 = require ('deps.sha1')
+local json = require ('lua-aws.deps.dkjson')
+local xml_parser_factory = require ('lua-aws.deps.slaxml')
+local xml_build = require ('lua-aws.deps.slaxdom')
+local sha1 = require ('lua-aws.deps.sha1')
 local curl_ok,curl = pcall(require, 'cURL')
 local luasocket_ok, luasocket_http = pcall(require, 'socket.http')
 
@@ -163,7 +163,7 @@ end
 
 _M.hmac = (function ()
 	--local hmac = require 'hmac'
-	local sha2 = require 'deps.sha2'
+	local sha2 = require 'lua-aws.deps.sha2'
 	
 	-- these hmac-ize routine is from https://github.com/bjc/prosody/blob/master/util/hmac.lua.
 	-- thanks!
@@ -235,7 +235,7 @@ _M.join = function (array, seps)
 end
 _M.file_exists = function (path, type)
 	local cmd = ([[
-if [ %s %s ]; then
+if [ %s "%s" ]; then
 echo '1'
 else
 echo '0'
@@ -520,5 +520,10 @@ _M.date = {
 		return tostring(os.time())
 	end,
 }
+
+function _M.script_path()
+   local str = debug.getinfo(2, "S").source:sub(2)
+   return str:match("(.*/)")
+end
 
 return _M

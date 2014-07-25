@@ -1,5 +1,5 @@
-local class = require('class')
-local util = require('util')
+local class = require('lua-aws.class')
+local util = require('lua-aws.util')
 
 local AWS = class.AWS {
 	VERSION = 'v0.1.0',
@@ -8,8 +8,8 @@ local AWS = class.AWS {
 		self._config = config
 		self._http_engine = http_engine or util.luasocket_http_engine or util.curl_http_engine
 		--> define service
-		self.DynamoDB = require('services.dynamodb').new(self)
-		self.EC2 = require('services.ec2').new(self)
+		self.DynamoDB = require('lua-aws.services.dynamodb').new(self)
+		self.EC2 = require('lua-aws.services.ec2').new(self)
 		--[[
 		require('./services/autoscaling')
 		require('./services/cloudformation')

@@ -1,7 +1,7 @@
-local class = require ('class')
-local Request = require ('requests.base')
-local Serializer = require ('requests.query_string_serializer')
-local util = require ('util')
+local class = require ('lua-aws.class')
+local Request = require ('lua-aws.requests.base')
+local Serializer = require ('lua-aws.requests.query_string_serializer')
+local util = require ('lua-aws.util')
 
 return class.AWS_QueryRequest.extends(Request) {
 	serialize_query = function (self, params)

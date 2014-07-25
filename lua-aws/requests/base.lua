@@ -1,8 +1,8 @@
-local class = require ('class')
-local util = require ('util')
-local AWS = require ('core')
-local Signer = require ('signer')
-local EndPoint = require ('requests.endpoint')
+local class = require ('lua-aws.class')
+local util = require ('lua-aws.util')
+local AWS = require ('lua-aws.core')
+local Signer = require ('lua-aws.signer')
+local EndPoint = require ('lua-aws.requests.endpoint')
 
 return class.AWS_Request {
 	initialize = function (self, api, operation, params)

@@ -1,5 +1,5 @@
 -- Optional parser that creates a flat DOM from parsing
-local SLAXML = require 'deps.slaxml'
+local SLAXML = require 'lua-aws.deps.slaxml'
 function SLAXML:dom(xml,opts)
 	if not opts then opts={} end
 	local rich = not opts.simple

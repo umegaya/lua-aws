@@ -1,4 +1,4 @@
-local AWS = require ('aws')
+local AWS = require ('lua-aws.init')
 AWS = AWS.new({
 	accessKeyId = os.getenv('AWS_ACCESS_KEY'),
 	secretAccessKey = os.getenv('AWS_SECRET_KEY')
