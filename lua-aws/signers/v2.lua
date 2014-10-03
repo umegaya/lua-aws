@@ -10,11 +10,11 @@ return class.AWS_V2Signer.extends(Signer) {
 		r.params.SignatureVersion = '2'
 		r.params.SignatureMethod = 'HmacSHA256'
 		r.params.AWSAccessKeyId = credentials.accessKeyId
-		
+
 		if credentials.sessionToken then
 			r.params.SecurityToken = credentials.sessionToken;
 		end
-		
+
 		r.params.Signature = self:signature(r, credentials);
 		r.body = util.query_params_to_string(r.params)
 		r.headers['Content-Length'] = r.body.length

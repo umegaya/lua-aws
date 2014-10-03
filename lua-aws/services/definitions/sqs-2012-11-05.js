@@ -20,7 +20,7 @@ module.exports = {
   resultWrapped: true,
   serviceAbbreviation: 'Amazon SQS',
   serviceFullName: 'Amazon Simple Queue Service',
-  signatureVersion: 'v4',
+  signatureVersion: 'v2',
   timestampFormat: 'iso8601',
   operations: {
     addPermission: {

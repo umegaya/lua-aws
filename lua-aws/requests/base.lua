@@ -4,22 +4,31 @@ local AWS = require ('lua-aws.core')
 local Signer = require ('lua-aws.signer')
 local EndPoint = require ('lua-aws.requests.endpoint')
 
+local p
+do
+  local _obj_0 = require("moon")
+  p = _obj_0.p
+end
+
 return class.AWS_Request {
 	initialize = function (self, api, operation, params)
 		self._operation = operation
 		self._params = params or {}
 		self._api = api
-		self._signer = Signer[api:signature_version()].new()
+    s_version = api:signature_version()
+		self._signer = Signer[s_version].new()
 	end,
 	send = function (self)
 		local req = self:base_build_request()
-		self:build_request(req)		
+		self:build_request(req)
 		self:validate(req)
-		self._signer:sign(req, self._api:config(), self._api:timestamp())
+		_api_timestamp = self._api:timestamp()
+		self._signer:sign(req, self._api:config(), _api_timestamp)
 		local resp = self._api:http_request(req)
 		if resp.status == 200 then
 			return self:extract_data(resp)
 		else
+			print("Something wrong in the request")
 			return self:extract_error(resp)
 		end
 	end,
@@ -48,9 +57,9 @@ return class.AWS_Request {
 		req.headers['User-Agent'] = util.user_agent()
 		return req
 	end,
-	
-	
-	--[[ 
+
+
+	--[[
 		local req = {
 			path = endpoint:path(),
 			headers = {},
@@ -65,7 +74,7 @@ return class.AWS_Request {
 	build_request = function (self)
 		assert(false)
 	end,
-	--[[ 
+	--[[
 		resp is table {
 			status = number,
 			headers = table,
@@ -76,7 +85,7 @@ return class.AWS_Request {
 	extract_data = function (self, resp)
 		assert(false)
 	end,
-	--[[ 
+	--[[
 		resp is table {
 			status = number,
 			headers = table,

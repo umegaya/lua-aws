@@ -2,6 +2,12 @@ local class = require ('lua-aws.class')
 local util = require ('lua-aws.util')
 local Request = require ('lua-aws.request')
 
+local p
+do
+  local _obj_0 = require("moon")
+  p = _obj_0.p
+end
+
 local get_endpoint_from_env = function ()
 	local ec2url = os.getenv('EC2_URL')
 	if not ec2url then
@@ -29,18 +35,20 @@ return class.AWS_API {
 		self._defs = defs
 		self:build_methods()
 	end,
-	version = function (self) 
-		return self._defs.apiVersion 
+	version = function (self)
+		return self._defs.apiVersion
 	end,
 	signature_version = function (self)
 		return self._defs.signatureVersion
 	end,
-	endpoint_prefix = function (self) 
-		return self._defs.endpointPrefix 
+	endpoint_prefix = function (self)
+		return self._defs.endpointPrefix
 	end,
 	endpoint = function (self)
 		local config = self:config()
-		return (self:endpoint_prefix() .. '.' .. (config.endpoint or get_endpoint_from_env()))
+    local endpoint = (config.endpoint or get_endpoint_from_env())
+
+		return (self:endpoint_prefix() .. '.' .. endpoint)
 	end,
 	region = function (self)
 		return self:config().region or get_region_from_env()
