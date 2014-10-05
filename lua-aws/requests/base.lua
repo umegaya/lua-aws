@@ -9,21 +9,21 @@ return class.AWS_Request {
 		self._operation = operation
 		self._params = params or {}
 		self._api = api
-    	s_version = api:signature_version()
-	    assert(Signer[s_version], "signer not implement:"..s_version)
+		local s_version = api:signature_version()
+		assert(Signer[s_version], "signer not implement:"..s_version)
 		self._signer = Signer[s_version].new()
 	end,
 	send = function (self)
 		local req = self:base_build_request()
 		self:build_request(req)
 		self:validate(req)
-	    local _api_timestamp = self._api:timestamp()
+		local _api_timestamp = self._api:timestamp()
 		self._signer:sign(req, self._api:config(), _api_timestamp)
 		local resp = self._api:http_request(req)
 		if resp.status == 200 then
 			return self:extract_data(resp)
 		else
-            self._api:log("Something wrong in the request", resp.status, resp.body)
+			self._api:log("Something wrong in the request", resp.status, resp.body)
 			return self:extract_error(resp)
 		end
 	end,

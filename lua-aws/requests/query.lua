@@ -9,7 +9,7 @@ return class.AWS_QueryRequest.extends(Request) {
 		if rules then 
 			rules = rules.members 
 		end
-	    local builder = Serializer.new(self._api, rules)
+		local builder = Serializer.new(self._api, rules)
 		builder:serialize(self._params, function(name, value)
 			params[name] = value
 		end)
