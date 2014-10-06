@@ -2,12 +2,6 @@ local class = require ('lua-aws.class')
 local util = require ('lua-aws.util')
 local Request = require ('lua-aws.request')
 
-local p
-do
-  local _obj_0 = require("moon")
-  p = _obj_0.p
-end
-
 local get_endpoint_from_env = function ()
 	local ec2url = os.getenv('EC2_URL')
 	if not ec2url then

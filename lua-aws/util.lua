@@ -432,6 +432,7 @@ local fill_header = function (req)
 	req.headers["Connection"] = "Keep-Alive"
 end
 local http_print = function (...)
+    -- print(...)
 end
 if luasocket_ok then
  	local ltn12 = require"ltn12"
@@ -445,6 +446,7 @@ if luasocket_ok then
 			source = ltn12.source.string(req.body),
 			sink = ltn12.sink.table(respbody)
 		}
+        http_print('requestto:', req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path)
  		http_print('sentbody:', req.body)
 		http_print('result of query:', result, respcode, respstatus)
 		for k,v in pairs(respheaders) do
@@ -519,6 +521,17 @@ _M.date = {
 		return tostring(os.time())
 	end,
 }
+
+function _M.p(i)
+  local _obj_0 = require("moon")
+  p = _obj_0.p
+  return p(i)
+end
+
+function _M.die(str)
+  print(str)
+  return os.exit()
+end
 
 function _M.script_path()
    local str = debug.getinfo(2, "S").source:sub(2)

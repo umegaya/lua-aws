@@ -8,7 +8,7 @@ return class.AWS_RequestSerializer {
 	end,
 
 	serialize = function (self, params, fn)
-		self:serialize_struct('', params, self._rules, fn)
+		self:serialize_struct(false, params, self._rules, fn)
 	end,
 
 	serialize_struct = function (self, prefix, struct, rules, fn)
@@ -59,9 +59,9 @@ return class.AWS_RequestSerializer {
 			self:serialize_map(name, value, rules, fn)
 		elseif rules.type == 'timestamp' then
 			local timestamp_format = (rules.format or self._api:timestamp_format())
-			fn.call(self, name, util.date_format(value, timestamp_format))
+			fn(name, util.date_format(value, timestamp_format))
 		else
-			fn.call(self, name, tostring(value))
+            fn(name, tostring(value))
 		end
 	end,
 }
