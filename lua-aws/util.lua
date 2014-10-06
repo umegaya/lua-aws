@@ -323,7 +323,7 @@ end
 -- taken from Lua Socket and added underscore to ignore (MIT-License)
 -----------------------------------------------------------------------------
 function _M.escape(s)
-    return string.gsub(s, "([^A-Za-z0-9_%-])", function(c)
+    return string.gsub(s, "([^A-Za-z0-9_%-%.])", function(c)
         return string.format("%%%02X", string.byte(c))
     end)
 end
@@ -337,8 +337,8 @@ end
 -- taken from Lua Socket
 -----------------------------------------------------------------------------
 function _M.unescape(s)
-    return string.gsub(s, "%%(%X%X)", function(hex)
-        return string.char(base.tonumber(hex, 16))
+     return string.gsub(s, "%%(%x%x)", function(hex)
+         return string.char(tonumber(hex, 16))
     end)
 end
 
