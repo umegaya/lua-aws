@@ -9,17 +9,21 @@ return class.AWS_Request {
 		self._operation = operation
 		self._params = params or {}
 		self._api = api
-		self._signer = Signer[api:signature_version()].new()
+    	s_version = api:signature_version()
+	    assert(Signer[s_version], "signer not implement:"..s_version)
+		self._signer = Signer[s_version].new()
 	end,
 	send = function (self)
 		local req = self:base_build_request()
-		self:build_request(req)		
+		self:build_request(req)
 		self:validate(req)
-		self._signer:sign(req, self._api:config(), self._api:timestamp())
+	    local _api_timestamp = self._api:timestamp()
+		self._signer:sign(req, self._api:config(), _api_timestamp)
 		local resp = self._api:http_request(req)
 		if resp.status == 200 then
 			return self:extract_data(resp)
 		else
+            self._api:log("Something wrong in the request", resp.status, resp.body)
 			return self:extract_error(resp)
 		end
 	end,
@@ -48,9 +52,9 @@ return class.AWS_Request {
 		req.headers['User-Agent'] = util.user_agent()
 		return req
 	end,
-	
-	
-	--[[ 
+
+
+	--[[
 		local req = {
 			path = endpoint:path(),
 			headers = {},
@@ -65,7 +69,7 @@ return class.AWS_Request {
 	build_request = function (self)
 		assert(false)
 	end,
-	--[[ 
+	--[[
 		resp is table {
 			status = number,
 			headers = table,
@@ -76,7 +80,7 @@ return class.AWS_Request {
 	extract_data = function (self, resp)
 		assert(false)
 	end,
-	--[[ 
+	--[[
 		resp is table {
 			status = number,
 			headers = table,
@@ -87,7 +91,7 @@ return class.AWS_Request {
 			message = string,
 		}
 	]]--
-	extract_data = function (self, resp)
+	extract_error = function (self, resp)
 		assert(false)
 	end,
 }

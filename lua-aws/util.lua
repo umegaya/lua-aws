@@ -101,7 +101,7 @@ _M.b64 = (function ()
 	local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 	-- encoding
 	local function enc(data)
-		return ((data:gsub('.', function(x) 
+		return ((data:gsub('.', function(x)
 			local r,b='',x:byte()
 			for i=8,1,-1 do r=r..(b%2^i-b%2^(i-1)>0 and '1' or '0') end
 			return r;
@@ -112,7 +112,7 @@ _M.b64 = (function ()
 			return b:sub(c+1,c+1)
 		end)..({ '', '==', '=' })[#data%3+1])
 	end
-	
+
 	-- decoding
 	local function dec(data)
 		data = string.gsub(data, '[^'..b..'=]', '')
@@ -164,7 +164,7 @@ end
 _M.hmac = (function ()
 	--local hmac = require 'hmac'
 	local sha2 = require 'lua-aws.deps.sha2'
-	
+
 	-- these hmac-ize routine is from https://github.com/bjc/prosody/blob/master/util/hmac.lua.
 	-- thanks!
 	local s_char = string.char;
@@ -189,11 +189,11 @@ _M.hmac = (function ()
 		if #key > blocksize then
 			key = hash(key)
 		end
-	
+
 		local padding = blocksize - #key;
 		local ipad = s_gsub(key, ".", ipad_map)..s_rep(ipadc, padding);
 		local opad = s_gsub(key, ".", opad_map)..s_rep(opadc, padding);
-	
+
 		return hash(opad..hash(ipad..message))
 	end
 	local sha256 = function (data)
@@ -206,7 +206,7 @@ _M.hmac = (function ()
 		--local bin = _M.to_bin("8BDD6729CE0F580B7424921D5F0CFD1F1642243762CBA71FFCC8FABCFC72608B")
 		return _M.b64.encode(bin)
 	end
-	
+
 	-- here simple test from http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-query-api.html#query-authentication
 	local test_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 	local test = [[GET
@@ -269,10 +269,10 @@ _M.get_json_part = function (path)
 				str = '{'
 			end
 		else
-			str = (str .. 
-				line:gsub("'(.+)'", 
+			str = (str ..
+				line:gsub("'(.+)'",
 					function (s1) return ('"%s"'):format(s1) end)
-					:gsub('(%w+):(%s*)', 
+					:gsub('(%w+):(%s*)',
 					function (s1, s2) return ('"%s":%s'):format(s1, s2) end) .. "\n"
 			)
 		end
@@ -312,7 +312,7 @@ local dirscanner = class.AWS_Util_DirectoryScanner {
 _M.dir = function (path)
 	return dirscanner.new(path)
 end
--- following 2 is from 
+-- following 2 is from
 -- 	https://github.com/msva/lua-curl/blob/master/examples/browser.lua. thanks!!
 -----------------------------------------------------------------------------
 -- Encodes a string into its escaped hexadecimal representation
@@ -323,7 +323,7 @@ end
 -- taken from Lua Socket and added underscore to ignore (MIT-License)
 -----------------------------------------------------------------------------
 function _M.escape(s)
-    return string.gsub(s, "([^A-Za-z0-9_%-])", function(c)
+    return string.gsub(s, "([^A-Za-z0-9_%-%.])", function(c)
         return string.format("%%%02X", string.byte(c))
     end)
 end
@@ -337,8 +337,8 @@ end
 -- taken from Lua Socket
 -----------------------------------------------------------------------------
 function _M.unescape(s)
-    return string.gsub(s, "%%(%X%X)", function(hex)
-        return string.char(base.tonumber(hex, 16))
+     return string.gsub(s, "%%(%x%x)", function(hex)
+         return string.char(tonumber(hex, 16))
     end)
 end
 
@@ -346,14 +346,14 @@ _M.query_params_to_string = function (params)
 	local items = {};
 	local escape = _M.escape
 	local sorted_keys = {}
-	
+
 	for k,v in pairs(params) do
 		table.insert(sorted_keys, k)
 	end
 	table.sort(sorted_keys, function (a, b)
 		return b > a
 	end)
-	
+
 	for idx, name in ipairs(sorted_keys) do
 		local value = params[name]
 		local ename = escape(name)
@@ -402,7 +402,7 @@ _M.chop = function (str)
 	return str:sub(1, l)
 end
 
---[[ 
+--[[
 	built in http client by using luasocket or cURL
 
 	input =>
@@ -432,6 +432,7 @@ local fill_header = function (req)
 	req.headers["Connection"] = "Keep-Alive"
 end
 local http_print = function (...)
+    -- print(...)
 end
 if luasocket_ok then
  	local ltn12 = require"ltn12"
@@ -445,6 +446,7 @@ if luasocket_ok then
 			source = ltn12.source.string(req.body),
 			sink = ltn12.sink.table(respbody)
 		}
+        http_print('requestto:', req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path)
  		http_print('sentbody:', req.body)
 		http_print('result of query:', result, respcode, respstatus)
 		for k,v in pairs(respheaders) do
@@ -491,7 +493,7 @@ elseif curl_ok then
 		local body = ""
 		c:perform({
 			headerfunction = function(str)
-				str:gsub('(.*):% (.*)', function (s1, s2) 
+				str:gsub('(.*):% (.*)', function (s1, s2)
 					headers[s1] = _M.chop(s2)
 				end)
 			end,
@@ -509,8 +511,7 @@ end
 
 _M.date = {
 	iso8601 = function ()
-		--2004-02-12T15:19:21+00:00
-		local tmp = os.date("%Y-%m-%dT%T")
+		local tmp = os.date("%Y-%m-%dT%T%z")
 		return tmp
 	end,
 	rfc822 = function ()
@@ -520,6 +521,17 @@ _M.date = {
 		return tostring(os.time())
 	end,
 }
+
+function _M.p(i)
+  local _obj_0 = require("moon")
+  p = _obj_0.p
+  return p(i)
+end
+
+function _M.die(str)
+  print(str)
+  return os.exit()
+end
 
 function _M.script_path()
    local str = debug.getinfo(2, "S").source:sub(2)

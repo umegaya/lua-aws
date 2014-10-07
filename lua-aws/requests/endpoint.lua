@@ -4,13 +4,13 @@ local util = require ('lua-aws.util')
 return class.AWS_Endpoint {
 	initialize = function (self, endpoint, config)
 		util.assert(type(endpoint) == 'string', "invalid type of endpoint:" .. type(endpoint))
-		
+
 		if not endpoint:match("http") then
 			local useSSL = (config and config.sslEnabled) and config.sslEnabled or false
 			endpoint = (useSSL and 'https' or 'http') .. '://' .. endpoint
 		end
-		
-		print('endpoint = ', endpoint)
+
+		--print('endpoint = ', endpoint)
 		endpoint:gsub('(.*)://(.*)', function (s1, s2)
 			local host, port, path
 			local pos = s2:find(':')
@@ -23,7 +23,7 @@ return class.AWS_Endpoint {
 				else
 					port,path = tonumber(remain),false
 				end
-				
+
 			else
 				pos = s2:find('/')
 				if pos then
@@ -47,5 +47,5 @@ return class.AWS_Endpoint {
 	protocol = function (self) return self._protocol end,
 	pathname = function (self) return util.pathname(self._path) end,
 	to_s = function (self) return (self._protocol .. "://" .. self._host .. ':' .. self._port) end,
-	
+
 }

@@ -2,7 +2,7 @@ local class = require ('lua-aws.class')
 local API = require ('lua-aws.api')
 local util = require ('lua-aws.util')
 
-return class.AWS_Service {
+return class.AWS_ServiceAWS_Service {
 	initialize = function (self, aws, service_name)
 		self._service_name = service_name or self.class.name:gsub('^AWS_', '')
 		self._aws = aws
@@ -18,9 +18,9 @@ return class.AWS_Service {
 		util.dir((util.script_path()..'/definitions/%s*'):format(service_name)):each(function (path)
 			--print('defintion file:', path)
 			local version
-			path:gsub('[^%-]*%-([%w%-]*)%.js', function (s) 
-				version = s 
-				return s 
+			path:gsub('[^%-]*%-([%w%-]*)%.js', function (s)
+				version = s
+				return s
 			end)
 			assert(version, path .. ':invalid file name')
 			local data = util.json.decode(util.get_json_part(path))
