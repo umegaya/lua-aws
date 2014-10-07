@@ -61,7 +61,7 @@ return class.AWS_RequestSerializer {
 			local timestamp_format = (rules.format or self._api:timestamp_format())
 			fn(name, util.date_format(value, timestamp_format))
 		else
-            fn(name, tostring(value))
+			fn(name, tostring(value))
 		end
 	end,
 }

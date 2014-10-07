@@ -432,7 +432,7 @@ local fill_header = function (req)
 	req.headers["Connection"] = "Keep-Alive"
 end
 local http_print = function (...)
-    -- print(...)
+	-- print(...)
 end
 if luasocket_ok then
  	local ltn12 = require"ltn12"
@@ -446,7 +446,7 @@ if luasocket_ok then
 			source = ltn12.source.string(req.body),
 			sink = ltn12.sink.table(respbody)
 		}
-        http_print('requestto:', req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path)
+		http_print('requestto:', req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path)
  		http_print('sentbody:', req.body)
 		http_print('result of query:', result, respcode, respstatus)
 		for k,v in pairs(respheaders) do
