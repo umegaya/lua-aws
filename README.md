@@ -20,9 +20,9 @@ so I decide to copy its architecture, without copying callback storm of aws-sdk-
 ## Current Status
 
 now it just Proof of Concept.
-only some API of EC2 tested. almost EC2 API is not tested and even entry does not exist most of AWS services.
+only some API of EC2 and SQS tested. almost EC2 API is not tested and even entry does not exist most of AWS services.
 but I think almost code service-indepenent and well modularized, so it not so hard support other services
-if signers and requests are fully implemented.
+if signers and requests are fully implemented (sorry for my laziness, but patches are welcome!!).
 
 I currently developing network game which application code is entirely written in lua, and this binding will be used for it,
 after that, more services will be support and library itself will be more stable. but now, I don't have enough time to complete this project.
@@ -54,9 +54,11 @@ see test/ec2.lua
 local AWS = require ('aws')
 AWS = AWS.new({
 	accessKeyId = os.getenv('AWS_ACCESS_KEY'),
-	secretAccessKey = os.getenv('AWS_SECRET_KEY')
+	secretAccessKey = os.getenv('AWS_SECRET_KEY'),
 	-- if you write your own http engin
-	http_engine = your_http_engine
+	http_engine = your_http_engine,
+	-- if you don't set EC2_URL environment value
+	endpoint = "https://ec2.ap-northeast-1.amazonaws.com",
 })
 
 local res,err = AWS.EC2:api():describeInstances()
