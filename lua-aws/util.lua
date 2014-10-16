@@ -200,11 +200,15 @@ _M.hmac = (function ()
 		local text = sha2.hash256(data)
 		return _M.to_bin(text)
 	end
-	local hmac_sha256 = function (key, data)
+	local digest_routines = {
+		hex = _M.to_hex,
+		base64 = _M.b64.encode
+	}
+	local hmac_sha256 = function (key, data, digest)
 		local bin = hmac(key, data, sha256, 64)
 		--	print(_M.to_hex(bin))
 		--local bin = _M.to_bin("8BDD6729CE0F580B7424921D5F0CFD1F1642243762CBA71FFCC8FABCFC72608B")
-		return _M.b64.encode(bin)
+		return digest_routines[digest](bin)
 	end
 
 	-- here simple test from http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-query-api.html#query-authentication
@@ -214,8 +218,9 @@ elasticmapreduce.amazonaws.com
 /
 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Action=DescribeJobFlows&SignatureMethod=HmacSHA256&SignatureVersion=2&Timestamp=2011-10-03T15%3A19%3A30&Version=2009-03-31]]
 
-	local test_enc = hmac_sha256(test_key, test)
+	local test_enc = hmac_sha256(test_key, test, 'base64')
 	assert(test_enc == 'i91nKc4PWAt0JJIdXwz9HxZCJDdiy6cf/Mj6vPxyYIs=')
+	--]]
 	return hmac_sha256
 end)()
 

@@ -23,7 +23,7 @@ local QueueUrl = res.value.CreateQueueResponse.value.CreateQueueResult.value.Que
 print("QueueUrl:", QueueUrl)
 local params = {
 	QueueUrl = QueueUrl,
-	MessageBody = "testing"
+	MessageBody = [[{"email_id":2,"contact_id":"1-xxxxx@hotmail.es","bulk_id":1,"email_version_id":14,"client_id":1}]]
 }
 res = aws.SQS:api_by_version('2012-11-05'):sendMessage(params)
 dump_res('message', res)

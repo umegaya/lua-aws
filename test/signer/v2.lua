@@ -37,3 +37,28 @@ signer:sign({
 -- TODO : can we provide universal test??? now its only for *ME*
 print('params:', params.Signature, util.unescape("hchgVw%2B5D5vwSSCgMVsOt5ycJjb6bDOpNmCe4EpLavo%3D"))
 assert(params.Signature == util.unescape("hchgVw%2B5D5vwSSCgMVsOt5ycJjb6bDOpNmCe4EpLavo%3D"))
+
+
+params.Signature = nil
+params.MessageBody = [[{"email_id":2,"contact_id":"1-xxxxx@hotmail.es","bulk_id":1,"email_version_id":14,"client_id":1}]]
+
+signer:sign({
+	method = "POST",
+	headers = {},
+	host = "sqs.ap-northeast-1.amazonaws.com",
+	path = "/",
+	params = params,
+}, {
+	accessKeyId = os.getenv('AWS_ACCESS_KEY'),
+	secretAccessKey = os.getenv('AWS_SECRET_KEY'),	
+}, "2014-10-16T20:21:59+0900")
+
+print('params2:', params.Signature, util.unescape("VwPl0RHrLKPjTi64XgqDMqT9cVPoJ72MQFS7Q8AgPBc%3D"))
+assert(params.Signature == util.unescape("VwPl0RHrLKPjTi64XgqDMqT9cVPoJ72MQFS7Q8AgPBc%3D"))
+
+
+
+
+
+
+
