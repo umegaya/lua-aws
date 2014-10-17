@@ -65,7 +65,10 @@ end
 -- append length of message (before pre-processing), in bits, as 64-bit
 -- big-endian integer
 local function preproc (msg, len)
-  local extra = 64 - ((len + 1 + 8) % 64)
+  local extra = 56 - ((len + 1) % 64)
+  if extra < 0 then
+    extra = 64 + extra
+  end
   len = num2s(8 * len, 8)    -- original len in bits, coded
   msg = msg .. "\128" .. string.rep("\0", extra) .. len
   assert(#msg % 64 == 0)
@@ -152,7 +155,18 @@ local function digestblock (msg, i, H)
     H[6] = band(H[6] + f)
     H[7] = band(H[7] + g)
     H[8] = band(H[8] + h)
-
+   --[[
+      print("current digest:",
+      str2hexa(num2s(H[1], 4)),
+      str2hexa(num2s(H[2], 4)),
+      str2hexa(num2s(H[3], 4)),
+      str2hexa(num2s(H[4], 4)),
+      str2hexa(num2s(H[5], 4)),
+      str2hexa(num2s(H[6], 4)),
+      str2hexa(num2s(H[7], 4)),
+      str2hexa(num2s(H[8], 4))
+    )
+    ]]
 end
 
 
@@ -216,7 +230,7 @@ function mt:add (m)
   local t = 0
   while #self.msg - t >= 64 do
     digestblock(self.msg, t + 1, self.H)
-    t = t + 64 
+    t = t + 64
   end
   self.msg = self.msg:sub(t + 1, -1)
 end
