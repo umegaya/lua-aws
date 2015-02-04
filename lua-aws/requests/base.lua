@@ -11,7 +11,7 @@ return class.AWS_Request {
 		self._api = api
 		local s_version = api:signature_version()
 		assert(Signer[s_version], "signer not implement:"..s_version)
-		self._signer = Signer[s_version].new()
+		self._signer = Signer[s_version].new(api)
 	end,
 	send = function (self)
 		local req = self:base_build_request()
@@ -21,10 +21,10 @@ return class.AWS_Request {
 		self._signer:sign(req, self._api:config(), _api_timestamp)
 		local resp = self._api:http_request(req)
 		if resp.status == 200 then
-			return self:extract_data(resp)
+			return true, self:extract_data(resp)
 		else
 			self._api:log("Something wrong in the request", resp.status, resp.body)
-			return self:extract_error(resp)
+			return false, self:extract_error(resp)
 		end
 	end,
 	validate_region = function (self, req)
@@ -37,7 +37,7 @@ return class.AWS_Request {
 		return true
 	end,
 	base_build_request = function (self)
-		local endpoint = EndPoint.new(self._api:endpoint())
+		local endpoint = EndPoint.new(self._api:endpoint(), self._api:config())
 		local req = {
 			path = endpoint:path(),
 			headers = {},

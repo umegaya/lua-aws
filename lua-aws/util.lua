@@ -14,6 +14,7 @@ _M.assert = function (cond, msg)
 end
 _M.json = {
 	encode = function (data)
+		return json.encode(data)
 	end,
 	decode = function (data)
 		return json.decode(data, 1, json.null)
@@ -161,9 +162,11 @@ _M.to_hex = function (str)
 	return data
 end
 
+_M.sha2 = require 'lua-aws.deps.sha2'
+
 _M.hmac = (function ()
 	--local hmac = require 'hmac'
-	local sha2 = require 'lua-aws.deps.sha2'
+	local sha2 = _M.sha2
 
 	-- these hmac-ize routine is from https://github.com/bjc/prosody/blob/master/util/hmac.lua.
 	-- thanks!
@@ -208,7 +211,7 @@ _M.hmac = (function ()
 		local bin = hmac(key, data, sha256, 64)
 		--	print(_M.to_hex(bin))
 		--local bin = _M.to_bin("8BDD6729CE0F580B7424921D5F0CFD1F1642243762CBA71FFCC8FABCFC72608B")
-		return digest_routines[digest](bin)
+		return digest_routines[digest] and digest_routines[digest](bin) or bin
 	end
 
 	-- here simple test from http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-query-api.html#query-authentication
@@ -262,8 +265,8 @@ _M.search_path_with_lua_config = function (path)
 end
 _M.get_json_part = function (path)
 	local f = io.open(path, 'r')
-	local str
-	-- TODO: faster load
+	local str = f:read('*a')
+	--[[ TODO: faster load
 	while true do
 		local line = f:read('*l')
 		if not line then
@@ -281,7 +284,7 @@ _M.get_json_part = function (path)
 					function (s1, s2) return ('"%s":%s'):format(s1, s2) end) .. "\n"
 			)
 		end
-	end
+	end ]]
 	return str
 end
 local dirscanner = class.AWS_Util_DirectoryScanner {
@@ -384,6 +387,10 @@ _M.pathname = function (path)
 	local pos = path:find('?')
 	return pos and path:sub(1, pos) or path
 end
+_M.searchname = function (path)
+	local pos = path:find('?')
+	return pos and path:sub(pos) or ""
+end
 
 _M.user_agent = function ()
 	return "lua-aws"
@@ -442,17 +449,20 @@ end
 if luasocket_ok then
  	local ltn12 = require"ltn12"
  	local respbody = {}
- 	_M.luasocket_http_engine = function (req)
- 		fill_header(req)
-		local result, respcode, respheaders, respstatus = luasocket_http.request {
+	local run_http_engine = function (eng, req)
+		fill_header(req)
+		http_print('requestto:', req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path)
+		http_print('sentbody:', req.body)
+		for k,v in pairs(req.headers) do
+			http_print('req_header:', k, v)
+		end
+		local result, respcode, respheaders, respstatus = eng.request {
 			url = req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path,
 			headers = req.headers,
 			method = req.method,
 			source = ltn12.source.string(req.body),
 			sink = ltn12.sink.table(respbody)
 		}
-		http_print('requestto:', req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path)
- 		http_print('sentbody:', req.body)
 		http_print('result of query:', result, respcode, respstatus)
 		for k,v in pairs(respheaders) do
 			http_print('header:', k, v)
@@ -466,7 +476,18 @@ if luasocket_ok then
 		end)
 		return resp
 	end
-
+	local luasec_ok, luasec_https = pcall(require, 'ssl.https')
+ 	_M.luasocket_http_engine = function (req)
+ 		if req.protocol:match('https') then
+ 			if luasec_ok then
+ 				return run_http_engine(luasec_https, req)
+ 			else
+ 				print('no https module')
+ 				return nil
+ 			end
+ 		end
+ 		return run_http_engine(luasocket_http, req)
+	end
 -- if lua-cURL (https://github.com/msva/lua-curl/) is available, setup curl http request executer.
 elseif curl_ok then
 	_M.make_curl_header = function (headers)
@@ -515,15 +536,15 @@ elseif curl_ok then
 end
 
 _M.date = {
-	iso8601 = function ()
-		local tmp = os.date("%Y-%m-%dT%T%z")
+	iso8601 = function (val)
+		local tmp = os.date("!%Y-%m-%dT%TZ", val)
 		return tmp
 	end,
-	rfc822 = function ()
-		return os.date("%a, %d %b %y %T %z")
+	rfc822 = function (val)
+		return os.date("!%a, %d %b %y %T %z", val)
 	end,
-	unixTimestamp = function ()
-		return tostring(os.time())
+	unixTimestamp = function (val)
+		return tostring(os.time(val))
 	end,
 }
 
