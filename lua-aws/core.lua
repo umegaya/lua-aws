@@ -6,7 +6,7 @@ local AWS = class.AWS {
 	initialize = function (self, config, http_engine)
 		assert(config and config.accessKeyId and config.secretAccessKey)
 		self._config = config
-		self._http_engine = http_engine or util.luasocket_http_engine or util.curl_http_engine
+		self._http_engine = http_engine or self:get_http_engine()
 		--> define service
 		self.DynamoDB = require('lua-aws.services.dynamodb').new(self)
 		self.EC2 = require('lua-aws.services.ec2').new(self)
@@ -43,6 +43,14 @@ local AWS = class.AWS {
 		require('./services/sts')
 		require('./services/support')
 		]]--	
+	end,
+	get_http_engine = function (self)
+		local f = require 'lua-aws.engines.luasocket'
+		if not f then
+			f = require 'lua-aws.engines.curl'
+		end
+		assert(f, "no http engine available")
+		return f
 	end,
 	config = function (self)
 		return self._config

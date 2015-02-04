@@ -7,7 +7,6 @@ return class.AWS_JsonRequest.extends(Request) {
 	build_request = function (self, req)
 		local operation = self._operation
 		local api = self._api
-		print(api, api:target_prefix(), operation.name)
 		local target = api:target_prefix()..'.'..operation.name
 		local version = api:json_version()
 
@@ -40,7 +39,6 @@ return class.AWS_JsonRequest.extends(Request) {
 	end,
 
 	extract_data = function (self, resp) 
-		print('resp.body:', resp.body)
 		return #resp.body > 0 and util.json.decode(resp.body) or {}
   	end,
 }

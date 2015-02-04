@@ -4,8 +4,6 @@ local json = require ('lua-aws.deps.dkjson')
 local xml_parser_factory = require ('lua-aws.deps.slaxml')
 local xml_build = require ('lua-aws.deps.slaxdom')
 local sha1 = require ('lua-aws.deps.sha1')
-local curl_ok,curl = pcall(require, 'cURL')
-local luasocket_ok, luasocket_http = pcall(require, 'socket.http')
 
 local _M = {}
 
@@ -400,8 +398,8 @@ _M.chop = function (str)
 	local l = #str
 	local cnt = 0
 	while true do
-		local ch = str:char(l)
-		if ch == '\r' or c == '\n' then
+		local ch = str:byte(l)
+		if ch == ('\r'):byte() or ch == ('\n'):byte() then
 			l = (l - 1)
 		else
 			break
@@ -437,102 +435,14 @@ end
 	}
 	returns lua table (any format)
 ]]--
-local fill_header = function (req)
+_M.fill_header = function (req)
 	if (not req.headers["Content-Length"]) and req.method == "POST" then
 		req.headers["Content-Length"] = #req.body
 	end
 	req.headers["Connection"] = "Keep-Alive"
 end
-local http_print = function (...)
+_M.http_print = function (...)
 	-- print(...)
-end
-if luasocket_ok then
- 	local ltn12 = require"ltn12"
- 	local respbody = {}
-	local run_http_engine = function (eng, req)
-		fill_header(req)
-		http_print('requestto:', req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path)
-		http_print('sentbody:', req.body)
-		for k,v in pairs(req.headers) do
-			http_print('req_header:', k, v)
-		end
-		local result, respcode, respheaders, respstatus = eng.request {
-			url = req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path,
-			headers = req.headers,
-			method = req.method,
-			source = ltn12.source.string(req.body),
-			sink = ltn12.sink.table(respbody)
-		}
-		http_print('result of query:', result, respcode, respstatus)
-		for k,v in pairs(respheaders) do
-			http_print('header:', k, v)
-		end
-		local resp = {
-			headers = respheaders,
-			body = table.concat(respbody),
-		}
-		respstatus:gsub('.*%s(%w*)%s.*', function (s)
-			resp.status = tonumber(s)
-		end)
-		return resp
-	end
-	local luasec_ok, luasec_https = pcall(require, 'ssl.https')
- 	_M.luasocket_http_engine = function (req)
- 		if req.protocol:match('https') then
- 			if luasec_ok then
- 				return run_http_engine(luasec_https, req)
- 			else
- 				print('no https module')
- 				return nil
- 			end
- 		end
- 		return run_http_engine(luasocket_http, req)
-	end
--- if lua-cURL (https://github.com/msva/lua-curl/) is available, setup curl http request executer.
-elseif curl_ok then
-	_M.make_curl_header = function (headers)
-		local res = {}
-		for k,v in pairs(headers) do
-			table.insert(res, k .. ": " .. v .."\r\n")
-		end
-		return res
-	end
-	_M.curl_http_engine = function (req)
- 		fill_header(req)
-		local c = curl.easy_init()
-		c:setopt_url(req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path)
-		c:setopt_useragent(req.headers["User-Agent"])
-		c:setopt_httpheader(_M.make_curl_header(req.headers))
-		if req.method == 'GET' then
-		elseif req.method == 'POST' then
-			c:post({
-				name = {
-					file = '/dev/null',
-					type = req.headers["Content-Type"],
-					data = req.body
-				}
-			})
-		else
-			assert(false, "not supported:" .. req.method)
-		end
-		local headers = {}
-		local body = ""
-		c:perform({
-			headerfunction = function(str)
-				str:gsub('(.*):% (.*)', function (s1, s2)
-					headers[s1] = _M.chop(s2)
-				end)
-			end,
-			writefunction = function(str)
-				body = (body .. str)
-			end
-		})
-		return {
-			status = c:getinfo_response_code(),
-			body = body,
-			headers = headers,
-		}
-	end
 end
 
 _M.date = {
