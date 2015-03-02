@@ -20,12 +20,14 @@ so I decide to copy its architecture, without copying callback storm of aws-sdk-
 ## Current Status
 
 now it just Proof of Concept.
-only some API of EC2 and SQS tested. almost EC2 API is not tested and even entry does not exist most of AWS services.
+only some API of EC2, Kinesis,  and SQS tested. almost EC2 API is not tested and even entry does not exist most of AWS services.
 but I think almost code service-indepenent and well modularized, so it not so hard support other services
 if signers and requests are fully implemented (sorry for my laziness, but patches are welcome!!).
 
 I currently developing network game which application code is entirely written in lua, and this binding will be used for it,
 after that, more services will be support and library itself will be more stable. but now, I don't have enough time to complete this project.
+
+EDIT: now some guys seems to use this at least their playground. and v4 signature and json request supported, so more APIs should work (but not tested)
 
 
 
@@ -98,6 +100,28 @@ you can get multiple version
 local res,err = AWS.EC2:api_by_version('2013-02-01'):describeInstances()
 ```
 
+### caution
+
+- current version (from cccc695bfd486f0179d552660dff68044ef79916) will break backward compatibility for return value of api call.
+ - because with previous api spec, first argument will be any of response of API (on success), api level error object (on failure at API level), false (on failure at lua level). 
+ - and lua level error occurs, it returns lua-error object as its 2nd argument. it is highly inconsistent and should be fixed.
+``` lua
+local api = AWS.EC2:api()
+-- old api call : returns { data or api_level_error or false, lua_level_error(if occurs) }
+r, lua_err = api:describeInstances()
+-- new api call : returns {status, data or api_level_error or lua_level_error}
+ok, r = api:describeInstances()
+``` 
+- with new API spec, API call returns 2 values which represents status and (response data or api level error or lua level error). 
+- add oldReturnValue = true to initial AWS config, you can get previous style return value.
+``` lua
+local AWS = require ('lua-aws.init')
+AWS = AWS.new({
+	accessKeyId = os.getenv('AWS_ACCESS_KEY'),
+	secretAccessKey = os.getenv('AWS_SECRET_KEY'),
+	oldReturnValue = true,
+})
+```
 
 
 ## License
