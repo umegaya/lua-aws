@@ -4,8 +4,6 @@ local json = require ('lua-aws.deps.dkjson')
 local xml_parser_factory = require ('lua-aws.deps.slaxml')
 local xml_build = require ('lua-aws.deps.slaxdom')
 local sha1 = require ('lua-aws.deps.sha1')
-local curl_ok,curl = pcall(require, 'cURL')
-local luasocket_ok, luasocket_http = pcall(require, 'socket.http')
 
 local _M = {}
 
@@ -14,6 +12,7 @@ _M.assert = function (cond, msg)
 end
 _M.json = {
 	encode = function (data)
+		return json.encode(data)
 	end,
 	decode = function (data)
 		return json.decode(data, 1, json.null)
@@ -161,9 +160,11 @@ _M.to_hex = function (str)
 	return data
 end
 
+_M.sha2 = require 'lua-aws.deps.sha2'
+
 _M.hmac = (function ()
 	--local hmac = require 'hmac'
-	local sha2 = require 'lua-aws.deps.sha2'
+	local sha2 = _M.sha2
 
 	-- these hmac-ize routine is from https://github.com/bjc/prosody/blob/master/util/hmac.lua.
 	-- thanks!
@@ -208,7 +209,7 @@ _M.hmac = (function ()
 		local bin = hmac(key, data, sha256, 64)
 		--	print(_M.to_hex(bin))
 		--local bin = _M.to_bin("8BDD6729CE0F580B7424921D5F0CFD1F1642243762CBA71FFCC8FABCFC72608B")
-		return digest_routines[digest](bin)
+		return digest_routines[digest] and digest_routines[digest](bin) or bin
 	end
 
 	-- here simple test from http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-query-api.html#query-authentication
@@ -262,8 +263,8 @@ _M.search_path_with_lua_config = function (path)
 end
 _M.get_json_part = function (path)
 	local f = io.open(path, 'r')
-	local str
-	-- TODO: faster load
+	local str = f:read('*a')
+	--[[ TODO: faster load
 	while true do
 		local line = f:read('*l')
 		if not line then
@@ -281,7 +282,7 @@ _M.get_json_part = function (path)
 					function (s1, s2) return ('"%s":%s'):format(s1, s2) end) .. "\n"
 			)
 		end
-	end
+	end ]]
 	return str
 end
 local dirscanner = class.AWS_Util_DirectoryScanner {
@@ -384,6 +385,10 @@ _M.pathname = function (path)
 	local pos = path:find('?')
 	return pos and path:sub(1, pos) or path
 end
+_M.searchname = function (path)
+	local pos = path:find('?')
+	return pos and path:sub(pos) or ""
+end
 
 _M.user_agent = function ()
 	return "lua-aws"
@@ -393,8 +398,8 @@ _M.chop = function (str)
 	local l = #str
 	local cnt = 0
 	while true do
-		local ch = str:char(l)
-		if ch == '\r' or c == '\n' then
+		local ch = str:byte(l)
+		if ch == ('\r'):byte() or ch == ('\n'):byte() then
 			l = (l - 1)
 		else
 			break
@@ -430,100 +435,26 @@ end
 	}
 	returns lua table (any format)
 ]]--
-local fill_header = function (req)
+_M.fill_header = function (req)
 	if (not req.headers["Content-Length"]) and req.method == "POST" then
 		req.headers["Content-Length"] = #req.body
 	end
 	req.headers["Connection"] = "Keep-Alive"
 end
-local http_print = function (...)
+_M.http_print = function (...)
 	-- print(...)
-end
-if luasocket_ok then
- 	local ltn12 = require"ltn12"
- 	local respbody = {}
- 	_M.luasocket_http_engine = function (req)
- 		fill_header(req)
-		local result, respcode, respheaders, respstatus = luasocket_http.request {
-			url = req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path,
-			headers = req.headers,
-			method = req.method,
-			source = ltn12.source.string(req.body),
-			sink = ltn12.sink.table(respbody)
-		}
-		http_print('requestto:', req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path)
- 		http_print('sentbody:', req.body)
-		http_print('result of query:', result, respcode, respstatus)
-		for k,v in pairs(respheaders) do
-			http_print('header:', k, v)
-		end
-		local resp = {
-			headers = respheaders,
-			body = table.concat(respbody),
-		}
-		respstatus:gsub('.*%s(%w*)%s.*', function (s)
-			resp.status = tonumber(s)
-		end)
-		return resp
-	end
-
--- if lua-cURL (https://github.com/msva/lua-curl/) is available, setup curl http request executer.
-elseif curl_ok then
-	_M.make_curl_header = function (headers)
-		local res = {}
-		for k,v in pairs(headers) do
-			table.insert(res, k .. ": " .. v .."\r\n")
-		end
-		return res
-	end
-	_M.curl_http_engine = function (req)
- 		fill_header(req)
-		local c = curl.easy_init()
-		c:setopt_url(req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path)
-		c:setopt_useragent(req.headers["User-Agent"])
-		c:setopt_httpheader(_M.make_curl_header(req.headers))
-		if req.method == 'GET' then
-		elseif req.method == 'POST' then
-			c:post({
-				name = {
-					file = '/dev/null',
-					type = req.headers["Content-Type"],
-					data = req.body
-				}
-			})
-		else
-			assert(false, "not supported:" .. req.method)
-		end
-		local headers = {}
-		local body = ""
-		c:perform({
-			headerfunction = function(str)
-				str:gsub('(.*):% (.*)', function (s1, s2)
-					headers[s1] = _M.chop(s2)
-				end)
-			end,
-			writefunction = function(str)
-				body = (body .. str)
-			end
-		})
-		return {
-			status = c:getinfo_response_code(),
-			body = body,
-			headers = headers,
-		}
-	end
 end
 
 _M.date = {
-	iso8601 = function ()
-		local tmp = os.date("%Y-%m-%dT%T%z")
+	iso8601 = function (val)
+		local tmp = os.date("!%Y-%m-%dT%TZ", val)
 		return tmp
 	end,
-	rfc822 = function ()
-		return os.date("%a, %d %b %y %T %z")
+	rfc822 = function (val)
+		return os.date("!%a, %d %b %y %T %z", val)
 	end,
-	unixTimestamp = function ()
-		return tostring(os.time())
+	unixTimestamp = function (val)
+		return tostring(os.time(val))
 	end,
 }
 

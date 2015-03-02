@@ -46,6 +46,7 @@ return class.AWS_Endpoint {
 	path = function (self) return self._path end,
 	protocol = function (self) return self._protocol end,
 	pathname = function (self) return util.pathname(self._path) end,
+	searchname = function (self) return util.searchname(self._path) end,
 	to_s = function (self) return (self._protocol .. "://" .. self._host .. ':' .. self._port) end,
 
 }

@@ -13,24 +13,27 @@ local function dump_res(tag, res)
 	end
 end
 
-local res
-res = aws.SQS:api_by_version('2012-11-05'):createQueue({
+local ok,r
+ok,r = aws.SQS:api_by_version('2012-11-05'):createQueue({
 	QueueName = "testQueue",
 })
-dump_res('create', res)
+assert(ok, r)
+dump_res('create', r)
 
-local QueueUrl = res.value.CreateQueueResponse.value.CreateQueueResult.value.QueueUrl.value
+local QueueUrl = r.value.CreateQueueResponse.value.CreateQueueResult.value.QueueUrl.value
 print("QueueUrl:", QueueUrl)
 local params = {
 	QueueUrl = QueueUrl,
 	MessageBody = [[{"email_id":2,"contact_id":"1-xxxxx@hotmail.es","bulk_id":1,"email_version_id":14,"client_id":1}]]
 }
-res = aws.SQS:api_by_version('2012-11-05'):sendMessage(params)
-dump_res('message', res)
+ok,r = aws.SQS:api_by_version('2012-11-05'):sendMessage(params)
+assert(ok, r)
+dump_res('message', r)
 
 
-res = aws.SQS:api_by_version('2012-11-05'):deleteQueue({
+ok,r = aws.SQS:api_by_version('2012-11-05'):deleteQueue({
 	QueueUrl = QueueUrl,
 })
-dump_res('delete', res)
+assert(ok, r)
+dump_res('delete', r)
 -- ]]
