@@ -155,8 +155,8 @@ local function digestblock (msg, i, H)
     H[6] = band(H[6] + f)
     H[7] = band(H[7] + g)
     H[8] = band(H[8] + h)
-   --[[
-      print("current digest:",
+    --[[
+    print("current digest:",
       str2hexa(num2s(H[1], 4)),
       str2hexa(num2s(H[2], 4)),
       str2hexa(num2s(H[3], 4)),
@@ -230,7 +230,7 @@ function mt:add (m)
   local t = 0
   while #self.msg - t >= 64 do
     digestblock(self.msg, t + 1, self.H)
-    t = t + 64
+    t = t + 64 
   end
   self.msg = self.msg:sub(t + 1, -1)
 end

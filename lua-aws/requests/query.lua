@@ -9,7 +9,7 @@ return class.AWS_QueryRequest.extends(Request) {
 		if rules then 
 			rules = rules.members 
 		end
-	    local builder = Serializer.new(self._api, rules)
+		local builder = Serializer.new(self._api, rules)
 		builder:serialize(self._params, function(name, value)
 			params[name] = value
 		end)
@@ -18,10 +18,12 @@ return class.AWS_QueryRequest.extends(Request) {
 		local operation = self._operation
 		req.path = '/'
 		req.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8'
+		req.headers['host'] = req.host
 		req.params = {
 			Version = self._api:version(),
 			Action = operation.name,
 		}
+		req.body_has_sign = true
 		-- convert the request parameters into a list of query params,
 		-- e.g. Deeply.NestedParam.0.Name=value
 		self:serialize_query(req.params)

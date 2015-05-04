@@ -3,7 +3,8 @@ local Signer = require ('lua-aws.signers.base')
 local util = require ('lua-aws.util')
 
 return class.AWS_V2Signer.extends(Signer) {
-	initialize = function (self)
+	initialize = function (self, api)
+		self._api = api
 	end,
 	sign = function (self, r, credentials, timestamp)
 		r.params.Timestamp = timestamp
@@ -15,9 +16,11 @@ return class.AWS_V2Signer.extends(Signer) {
 			r.params.SecurityToken = credentials.sessionToken;
 		end
 
-		r.params.Signature = self:signature(r, credentials);
-		r.body = util.query_params_to_string(r.params)
-		r.headers['Content-Length'] = r.body.length
+		if r.body_has_sign then
+			r.params.Signature = self:signature(r, credentials);
+			r.body = util.query_params_to_string(r.params)
+			r.headers['Content-Length'] = r.body.length
+		end
 	end,
 
 	signature = function (self, r, credentials)

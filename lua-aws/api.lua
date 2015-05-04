@@ -35,12 +35,21 @@ return class.AWS_API {
 	signature_version = function (self)
 		return self._defs.signatureVersion
 	end,
+	signature_name = function (self)
+		return self._defs.signingName or self:endpoint_prefix()
+	end,
 	endpoint_prefix = function (self)
 		return self._defs.endpointPrefix
 	end,
+	target_prefix = function (self)
+		return self._defs.targetPrefix
+	end,
+	json_version = function (self)
+		return self._defs.jsonVersion or "1.0"
+	end,
 	endpoint = function (self)
 		local config = self:config()
-    local endpoint = (config.endpoint or get_endpoint_from_env())
+		local endpoint = (config.endpoint or get_endpoint_from_env())
 
 		return (self:endpoint_prefix() .. '.' .. endpoint)
 	end,
@@ -70,15 +79,19 @@ return class.AWS_API {
 		local defs = self._defs
 		for method,operation in pairs(defs.operations) do
 			self[method] = function (API, param)
-				local ok, r = pcall(function ()
+				local ok, status_or_err, r = pcall(function ()
 					local req = Request[API:request_format()].new(API, operation, param)
 					return req:send()
 				end)
 				if not ok then
-					API:log(method .. ':error:' .. r)
-					return false,r
+					API:log(method .. ':error:' .. status_or_err)
+					return false,status_or_err
 				end
-				return r
+				if API:config().oldReturnValue then
+					return r
+				else
+					return status_or_err,r
+				end
 			end
 		end
 	end,
