@@ -13,7 +13,7 @@ end
 local get_region_from_env = function ()
 	local ec2url = os.getenv('EC2_URL')
 	if not ec2url then
-		error('neither config.endpoint given nor EC2_URL environment set.')
+		error('neither config.region given nor EC2_URL environment set.')
 	else
 		local region = false
 		ec2url:gsub('https://ec2%.(.*)%.amazonaws.com.*', function (s)
