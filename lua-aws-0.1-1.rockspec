@@ -14,7 +14,8 @@ description = {
   license = " Apache License 2.0"
 }
 dependencies = {
-  "lua ~> 5.1"
+  "lua ~> 5.1",
+  "dkjson"
 }
 build = {
   type = "builtin",
@@ -24,7 +25,6 @@ build = {
   modules = {
     ["lua-aws"] = "lua-aws/init.lua",
     ["lua-aws.class"] = "lua-aws/class.lua",
-    ["lua-aws.deps.dkjson"] = "lua-aws/deps/dkjson.lua",
     ["lua-aws.deps.sha1"] = "lua-aws/deps/sha1.lua",
     ["lua-aws.deps.slaxdom"] = "lua-aws/deps/slaxdom.lua",
     ["lua-aws.deps.slaxml"] = "lua-aws/deps/slaxml.lua",
