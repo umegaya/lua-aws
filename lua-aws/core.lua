@@ -10,8 +10,10 @@ local AWS = class.AWS {
 		--> define service
 		self.DynamoDB = require('lua-aws.services.dynamodb').new(self)
 		self.EC2 = require('lua-aws.services.ec2').new(self)
-    	self.SQS = require('lua-aws.services.sqs').new(self)
-    	self.Kinesis = require('lua-aws.services.kinesis').new(self)
+    self.Kinesis = require('lua-aws.services.kinesis').new(self)
+    self.SNS = require('lua-aws.services.sns').new(self)
+    self.SQS = require('lua-aws.services.sqs').new(self)
+
 
 		--[[
 		require('./services/autoscaling')
