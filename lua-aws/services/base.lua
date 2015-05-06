@@ -15,7 +15,7 @@ return class.AWS_Service {
 		local latest
 		local apis = {}
 		local service_name = self._service_name:lower()
-		util.dir((util.services_path()..'/definitions/%s*'):format(service_name)):each(function (path)
+		util.dir((util.script_path()..'/definitions/%s*'):format(service_name)):each(function (path)
 			--print('defintion file:', path)
 			local version
 			path:gsub('[^%-]*%-([%w%-]*)%.js', function (s)
