@@ -460,9 +460,7 @@ _M.date = {
 
 function _M.script_path()
    local str = debug.getinfo(2, "S").source:sub(2)
-   local res = str:match("(.*/)")
-   print(res)
-   return res
+   return str:match("(.*/)")
 end
 
 function _M.services_path()
