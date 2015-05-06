@@ -458,20 +458,13 @@ _M.date = {
 	end,
 }
 
-function _M.p(i)
-  local _obj_0 = require("moon")
-  p = _obj_0.p
-  return p(i)
-end
-
-function _M.die(str)
-  print(str)
-  return os.exit()
-end
-
 function _M.script_path()
    local str = debug.getinfo(2, "S").source:sub(2)
    return str:match("(.*/)")
+end
+
+function _M.services_path()
+   return "/usr/lib/luarocks/rocks/lua-aws/0.1-1/lua-aws/services"
 end
 
 return _M
