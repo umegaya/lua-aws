@@ -1,14 +1,15 @@
 package = "lua-aws"
 version = "0.1-1"
 source = {
-  url = "https://github.com/umegaya/lua-aws.git"
+  url = "git://github.com/umegaya/lua-aws.git"
 }
 description = {
   summary = "Pure-lua implementation of AWS REST APIs",
   detailed = [[
     It heavily inspired by aws-sdk-js, 
     which main good point is define all AWS sevices by JS data structure. 
-    and library read these data and building API code on the fly
+    and library read these data and building API code on the fly.
+    still in alpha status. only limited AWS API is supported.
   ]],
   homepage = "https://github.com/umegaya/lua-aws",
   license = " Apache License 2.0"
