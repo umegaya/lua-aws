@@ -227,7 +227,7 @@ end)()
 
 _M.split = function (str, seps)
 	local r = {}
-	for v in str:gmatch("([^" .. seps .."]*)[" .. seps .. "]*") do
+	for v in str:gmatch("([^" .. seps .."]+)[" .. seps .. "]*") do
 		table.insert(r, v)
 	end
 	return r
@@ -252,6 +252,7 @@ fi
 end
 _M.search_path_with_lua_config = function (path)
 	local settings = _M.split(package.path, ';')
+	table.insert(settings, 1, "") -- to check absolute path
 	for idx,setting in ipairs(settings) do
 		local p = setting:gsub('(.*/)[^/]*', '%1')
 		local test = (p .. path):gsub('[^/]*$', '')
@@ -287,7 +288,6 @@ _M.get_json_part = function (path)
 end
 local dirscanner = class.AWS_Util_DirectoryScanner {
 	initialize = function (self, path)
-		self._path = path
 		if _M.file_exists(path) then
 			self._path = path
 		else
