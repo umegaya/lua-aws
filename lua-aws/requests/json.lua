@@ -21,7 +21,7 @@ return class.AWS_JsonRequest.extends(Request) {
 	extract_error = function (self, resp)
 		local err = {}
 		if #resp.body > 0 then
-			local e = self_api:json().decode(resp.body)
+			local e = self._api:json().decode(resp.body)
 			if e.__type or e.code then
 				err.code = (util.split(e.__type or e.code, '#'))[1]
 			else
