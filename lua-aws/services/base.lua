@@ -14,8 +14,9 @@ return class.AWS_Service {
 	build_apis = function (self)
 		local latest
 		local apis = {}
+		local aws = self._aws
 		local service_name = self._service_name:lower()
-		util.dir((util.script_path()..'/definitions/%s*'):format(service_name)):each(function (path)
+		aws:fs().scandir(util.script_path()..'/definitions/', service_name, function (path)
 			--print('defintion file:', path)
 			local version
 			path:gsub('[^%-]*%-([%w%-]*)%.js', function (s)
@@ -23,7 +24,7 @@ return class.AWS_Service {
 				return s
 			end)
 			assert(version, path .. ':invalid file name')
-			local data = util.json.decode(util.get_json_part(path))
+			local data = aws:json().decode(util.get_json_part(path))
 			apis[version] = API.new(self, data)
 			if (not latest) or (latest <= version) then
 				apis.latest = apis[version]
