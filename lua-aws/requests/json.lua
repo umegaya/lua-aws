@@ -14,14 +14,14 @@ return class.AWS_JsonRequest.extends(Request) {
 		req.headers['Content-Type'] = 'application/x-amz-json-'..version
 		req.headers['X-Amz-Target'] = target
 		req.headers['host'] = req.host
-		req.body = util.json.encode(self._params)
+		req.body = api:json().encode(self._params)
 		return req
 	end,
 	
 	extract_error = function (self, resp)
 		local err = {}
 		if #resp.body > 0 then
-			local e = util.json.decode(resp.body)
+			local e = self._api:json().decode(resp.body)
 			if e.__type or e.code then
 				err.code = (util.split(e.__type or e.code, '#'))[1]
 			else
@@ -39,6 +39,6 @@ return class.AWS_JsonRequest.extends(Request) {
 	end,
 
 	extract_data = function (self, resp) 
-		return #resp.body > 0 and util.json.decode(resp.body) or {}
+		return #resp.body > 0 and self._api:json().decode(resp.body) or {}
   	end,
 }

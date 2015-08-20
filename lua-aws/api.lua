@@ -72,6 +72,9 @@ return class.AWS_API {
 	http_request = function (self, req)
 		return self._service:aws():http_request(req)
 	end,
+	json = function (self)
+		return self._service:aws():json()
+	end,
 	log = function (self, ...)
 		self._service:aws():api_log(self, ...)
 	end,

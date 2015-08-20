@@ -1,19 +1,30 @@
 local class = require('lua-aws.class')
 local util = require('lua-aws.util')
+local available_engines = require 'lua-aws.engines.available'
+assert(available_engines)
 
 local AWS = class.AWS {
 	VERSION = 'v0.1.0',
 	initialize = function (self, config, http_engine)
 		assert(config and config.accessKeyId and config.secretAccessKey)
 		self._config = config
-		self._http_engine = http_engine or self:get_http_engine()
+		if http_engine then -- backward conpatibility
+			if config.preferred_engines then
+				config.preferred_engines = {}
+			end
+			config.preferred_engines.http = http_engine
+		end
+		local engines = self:init_engines(config.preferred_engines or {})
+		self._http_engine = engines.http
+		self._json_engine = engines.json
+		self._fs_engine = engines.fs
+		--self._http_engine = http_engine or self:get_http_engine()
 		--> define service
 		self.DynamoDB = require('lua-aws.services.dynamodb').new(self)
 		self.EC2 = require('lua-aws.services.ec2').new(self)
-    self.Kinesis = require('lua-aws.services.kinesis').new(self)
-    self.SNS = require('lua-aws.services.sns').new(self)
-    self.SQS = require('lua-aws.services.sqs').new(self)
-
+	    self.Kinesis = require('lua-aws.services.kinesis').new(self)
+	    self.SNS = require('lua-aws.services.sns').new(self)
+	    self.SQS = require('lua-aws.services.sqs').new(self)
 
 		--[[
 		require('./services/autoscaling')
@@ -46,13 +57,44 @@ local AWS = class.AWS {
 		require('./services/support')
 		]]--	
 	end,
-	get_http_engine = function (self)
-		local f = require 'lua-aws.engines.luasocket'
-		if not f then
-			f = require 'lua-aws.engines.curl'
+	init_engines = function (self, preferred)
+		local ok, r 
+		local selected_engines = {}
+		for k,v in pairs(available_engines) do
+			if preferred[k] then
+				local t = type(preferred[k])
+				if t == 'string' then
+					selected_engines[k] = self:try_load_engines(k, preferred[k])
+					if preferred.strict then
+						assert(selected_engines[k], "application require "..preferred[k].." for "..k.." strictly but cannot")
+					end
+				else
+					selected_engines[k] = preferred[k]
+				end
+			end
+			if not selected_engines[k] then
+				for i=1,#v do
+					if (not preferred[k]) or (v[i] ~= preferred[k]) then
+						selected_engines[k] = self:try_load_engines(k, v[i])
+						if selected_engines[k] then
+							break
+						end	
+					end
+				end
+			end
+			assert(selected_engines[k], "no engine for "..k.." available")
 		end
-		assert(f, "no http engine available")
-		return f
+		return selected_engines
+	end,
+	try_load_engines = function (self, engine_type, engine_name)
+		ok, r = pcall(require, 'lua-aws.engines.'..engine_type..'.'..engine_name)
+		return ok and r
+	end,
+	fs = function (self)
+		return self._fs_engine
+	end,
+	json = function (self)
+		return self._json_engine
 	end,
 	config = function (self)
 		return self._config

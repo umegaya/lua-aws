@@ -1,6 +1,5 @@
 local class = require ('lua-aws.class')
 local io = require ('io')
-local json = require ('lua-aws.deps.dkjson')
 local xml_parser_factory = require ('lua-aws.deps.slaxml')
 local xml_build = require ('lua-aws.deps.slaxdom')
 local sha1 = require ('lua-aws.deps.sha1')
@@ -10,14 +9,6 @@ local _M = {}
 _M.assert = function (cond, msg)
 	assert(cond, (msg or '') .. "\n" .. debug.traceback())
 end
-_M.json = {
-	encode = function (data)
-		return json.encode(data)
-	end,
-	decode = function (data)
-		return json.decode(data, 1, json.null)
-	end,
-}
 _M.xml_parser = xml_parser_factory:parser()
 _M.xml = (function ()
 	-- parser code is from http://lua-users.org/wiki/LuaXml. thanks!
