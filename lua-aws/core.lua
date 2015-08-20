@@ -9,7 +9,7 @@ local AWS = class.AWS {
 		assert(config and config.accessKeyId and config.secretAccessKey)
 		self._config = config
 		if http_engine then -- backward conpatibility
-			if config.preferred_engines then
+			if not config.preferred_engines then
 				config.preferred_engines = {}
 			end
 			config.preferred_engines.http = http_engine
@@ -98,6 +98,9 @@ local AWS = class.AWS {
 	end,
 	config = function (self)
 		return self._config
+	end,
+	service_definition_version = function (self)
+		return self._config.service_definition_version or 1
 	end,
 	api_log = function (self, api, ...)
 		print(api:endpoint_prefix() .. ':v[' .. api:version() .. ']:', ...)

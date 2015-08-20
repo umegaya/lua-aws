@@ -5,10 +5,11 @@ local Signer = require ('lua-aws.signer')
 local EndPoint = require ('lua-aws.requests.endpoint')
 
 return class.AWS_Request {
-	initialize = function (self, api, operation, params)
+	initialize = function (self, api, method, operation, params)
 		self._operation = operation
 		self._params = params or {}
 		self._api = api
+		self._method = method
 		local s_version = api:signature_version()
 		assert(Signer[s_version], "signer not implement:"..s_version)
 		self._signer = Signer[s_version].new(api)
@@ -17,8 +18,8 @@ return class.AWS_Request {
 		local req = self:base_build_request()
 		self:build_request(req)
 		self:validate(req)
-		local _api_timestamp = self._api:timestamp()
-		self._signer:sign(req, self._api:config(), _api_timestamp)
+		local ts = self._api:signature_timestamp()
+		self._signer:sign(req, self._api:config(), ts)
 		local resp = self._api:http_request(req)
 		if resp.status == 200 then
 			return true, self:extract_data(resp)
@@ -26,6 +27,9 @@ return class.AWS_Request {
 			self._api:log("Something wrong in the request", resp.status, resp.body)
 			return false, self:extract_error(resp)
 		end
+	end,
+	method_name = function (self)
+		return self._method
 	end,
 	validate_region = function (self, req)
 	end,

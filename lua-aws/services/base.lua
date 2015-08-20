@@ -16,18 +16,19 @@ return class.AWS_Service {
 		local apis = {}
 		local aws = self._aws
 		local service_name = self._service_name:lower()
-		aws:fs().scandir(util.script_path()..'/definitions/', service_name, function (path)
+		aws:fs().scandir(util.script_path()..'/specs/', service_name, function (path)
 			--print('defintion file:', path)
 			local version
-			path:gsub('[^%-]*%-([%w%-]*)%.js', function (s)
+			path:gsub('[^%-]*%-([%w%-]*)%.min%.js', function (s)
 				version = s
 				return s
 			end)
-			assert(version, path .. ':invalid file name')
-			local data = aws:json().decode(util.get_json_part(path))
-			apis[version] = API.new(self, data)
-			if (not latest) or (latest <= version) then
-				apis.latest = apis[version]
+			if version then
+				local data = aws:json().decode(util.get_json_part(path))
+				apis[version] = API.new(self, data)
+				if (not latest) or (latest <= version) then
+					apis.latest = apis[version]
+				end
 			end
 		end)
 		assert(apis.latest, service_name .. ':no api defined.')

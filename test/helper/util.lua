@@ -18,11 +18,11 @@ function _M.iterate_all_engines(test_name, test)
 end
 
 function _M.dump_res(tag, res)
-	if dump then
+	if _M.dump then
 		for k,v in pairs(res) do
 			print(tag, k, v)
 			if type(v) == 'table' then
-				dump_res(tag.."."..k, v)
+				_M.dump_res(tag.."."..k, v)
 			end
 		end
 	end
