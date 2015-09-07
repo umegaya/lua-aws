@@ -7,7 +7,7 @@ local get_endpoint_from_env = function ()
 	if not ec2url then
  		error('neither config.endpoint given nor EC2_URL environment set.')
 	else
-		return ec2url:gsub('https://ec2%.', '')
+		return ec2url:gsub('https?://ec2%.', '')
 	end
 end
 local get_region_from_env = function ()
@@ -16,7 +16,7 @@ local get_region_from_env = function ()
 		error('neither config.region given nor EC2_URL environment set.')
 	else
 		local region = false
-		ec2url:gsub('https://ec2%.(.*)%.amazonaws.com.*', function (s)
+		ec2url:gsub('https?://ec2%.(.*)%.amazonaws.com.*', function (s)
 			region = s
 		end)
 		return region
