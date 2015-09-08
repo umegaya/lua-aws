@@ -7,9 +7,10 @@ local AWS = class.AWS {
 	VERSION = 'v0.1.0',
 	initialize = function (self, config, http_engine)
 		assert(config and config.accessKeyId and config.secretAccessKey)
-		self._config = config
+		self._config = self:verify_and_fill_config(config)
+
 		if http_engine then -- backward conpatibility
-			if config.preferred_engines then
+			if not config.preferred_engines then
 				config.preferred_engines = {}
 			end
 			config.preferred_engines.http = http_engine
@@ -25,6 +26,8 @@ local AWS = class.AWS {
 	    self.Kinesis = require('lua-aws.services.kinesis').new(self)
 	    self.SNS = require('lua-aws.services.sns').new(self)
 	    self.SQS = require('lua-aws.services.sqs').new(self)
+	    self.CloudWatch = require('lua-aws.services.cloudwatch').new(self, "monitoring")
+	    self.CloudWatchLog = require('lua-aws.services.cloudwatchlog').new(self, "log")
 
 		--[[
 		require('./services/autoscaling')
@@ -56,6 +59,14 @@ local AWS = class.AWS {
 		require('./services/sts')
 		require('./services/support')
 		]]--	
+	end,
+	verify_and_fill_config = function (self, config)
+		if config.sslEnabled == nil then
+			config.sslEnabled = true
+		elseif not config.sslEnabled then
+			print('https disabled: its strongly recommended to use https instead of non-secure version')
+		end
+		return config
 	end,
 	init_engines = function (self, preferred)
 		local ok, r 
@@ -98,6 +109,9 @@ local AWS = class.AWS {
 	end,
 	config = function (self)
 		return self._config
+	end,
+	service_definition_version = function (self)
+		return self._config.service_definition_version or 1
 	end,
 	api_log = function (self, api, ...)
 		print(api:endpoint_prefix() .. ':v[' .. api:version() .. ']:', ...)

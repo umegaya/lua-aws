@@ -7,7 +7,7 @@ local get_endpoint_from_env = function ()
 	if not ec2url then
  		error('neither config.endpoint given nor EC2_URL environment set.')
 	else
-		return ec2url:gsub('https://ec2%.', '')
+		return ec2url:gsub('https?://ec2%.', '')
 	end
 end
 local get_region_from_env = function ()
@@ -16,7 +16,7 @@ local get_region_from_env = function ()
 		error('neither config.region given nor EC2_URL environment set.')
 	else
 		local region = false
-		ec2url:gsub('https://ec2%.(.*)%.amazonaws.com.*', function (s)
+		ec2url:gsub('https?://ec2%.(.*)%.amazonaws.com.*', function (s)
 			region = s
 		end)
 		return region
@@ -30,40 +30,49 @@ return class.AWS_API {
 		self:build_methods()
 	end,
 	version = function (self)
-		return self._defs.apiVersion
+		return self._defs.metadata.apiVersion
 	end,
 	signature_version = function (self)
-		return self._defs.signatureVersion
+		return self._defs.metadata.signatureVersion
 	end,
 	signature_name = function (self)
-		return self._defs.signingName or self:endpoint_prefix()
+		return self._defs.metadata.signingName or self:endpoint_prefix()
 	end,
 	endpoint_prefix = function (self)
-		return self._defs.endpointPrefix
+		return self._defs.metadata.endpointPrefix
 	end,
 	target_prefix = function (self)
-		return self._defs.targetPrefix
+		return self._defs.metadata.targetPrefix
 	end,
 	json_version = function (self)
-		return self._defs.jsonVersion or "1.0"
+		return self._defs.metadata.jsonVersion or "1.0"
 	end,
 	endpoint = function (self)
 		local config = self:config()
 		local endpoint = (config.endpoint or get_endpoint_from_env())
-
 		return (self:endpoint_prefix() .. '.' .. endpoint)
 	end,
 	region = function (self)
 		return self:config().region or get_region_from_env()
 	end,
-	request_format = function (self)
-		return self._defs.format
+	request_protocol = function (self)
+		return self._defs.metadata.protocol
 	end,
-	timestamp_format = function (self)
-		return self._defs.timestampFormat
+	default_signature_timestamp_format = function (self)
+		local v = self:signature_version()
+		if v == 'v4' or v == 'v2' then
+			return 'iso8601'
+		elseif v == 'v3' or v == 's3' then
+			return 'rfc822'
+		else
+			assert(false, "invalid signature version:"..v)
+		end
 	end,
-	timestamp = function (self)
-		local tsf = self:timestamp_format()
+	signature_timestamp_format = function (self)
+		return self._defs.metadata.timestampFormat or self:default_signature_timestamp_format()
+	end,
+	signature_timestamp = function (self)
+		local tsf = self:signature_timestamp_format()
 		return util.date[tsf]()
 	end,
 	config = function (self)
@@ -83,7 +92,7 @@ return class.AWS_API {
 		for method,operation in pairs(defs.operations) do
 			self[method] = function (API, param)
 				local ok, status_or_err, r = pcall(function ()
-					local req = Request[API:request_format()].new(API, operation, param)
+					local req = Request[API:request_protocol()].new(API, method, operation, param)
 					return req:send()
 				end)
 				if not ok then
@@ -95,6 +104,11 @@ return class.AWS_API {
 				else
 					return status_or_err,r
 				end
+			end
+			-- for backward compatibility, we create entry with old api function name
+			local old_method = method:sub(1, 1):lower()..method:sub(2)
+			if old_method ~= method then
+				self[old_method] = self[method]
 			end
 		end
 	end,

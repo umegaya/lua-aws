@@ -12,9 +12,9 @@ helper.iterate_all_engines("ec2", function (preferred)
 	if ok then
 		--local serpent = require ('serpent')
 		--print(serpent.dump(res, { compact = false }))
-		--dump(res)
-		assert(r.value.DescribeInstancesResponse.xarg.xmlns == "http://ec2.amazonaws.com/doc/2013-10-15/")
-		assert(r.value.DescribeInstancesResponse.value.reservationSet.value.item[1].value.ownerId.value == '871570535967')
+		-- helper.dump = true
+		-- helper.dump_res('ec2', r)
+		assert(r.value.DescribeInstancesResponse.xarg.xmlns == "http://ec2.amazonaws.com/doc/2015-04-15/")
 	else
 		assert(false, 'error:' .. r)
 	end

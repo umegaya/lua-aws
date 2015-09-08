@@ -19,6 +19,9 @@ local run_http_engine = function (eng, req)
 		sink = ltn12.sink.table(respbody)
 	}
 	http_print('result of query:', result, respcode, respstatus)
+	if type(respcode) ~= 'number' then
+		return { headers = {}, status = respcode, body = "" }
+	end
 	for k,v in pairs(respheaders) do
 		http_print('header:', k, v)
 	end
@@ -26,6 +29,7 @@ local run_http_engine = function (eng, req)
 		headers = respheaders,
 		body = table.concat(respbody),
 	}
+	http_print('body:', resp.body)
 	respstatus:gsub('.*%s(%w*)%s.*', function (s)
 		resp.status = tonumber(s)
 	end)

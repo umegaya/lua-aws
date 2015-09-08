@@ -5,9 +5,8 @@ local util = require ('lua-aws.util')
 
 return class.AWS_JsonRequest.extends(Request) {
 	build_request = function (self, req)
-		local operation = self._operation
 		local api = self._api
-		local target = api:target_prefix()..'.'..operation.name
+		local target = api:target_prefix()..'.'..self:method_name()
 		local version = api:json_version()
 
 		req.path = '/'

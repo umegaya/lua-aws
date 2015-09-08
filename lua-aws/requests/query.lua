@@ -21,7 +21,7 @@ return class.AWS_QueryRequest.extends(Request) {
 		req.headers['host'] = req.host
 		req.params = {
 			Version = self._api:version(),
-			Action = operation.name,
+			Action = self:method_name(),
 		}
 		req.body_has_sign = true
 		-- convert the request parameters into a list of query params,
