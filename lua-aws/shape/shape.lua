@@ -23,10 +23,7 @@ Shape = class.Shape {
           self.documentationUrl = shape.documentationUrl
         end
 
-        if shape.xmlAttribute then
-            self.isXmlAttribute = shape.xmlAttribute or false
-        end
-
+        self.isXmlAttribute = shape.xmlAttribute or false
         self.defaultValue = false
     end,
     tryGetValue = function (self, k)
@@ -42,7 +39,7 @@ Shape = class.Shape {
     end,
     resolve = function (shape, options) 
         if shape.shape then
-            local refShape = options.api.shapes[shape.shape];
+            local refShape = options.api:resolve_shape(shape.shape);
             if not refShape then
                 error('Cannot find shape reference: ' .. shape.shape);
             end
@@ -86,7 +83,7 @@ Shape = class.Shape {
             end
 
             if Shape.types[shape.type] then
-                return Shape.types[shape.type].new(shape, options, memberName);
+                return Shape.types[shape.type].new(shape, options, member_name);
             else
                 error('Unrecognized shape type: ' .. origType);
             end
@@ -108,7 +105,7 @@ local CompositeShape = class.CompositeShape.extends(Shape) {
     initialize = function (self, shape, options, member_name)
         Shape.initialize(self, shape, options, member_name)
         self.isComposite = true
-        self.flattend = shape.flattened
+        self.flattened = shape.flattened or false
     end 
 }
 
@@ -126,10 +123,10 @@ local StructureShape = class.StructureShape.extends(CompositeShape) {
 
         if shape.members then
             for k,v in pairs(shape.members) do
-                self.members[k] = Shape.create(v, options, k)
+                self.members[k] = Shape.create(v, options or self.api.options, k)
                 table.insert(self.member_names, k)
             end
-            self.members_names = shape.xmlOrder or self.members_names
+            self.member_names = shape.xmlOrder or self.member_names
         end
 
         if shape.required then
@@ -211,8 +208,8 @@ local TimestampShape = class.TimestampShape.extends(Shape) {
         elseif shape.timestampFormat then
             self.timestampFormat = shape.timestampFormat
         elseif self.api then
-            if self.api.timestampFormat then
-                self.timestampFormat = self.api.timestampFormat
+            if self.api:signature_timestamp_format() then
+                self.timestampFormat = self.api:signature_timestamp_format()
             else
                 local p = self.api.protocol
                 if p == 'json' or p == 'rest-json' then

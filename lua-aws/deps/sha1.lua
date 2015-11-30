@@ -270,7 +270,7 @@ local binary_to_hex = {
    ["1111"] = "f",
 }
 
-function asHEX(a)
+local function asHEX(a)
 
    local hex = ""
    local i = 1
@@ -304,7 +304,7 @@ local x8F1BBCDC = from_hex("8F1BBCDC")
 local xCA62C1D6 = from_hex("CA62C1D6")
 
 
-function sha1(msg)
+local function sha1(msg)
 
    assert(type(msg) == 'string')
    assert(#msg < 0x7FFFFFFF) -- have no idea what would happen if it were large
@@ -426,7 +426,7 @@ local function hex_to_binary(hex)
                          end)
 end
 
-function sha1_binary(msg)
+local function sha1_binary(msg)
    return hex_to_binary(sha1(msg))
 end
 
@@ -695,7 +695,7 @@ local xor_with_0x36 = {
 
 local blocksize = 64 -- 512 bits
 
-function hmac_sha1(key, text)
+local function hmac_sha1(key, text)
    assert(type(key)  == 'string', "key passed to hmac_sha1 should be a string")
    assert(type(text) == 'string', "text passed to hmac_sha1 should be a string")
 
@@ -709,10 +709,14 @@ function hmac_sha1(key, text)
    return sha1(key_xord_with_0x5c .. sha1_binary(key_xord_with_0x36 .. text))
 end
 
-function hmac_sha1_binary(key, text)
+local function hmac_sha1_binary(key, text)
    return hex_to_binary(hmac_sha1(key, text))
 end
 
+return {
+   sha1 = hmac_sha1,
+   sha1_bin = hmac_sha1_binary,
+}
 
 
 --[[------------ VALIDATION TESTS -- uncomment to execute  ------------------------------------

@@ -42,14 +42,14 @@ return class.AWS_Request {
 	input_format = function (self)
 		-- TODO: now assume all input shape is structure shape, decide we should get rid of this assumption.
 		if not self._input then
-			self._input = Shape.create(self._operation.input or {["type"] = 'structure'}) -- lazy shape creation
+			self._input = Shape.create(self._operation.input or {["type"] = 'structure'}, { api = self._api }) -- lazy shape creation
 		end
 		return self._input
 	end,
 	output_format = function (self)
 		-- TODO: now assume all output shape is structure shape, decide we should get rid of this assumption.
 		if not self._output then
-			self._output = Shape.create(self._operation.output or {["type"] = 'structure'}) -- lazy shape creation
+			self._output = Shape.create(self._operation.output or {["type"] = 'structure'}, { api = self._api }) -- lazy shape creation
 		end
 		return self._output
 	end,

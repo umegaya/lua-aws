@@ -57,8 +57,8 @@ return class.AWS_S3Signer.extends(Signer) {
             req.headers['x-amz-security-token'] = credentials.sessionToken;
         end
 
-        local signature = self:signature(credentials.secretAccessKey, self:string_to_sign(req));
-        local auth = 'AWS ' .. credentials.accessKeyId .. ':' .. signature;
+        local signature = self:signature(credentials.secretAccessKey, self:string_to_sign(req))
+        local auth = 'AWS ' .. credentials.accessKeyId .. ':' .. signature
 
         req.headers['Authorization'] = auth;
     end,
@@ -82,13 +82,13 @@ return class.AWS_S3Signer.extends(Signer) {
         return table.concat(parts, '\n')
     end,
     signature = function (self, secret, str) 
-        return util.hmac(secret, str, 'base64');
+        return util.hmac_by.sha1(secret, str, 'base64');
     end,
     canonicalizedAmzHeaders = function (self, req) 
         local amzHeaders = {};
 
         for name, _ in pairs(req.headers) do
-            if name:match("^x-amz-") then
+            if name:lower():match("^x%-amz%-") then
                 table.insert(amzHeaders, name)
             end
         end

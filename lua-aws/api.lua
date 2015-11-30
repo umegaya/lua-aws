@@ -1,6 +1,7 @@
 local class = require ('lua-aws.class')
 local util = require ('lua-aws.util')
 local Request = require ('lua-aws.request')
+local Shape = require('lua-aws.shape.shape')
 
 local get_endpoint_from_env = function ()
 	local ec2url = os.getenv('EC2_URL')
@@ -27,6 +28,7 @@ return class.AWS_API {
 	initialize = function (self, service, defs)
 		self._service = service
 		self._defs = defs
+		self._shapes = {}
 		self:build_methods()
 	end,
 	version = function (self)
@@ -44,10 +46,17 @@ return class.AWS_API {
 	target_prefix = function (self)
 		return self._defs.metadata.targetPrefix
 	end,
+	global_endpoint = function (self)
+		return self._defs.metadata.globalEndpoint
+	end,
 	json_version = function (self)
 		return self._defs.metadata.jsonVersion or "1.0"
 	end,
 	endpoint = function (self)
+		local gep = self:global_endpoint()
+		if gep then
+			return gep
+		end
 		local config = self:config()
 		local endpoint = (config.endpoint or get_endpoint_from_env())
 		return (self:endpoint_prefix() .. '.' .. endpoint)
@@ -77,6 +86,15 @@ return class.AWS_API {
 	end,
 	config = function (self)
 		return self._service:aws():config()
+	end,
+	resolve_shape = function (self, shape_id)
+		if not self._shapes then
+			self._shapes = {}
+		end
+		if not self._shapes[shape_id] then
+			self._shapes[shape_id] = Shape.create(self._defs.shapes[shape_id], { api = self })
+		end
+		return self._shapes[shape_id]
 	end,
 	http_request = function (self, req)
 		return self._service:aws():http_request(req)

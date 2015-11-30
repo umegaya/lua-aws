@@ -25,9 +25,6 @@ local function populateBody(req, reqdata)
     else
         local m = req:method_name()
         local ucfirst_op = m:sub(1, 1):upper()..m:sub(2)
-        for k,v in pairs(getmetatable(input)) do
-            print(k, v)
-        end
         req.body = builder.build(params, input, input.name or input.shape or (ucfirst_op .. 'Request'))
     end
 end
@@ -65,7 +62,7 @@ return class.AWS_XmlRestRequest.extends(Request) {
         end
     end,
     extract_data = function (self, resp) 
-        rest.extract_data(self, resp)
+        local data = rest.extract_data(self, resp)
 
         local req = self;
         local body = resp.body;
@@ -75,15 +72,16 @@ return class.AWS_XmlRestRequest.extends(Request) {
         if payload then
             local payload_member = output.members[payload]
             if payload_member.isStreaming then
-                resp.data[payload] = body
+                data[payload] = body
             elseif payload_member.type == 'structure' then
-                resp.data[payload] = translator.translate(util.xml.decode(body), payload_member);
+                data[payload] = translator.translate(util.xml.decode(body), payload_member);
             else
-                resp.data[payload] = body
+                data[payload] = body
             end
-        elseif #body.length > 0 then
-            resp.data[payload] = translator.translate(util.xml.decode(body), output);
-            util.merge_table(resp.data, data)
+        elseif #body > 0 then
+            local body_data = translator.translate(util.xml.decode(body), output);
+            util.merge_table(data, body_data)
         end
+        return data
     end,
 }

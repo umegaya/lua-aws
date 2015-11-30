@@ -3,7 +3,7 @@ local Shape = require('lua-aws.shape.shape')
 
 local _M = {}
 
-function _M.parseXml(xml, shape) 
+function _M.translate(xml, shape) 
     if shape.type == 'structure' then 
         return _M.parseStructure(xml, shape)
     elseif shape.type == 'map' then
@@ -25,7 +25,7 @@ function _M.parseStructure(xml, shape)
         if xml[xmlName] and type(xml[xmlName]) == 'table' and xml[xmlName][1] then
             local xmlChild = xml[xmlName];
             if not memberShape.flattened then xmlChild = xmlChild[1] end
-            data[memberName] = _M.parseXml(xmlChild, memberShape)
+            data[memberName] = _M.translate(xmlChild, memberShape)
         -- TOOD : what is $? now $ translate to [1]
         elseif memberShape.isXmlAttribute and xml[1] and xml[1][xmlName] then
             data[memberName] = _M.parseScalar(xml[1][xmlName], memberShape)
@@ -47,7 +47,7 @@ function _M.parseMap(xml, shape)
 
     if type(iterable) == 'table' and iterable[1] then
         for _, child in ipairs(iterable) do
-            data[child[xmlKey][0]] = _M.parseXml(child[xmlValue][0], shape.value);
+            data[child[xmlKey][0]] = _M.translate(child[xmlValue][0], shape.value);
         end
     end
 
@@ -59,11 +59,11 @@ function _M.parseList(xml, shape)
     local name = shape.member.name or 'member'
     if shape.flattened then
         for _, xmlChild in ipairs(xml) do
-            table.insert(data, _M.parseXml(xmlChild, shape.member))
+            table.insert(data, _M.translate(xmlChild, shape.member))
         end
     elseif xml and type(xml[name]) == 'table' and xml[name][1] then
         for _, child in ipairs(xml[name]) do
-            table.insert(data, _M.parseXml(child, shape.member))
+            table.insert(data, _M.translate(child, shape.member))
         end
     end
 
@@ -92,7 +92,7 @@ function parseUnknown(xml) {
   if (Array.isArray(xml)) {
     var arr = [];
     for (i = 0; i < xml.length; i++) {
-      arr.push(parseXml(xml[i], {}));
+      arr.push(translate(xml[i], {}));
     }
     return arr;
   }
@@ -111,7 +111,7 @@ function parseUnknown(xml) {
     if (value.length > 1) { // this member is a list
       data[key] = parseList(value, {member: {}});
     } else { // this member is a single item
-      data[key] = parseXml(value[0], {});
+      data[key] = translate(value[0], {});
     }
   }
   return data;

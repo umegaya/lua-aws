@@ -203,6 +203,11 @@ _M.hmac = (function ()
 		return digest_routines[digest] and digest_routines[digest](bin) or bin
 	end
 
+	local hmac_sha1 = function (key, data, digest)
+		local bin = sha1.sha1_bin(key, data)
+		return digest_routines[digest] and digest_routines[digest](bin) or bin
+	end
+
 	-- here simple test from http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-query-api.html#query-authentication
 	local test_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 	local test = [[GET
@@ -213,6 +218,10 @@ AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Action=DescribeJobFlows&SignatureMethod=Hmac
 	local test_enc = hmac_sha256(test_key, test, 'base64')
 	assert(test_enc == 'i91nKc4PWAt0JJIdXwz9HxZCJDdiy6cf/Mj6vPxyYIs=')
 	--]]
+	_M.hmac_by = {
+		sha256 = hmac_sha256,
+		sha1 = hmac_sha1,
+	}
 	return hmac_sha256
 end)()
 
@@ -433,7 +442,7 @@ _M.fill_header = function (req)
 	req.headers["Connection"] = "Keep-Alive"
 end
 _M.http_print = function (...)
-	print(...)
+	-- print(...)
 end
 
 _M.date = {
@@ -442,7 +451,7 @@ _M.date = {
 		return tmp
 	end,
 	rfc822 = function (val)
-		return os.date("!%a, %d %b %y %T %z", val)
+		return os.date("!%a, %d %b %Y %T GMT", val)
 	end,
 	unixTimestamp = function (val)
 		return tostring(val)

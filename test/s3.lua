@@ -13,9 +13,9 @@ helper.iterate_all_engines("s3", function (preferred)
 	if ok then
 		--local serpent = require ('serpent')
 		--print(serpent.dump(res, { compact = false }))
-		helper.dump_res('ec2', r)
+		helper.dump_res('s3', r)
 	else
-		helper.dump_res('ec2', r)
+		helper.dump_res('s3', r)
 		assert(false, 'error:' .. r)
 	end
 end)
