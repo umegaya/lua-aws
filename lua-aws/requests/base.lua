@@ -3,6 +3,7 @@ local util = require ('lua-aws.util')
 local AWS = require ('lua-aws.core')
 local Signer = require ('lua-aws.signer')
 local EndPoint = require ('lua-aws.requests.endpoint')
+local Shape = require('lua-aws.shape.shape')
 
 return class.AWS_Request {
 	initialize = function (self, api, method, operation, params)
@@ -10,6 +11,7 @@ return class.AWS_Request {
 		self._params = params or {}
 		self._api = api
 		self._method = method
+		self._input, self._output = false, false
 		local s_version = api:signature_version()
 		assert(Signer[s_version], "signer not implement:"..s_version)
 		self._signer = Signer[s_version].new(api)
@@ -30,6 +32,26 @@ return class.AWS_Request {
 	end,
 	method_name = function (self)
 		return self._method
+	end,
+	httpPath = function (self)
+		return self._operation.http.requestUri or '/'
+	end,
+	httpMethod = function (self)
+		return self._operation.http.method or 'POST'
+	end,
+	input_format = function (self)
+		-- TODO: now assume all input shape is structure shape, decide we should get rid of this assumption.
+		if not self._input then
+			self._input = Shape.create(self._operation.input or {["type"] = 'structure'}) -- lazy shape creation
+		end
+		return self._input
+	end,
+	output_format = function (self)
+		-- TODO: now assume all output shape is structure shape, decide we should get rid of this assumption.
+		if not self._output then
+			self._output = Shape.create(self._operation.output or {["type"] = 'structure'}) -- lazy shape creation
+		end
+		return self._output
 	end,
 	validate_region = function (self, req)
 	end,

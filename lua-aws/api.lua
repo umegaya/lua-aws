@@ -91,12 +91,14 @@ return class.AWS_API {
 		local defs = self._defs
 		for method,operation in pairs(defs.operations) do
 			self[method] = function (API, param)
-				local ok, status_or_err, r = pcall(function ()
+				local ok, status_or_err, r = xpcall(function ()
 					local req = Request[API:request_protocol()].new(API, method, operation, param)
 					return req:send()
+				end, function (e)
+					API:log(method .. ':error:' .. e .. " @ " .. debug.traceback())
+					return e
 				end)
 				if not ok then
-					API:log(method .. ':error:' .. status_or_err)
 					return false,status_or_err
 				end
 				if API:config().oldReturnValue then

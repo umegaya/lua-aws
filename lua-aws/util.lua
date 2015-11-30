@@ -433,7 +433,7 @@ _M.fill_header = function (req)
 	req.headers["Connection"] = "Keep-Alive"
 end
 _M.http_print = function (...)
-	-- print(...)
+	print(...)
 end
 
 _M.date = {
@@ -445,7 +445,7 @@ _M.date = {
 		return os.date("!%a, %d %b %y %T %z", val)
 	end,
 	unixTimestamp = function (val)
-		return tostring(os.time(val))
+		return tostring(val)
 	end,
 }
 
@@ -453,6 +453,25 @@ function _M.script_path()
    local str = debug.getinfo(2, "S").source:sub(2)
    local res = str:match("(.*/)")
    return res
+end
+
+-- js's decodeURIComponent implementation in lua
+-- (from http://stackoverflow.com/questions/20405985/lua-decodeuri-luvit)
+local hexmap={}
+for i=0,255 do
+    hexmap[string.format("%0x",i)]=string.char(i)
+    hexmap[string.format("%0X",i)]=string.char(i)
+end
+
+_M.decodeURI = function (s)
+    return (s:gsub('%%(%x%x)',hex))
+end
+
+_M.merge_table = function (dest, src)
+	for k,v in pairs(src) do
+		dest[k] = v
+	end
+	return dest
 end
 
 return _M
