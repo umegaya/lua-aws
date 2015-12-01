@@ -1,68 +1,70 @@
 local class = require ('lua-aws.class')
-local Request = require ('lua-aws.requests.base')
-local Serializer = require ('lua-aws.requests.query_string_serializer')
+local RestRequest = require ('lua-aws.requests.rest')
 local util = require ('lua-aws.util')
-local rest = require ('lua-aws.requests.rest')
 local builder = require ('lua-aws.shape.builder.xml')
 local translator = require ('lua-aws.shape.translator.xml')
 
-local function populateBody(req, reqdata)
-    local input = req:input_format()
-    local params = reqdata.params
+return class.AWS_XmlRestRequest.extends(RestRequest) {
+    populate_body = function (self, req, params)
+        local input = self:input_format()
 
-    local payload = input.payload;
-    if payload then
-        local payload_member = input.members[payload];
-        params = params[payload];
-        if not params then return end
-
-        if payload_member.type == 'structure' then
-            local root_element = payload_member.name
-            req.body = builder.build(params, payload_member, root_element, true)
-        else -- non-xml payload
-            req.body = payload_member:toWireFormat(params)
+        local payload = input.payload;
+        if payload then
+            local payload_member = input.members[payload];
+            payload_param = params[payload]
+            if not payload_param then return end
+            if payload_member.isStreaming and io.type(payload_param) == 'file' then
+                if io.type(req.body) then
+                    error('only 1 file payload can be attached to request')
+                end
+                req.body = payload_param
+            elseif payload_member.type == 'structure' then
+                local root_element = payload_member.name
+                req.body = builder.build(payload_param, payload_member, root_element, true)
+            else -- non-xml payload
+                req.body = payload_member:toWireFormat(payload_param)
+            end
+        else
+            local m = self:method_name()
+            local ucfirst_op = m:sub(1, 1):upper()..m:sub(2)
+            req.body = builder.build(params, input, input.name or input.shape or (ucfirst_op .. 'Request'))
         end
-    else
-        local m = req:method_name()
-        local ucfirst_op = m:sub(1, 1):upper()..m:sub(2)
-        req.body = builder.build(params, input, input.name or input.shape or (ucfirst_op .. 'Request'))
-    end
-end
-
-return class.AWS_XmlRestRequest.extends(Request) {
-    build_request = function (self, req)
-        rest.build_request(self, req)
+    end,
+    build_request = function (self, req, params)
+        RestRequest.build_request(self, req, params)
         -- never send body payload on GET/HEAD
         local m = req.method:upper()
-        if m == 'GET' or m == 'HEAD' then
-            populateBody(self, req)
+        if m ~= 'GET' and m ~= 'HEAD' then
+            self:populate_body(req, params)
         end
         return req
     end,
     extract_error = function (self, resp)
-        rest.extract_error(self, resp)
-
-        local data = util.xml.decode(resp.body)
-        if data.Errors then 
-            data = data.Errors
+        RestRequest.extract_error(self, resp)
+        local data
+        if type(resp.body) == 'string' then
+            data = util.xml.decode(resp.body)
+            if data.Errors then 
+                data = data.Errors
+            end
+            if data.Error then 
+                data = data.Error
+            end
         end
-        if data.Error then 
-            data = data.Error
-        end
-        if data.Code then
-            resp.error = {
+        if data and data.Code then
+            return {
                 code = data.Code,
                 message = data.Message
             }
         else
-            resp.error = {
+            return {
                 code = resp.status,
                 message = nil
             }
         end
     end,
     extract_data = function (self, resp) 
-        local data = rest.extract_data(self, resp)
+        local data = RestRequest.extract_data(self, resp)
 
         local req = self;
         local body = resp.body;
@@ -79,7 +81,8 @@ return class.AWS_XmlRestRequest.extends(Request) {
                 data[payload] = body
             end
         elseif #body > 0 then
-            local body_data = translator.translate(util.xml.decode(body), output);
+            local dec = util.xml.decode(body)
+            local body_data = translator.translate(dec, output);
             util.merge_table(data, body_data)
         end
         return data

@@ -61,12 +61,13 @@ _M.xml = (function ()
 					local v = top.value[label]
 					if not v then
 						top.value[label] = toclose
-					elseif type(v) ~= 'table' then
+					-- if same label element exists in same tag, they are treated as list
+					elseif top.list then
+						table.insert(v, toclose)
+					else
 						v = {v, toclose}
 						top.list = true
 						top.value[label] = v
-					else
-						table.insert(top.value[label], toclose)
 					end
 					toclose.label = nil --> remove label (only for parsing)
 				end
@@ -476,11 +477,29 @@ _M.decodeURI = function (s)
     return (s:gsub('%%(%x%x)',hex))
 end
 
+_M.encodeURI = function (s)
+	return s:gsub('[^%w_%.~\\%-%%]', function (i) return string.format("%02x", string.byte(i)) end)
+end
+
+_M.encodeURIPath = function (s)
+    local parts = {}
+    for _, e in ipairs(_M.split(s, '/')) do
+    	table.insert(parts, _M.encodeURI(e))
+    end
+    return table.concat(parts, '/')
+end
+
 _M.merge_table = function (dest, src)
 	for k,v in pairs(src) do
 		dest[k] = v
 	end
 	return dest
+end
+
+_M.filesize = function (fh)
+	local sz = fh:seek('end')
+	fh:seek('set')
+	return sz
 end
 
 return _M

@@ -96,8 +96,13 @@ return class.AWS_API {
 		end
 		return self._shapes[shape_id]
 	end,
-	http_request = function (self, req)
-		return self._service:aws():http_request(req)
+	http_request = function (self, req, resp)
+		return self._service:aws():http_request(req, resp)
+		--[[return {
+			status = 200,
+			headers = {},
+			body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Owner><ID>2ce54f564fefe4a9a9f7227b7b4294638d6a65833510c025c7d3f74bef569785</ID><DisplayName>iyatomi_takehiro</DisplayName></Owner><Buckets><Bucket><Name>dokyogames-redshift-bucket</Name><CreationDate>2015-11-05T03:30:58.000Z</CreationDate></Bucket><Bucket><Name>elasticbeanstalk-us-east-1-871570535967</Name><CreationDate>2014-07-17T02:23:53.000Z</CreationDate></Bucket></Buckets></ListAllMyBucketsResult>",
+		}]]
 	end,
 	json = function (self)
 		return self._service:aws():json()
@@ -108,10 +113,10 @@ return class.AWS_API {
 	build_methods = function (self)
 		local defs = self._defs
 		for method,operation in pairs(defs.operations) do
-			self[method] = function (API, param)
+			self[method] = function (API, param, resp)
 				local ok, status_or_err, r = xpcall(function ()
-					local req = Request[API:request_protocol()].new(API, method, operation, param)
-					return req:send()
+					local req = Request[API:request_protocol()].new(API, method, operation)
+					return req:send(param or {}, resp)
 				end, function (e)
 					API:log(method .. ':error:' .. e .. " @ " .. debug.traceback())
 					return e

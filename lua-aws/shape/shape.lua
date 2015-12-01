@@ -6,12 +6,12 @@ Shape = class.Shape {
     initialize = function (self, shape, options, member_name)
         options = options or {}
 
-        self.shape = shape.shape
-        self.api = options.api -- should not processed by pair()
-        self.type = shape.type
+        self.shape = shape.shape or false
+        self.api = assert(options.api) -- should not processed by pair()
+        self.type = shape.type or false
         local ok, r = pcall(function () return self.location end)
-        self.location = shape.location or self:tryGetValue("location") or 'body';
-        self.name = self.name or shape.xmlName or shape.queryName or shape.locationName or member_name
+        self.location = shape.location or self:tryGetValue("location") or 'body'
+        self.name = self:tryGetValue("name") or shape.xmlName or shape.queryName or shape.locationName or member_name or false  
         self.isStreaming = shape.streaming or self:tryGetValue("isStreaming") or false
         self.isComposite = shape.isComposite or false
         self.isShape = true -- should not processed by pair()
@@ -19,8 +19,8 @@ Shape = class.Shape {
         self.isLocationName = shape.locationName and true or false -- should not processed by pair()
 
         if options.documentation then
-          self.documentation = shape.documentation
-          self.documentationUrl = shape.documentationUrl
+          self.documentation = shape.documentation or false
+          self.documentationUrl = shape.documentationUrl or false
         end
 
         self.isXmlAttribute = shape.xmlAttribute or false
@@ -62,11 +62,10 @@ Shape = class.Shape {
                 end
             end
             if (#filteredKeys == 1) and (filteredKeys[1] == 'shape') then -- no inline customizations
-              return refShape
+                return refShape
             end
-            assert(false, "test: actually it used?")
             -- create an inline shape with extra members
-            return class[os.tmpname()].extends(Shape).new(shape, options, member_name)
+            return refShape.class.new(shape, options, member_name)
         else
             -- set type if not set
             if not shape.type then

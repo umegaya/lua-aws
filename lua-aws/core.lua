@@ -101,6 +101,11 @@ local AWS = class.AWS {
 	end,
 	try_load_engines = function (self, engine_type, engine_name)
 		ok, r = pcall(require, 'lua-aws.engines.'..engine_type..'.'..engine_name)
+		if not ok then
+			if not r:match('module.+not found') then
+				print('try_load_engines error:', r)
+			end
+		end
 		return ok and r
 	end,
 	fs = function (self)
@@ -118,8 +123,8 @@ local AWS = class.AWS {
 	api_log = function (self, api, ...)
 		print(api:endpoint_prefix() .. ':v[' .. api:version() .. ']:', ...)
 	end,
-	http_request = function (self, req)
-		return self._http_engine(req)
+	http_request = function (self, req, resp)
+		return self._http_engine(req, resp)
 	end,
 }
 --[[

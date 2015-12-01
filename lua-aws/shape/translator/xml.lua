@@ -3,14 +3,20 @@ local Shape = require('lua-aws.shape.shape')
 
 local _M = {}
 
-function _M.translate(xml, shape) 
+function _M.translate(xml, shape)
+    for k,v in pairs(xml.value) do
+        return _M.parseXml(v.value, shape)
+    end
+end
+
+function _M.parseXml(xml, shape) 
     if shape.type == 'structure' then 
         return _M.parseStructure(xml, shape)
     elseif shape.type == 'map' then
         return _M.parseMap(xml, shape)
     elseif shape.type == 'list' then 
         return _M.parseList(xml, shape)
-    --case undefined: case null: return parseUnknown(xml)
+    --case undefined: case null: return parseUnknown(xml) => really used?
     else
         return _M.parseScalar(xml, shape)
     end
@@ -21,16 +27,9 @@ function _M.parseStructure(xml, shape)
     if not xml then return data end
 
     for memberName, memberShape in pairs(shape.members) do
-        local xmlName = memberShape.name;
-        if xml[xmlName] and type(xml[xmlName]) == 'table' and xml[xmlName][1] then
-            local xmlChild = xml[xmlName];
-            if not memberShape.flattened then xmlChild = xmlChild[1] end
-            data[memberName] = _M.translate(xmlChild, memberShape)
-        -- TOOD : what is $? now $ translate to [1]
-        elseif memberShape.isXmlAttribute and xml[1] and xml[1][xmlName] then
-            data[memberName] = _M.parseScalar(xml[1][xmlName], memberShape)
-        elseif memberShape.type == 'list' then
-            data[memberName] = memberShape.defaultValue
+        local child = xml[memberName]
+        if child then
+            data[memberName] = _M.parseXml(child.value, memberShape)
         end
     end
 
@@ -47,7 +46,7 @@ function _M.parseMap(xml, shape)
 
     if type(iterable) == 'table' and iterable[1] then
         for _, child in ipairs(iterable) do
-            data[child[xmlKey][0]] = _M.translate(child[xmlValue][0], shape.value);
+            data[child[xmlKey][0]] = _M.parseXml(child[xmlValue][0], shape.value);
         end
     end
 
@@ -56,28 +55,20 @@ end
 
 function _M.parseList(xml, shape)
     local data = {}
-    local name = shape.member.name or 'member'
-    if shape.flattened then
-        for _, xmlChild in ipairs(xml) do
-            table.insert(data, _M.translate(xmlChild, shape.member))
-        end
-    elseif xml and type(xml[name]) == 'table' and xml[name][1] then
-        for _, child in ipairs(xml[name]) do
-            table.insert(data, _M.translate(child, shape.member))
+    local name = shape.member.name
+    local iterable = shape.flattened and xml or xml[name]
+    if type(iterable) == 'table' and iterable[1] then
+        for _, child in ipairs(iterable) do
+            table.insert(data, _M.parseXml(child.value, shape.member))
         end
     end
 
     return data;
 end
 
-function parseScalar(text, shape)
-    if text and text[1] and text[1].encoding == 'base64' then
-        shape = Shape.create({["type"] = 'base64'})
-    end
-    if text and text._ then text = text._ end
-
+function _M.parseScalar(text, shape)
     if shape.toType then
-        return shape.toType(text)
+        return shape:toType(text)
     else
         return text
     end

@@ -4,7 +4,7 @@ local util = require ('lua-aws.util')
 
 return class.AWS_Service {
 	initialize = function (self, aws, service_name)
-		self._service_name = service_name or self.class.name:gsub('^AWS_', '')
+		self._service_name = service_name or self.class.class_name:gsub('^AWS_', '')
 		self._aws = aws
 		self._apis = self:build_apis()
 	end,
