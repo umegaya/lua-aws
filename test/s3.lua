@@ -43,7 +43,7 @@ local f = io.open(DIR_PATH..FILE_NAME)
 ok, r = aws.S3:api():putObject({
 	Bucket = BUCKET_NAME, 
 	Key = FILE_NAME, 
-	Body = io.open(DIR_PATH..FILE_NAME),
+	Body = f,
 	ContentLength = util.filesize(f), -- otherwise got error.
 })
 if not ok then error(r) end
