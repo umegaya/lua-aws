@@ -33,14 +33,18 @@ return class.AWS_RequestSerializer {
 	end,
 
 	serialize_list = function (self, name, list, rules, fn)
-		local memberRules = rules.members or {}
+		local memberRules = rules.member or {}
 		for n,v in ipairs(list) do
-			local suffix = ('.' .. tostring(n + 1))
+			local suffix = ('.' .. tostring(n))
 			if rules.flattened then
-				if memberRules.name then
+				if memberRules.locationName then
 					local parts = util.split(name, '.')
 					table.remove(parts, 1)
-					table.insert(parts, memberRules.name)
+					-- There may have been an empty entry on the end, remove it
+					if #parts > 0 and parts[#parts] == "" then
+						table.remove(parts, #parts)
+					end
+					table.insert(parts, memberRules.locationName)
 					name = util.join(parts, '.')
 				end
 			else
