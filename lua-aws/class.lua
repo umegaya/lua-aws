@@ -233,6 +233,13 @@ local class = (function ()
 					...)
 				end
 			}),
+			dup = function (self)
+				local d = setmetatable({ class = self.class }, { __index = __lookup })
+				for k,v in pairs(self) do
+					d[k] = v
+				end
+				return d
+			end,
 			aspect = function (klass)
 				return klass.__aspect
 			end,

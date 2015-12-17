@@ -6,12 +6,12 @@ Shape = class.Shape {
     initialize = function (self, shape, options, member_name)
         options = options or {}
 
-        self.shape = shape.shape or false
+        self.shape = shape.shape or self:tryGetValue("shape") or false
         self.api = assert(options.api) -- should not processed by pair()
-        self.type = shape.type or false
-        local ok, r = pcall(function () return self.location end)
-        self.location = shape.location or self:tryGetValue("location") or 'body'
-        self.name = self:tryGetValue("name") or shape.xmlName or shape.queryName or shape.locationName or member_name or false  
+        self:trySetValue("type", shape.type)
+        self:trySetValue("location", shape.location, "body")
+        self:trySetValue("name", nil, shape.xmlName or shape.queryName or shape.locationName or member_name)
+        self:trySetValue("isStreaming", shape.streaming)
         self.isStreaming = shape.streaming or self:tryGetValue("isStreaming") or false
         self.isComposite = shape.isComposite or false
         self.isShape = true -- should not processed by pair()
@@ -19,8 +19,8 @@ Shape = class.Shape {
         self.isLocationName = shape.locationName and true or false -- should not processed by pair()
 
         if options.documentation then
-          self.documentation = shape.documentation or false
-          self.documentationUrl = shape.documentationUrl or false
+            self:trySetValue("documentation", shape.documentation)
+            self:trySetValue("documentationUrl", shape.documentationUrl)
         end
 
         self.isXmlAttribute = shape.xmlAttribute or false
@@ -29,6 +29,13 @@ Shape = class.Shape {
     tryGetValue = function (self, k)
         local ok, r = pcall(function () return self[k] end)
         return ok and r
+    end,
+    trySetValue = function (self, k, v, default)
+        if v ~= nil then
+            self[k] = v
+        elseif not self:tryGetValue(k) then
+            self[k] = default or false
+        end
     end,
     -- type conversion and parsing
     toWireFormat = function (self, value)
@@ -65,7 +72,9 @@ Shape = class.Shape {
                 return refShape
             end
             -- create an inline shape with extra members
-            return refShape.class.new(shape, options, member_name)
+            local dup = refShape:dup()
+            dup:initialize(shape, options, member_name)
+            return dup
         else
             -- set type if not set
             if not shape.type then
@@ -76,13 +85,13 @@ Shape = class.Shape {
             end
 
             -- normalize types
-            local origType = shape.type;
+            local origType = shape.type
             if Shape.normalizedTypes[shape.type] then
-                shape.type = Shape.normalizedTypes[shape.type];
+                shape.type = Shape.normalizedTypes[shape.type]
             end
 
             if Shape.types[shape.type] then
-                return Shape.types[shape.type].new(shape, options, member_name);
+                return Shape.types[shape.type].new(shape, options, member_name)
             else
                 error('Unrecognized shape type: ' .. origType);
             end
@@ -95,7 +104,7 @@ Shape = class.Shape {
         short = 'integer',
         biginteger = 'integer',
         bigdecimal = 'float',
-        blob = 'binary'
+        blob = 'binary',
     },
 }
 
@@ -104,7 +113,7 @@ local CompositeShape = class.CompositeShape.extends(Shape) {
     initialize = function (self, shape, options, member_name)
         Shape.initialize(self, shape, options, member_name)
         self.isComposite = true
-        self.flattened = shape.flattened or false
+        self:trySetValue("flattened", shape.flattened, false)
     end 
 }
 
@@ -140,7 +149,7 @@ local StructureShape = class.StructureShape.extends(CompositeShape) {
                 return required_map[name]
             end
         else
-            self.required = false
+            self.required = self:tryGetValue("required") or false
         end
 
         self.resultWrapper = shape.resultWrapper or false
@@ -152,10 +161,10 @@ local StructureShape = class.StructureShape.extends(CompositeShape) {
             self.xmlNamespaceUri = shape.xmlNamespace.uri or false
             self.xmlNamespacePrefix = shape.xmlNamespace.prefix or false
         else
-            self.xmlNamespaceUri = false
-            self.xmlNamespacePrefix = false
+            self.xmlNamespaceUri = self:tryGetValue("xmlNamespaceUri") or false
+            self.xmlNamespacePrefix = self:tryGetValue("xmlNamespacePrefix") or false
         end
-    end     
+    end
 }
 
 local ListShape = class.ListShape.extends(CompositeShape) {
