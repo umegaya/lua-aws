@@ -4,31 +4,31 @@ local Serializer = require ('lua-aws.requests.query_string_serializer')
 local util = require ('lua-aws.util')
 
 return class.AWS_QueryRequest.extends(Request) {
-	serialize_query = function (self, params)
+	serialize_query = function (self, query_params, params)
 		local rules = self._operation.input
 		if rules then 
 			rules = rules.members 
 		end
 		local builder = Serializer.new(self._api, rules)
-		builder:serialize(self._params, function(name, value)
-			params[name] = value
+		builder:serialize(params, function(name, value)
+			query_params[name] = value
 		end)
 	end,
-	build_request = function (self, req)
+	build_request = function (self, req, params)
 		local operation = self._operation
 		req.path = '/'
 		req.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8'
 		req.headers['host'] = req.host
-		req.params = {
+		local query_params = {
 			Version = self._api:version(),
 			Action = self:method_name(),
 		}
 		req.body_has_sign = true
-		-- convert the request parameters into a list of query params,
+		-- convert the request parameters (params) into a list of query params (query_params),
 		-- e.g. Deeply.NestedParam.0.Name=value
-		self:serialize_query(req.params)
-		req.body = util.query_params_to_string(req.params)
-		return req
+		self:serialize_query(query_params, params)
+		req.body = util.query_params_to_string(query_params)
+		return req, query_params
 	end,
 	
 	extract_error = function (self, resp)

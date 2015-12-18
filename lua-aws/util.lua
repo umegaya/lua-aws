@@ -61,12 +61,13 @@ _M.xml = (function ()
 					local v = top.value[label]
 					if not v then
 						top.value[label] = toclose
-					elseif type(v) ~= 'table' then
+					-- if same label element exists in same tag, they are treated as list
+					elseif top.list then
+						table.insert(v, toclose)
+					else
 						v = {v, toclose}
 						top.list = true
 						top.value[label] = v
-					else
-						table.insert(top.value[label], toclose)
 					end
 					toclose.label = nil --> remove label (only for parsing)
 				end
@@ -203,6 +204,11 @@ _M.hmac = (function ()
 		return digest_routines[digest] and digest_routines[digest](bin) or bin
 	end
 
+	local hmac_sha1 = function (key, data, digest)
+		local bin = sha1.sha1_bin(key, data)
+		return digest_routines[digest] and digest_routines[digest](bin) or bin
+	end
+
 	-- here simple test from http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-query-api.html#query-authentication
 	local test_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 	local test = [[GET
@@ -213,6 +219,10 @@ AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Action=DescribeJobFlows&SignatureMethod=Hmac
 	local test_enc = hmac_sha256(test_key, test, 'base64')
 	assert(test_enc == 'i91nKc4PWAt0JJIdXwz9HxZCJDdiy6cf/Mj6vPxyYIs=')
 	--]]
+	_M.hmac_by = {
+		sha256 = hmac_sha256,
+		sha1 = hmac_sha1,
+	}
 	return hmac_sha256
 end)()
 
@@ -442,10 +452,10 @@ _M.date = {
 		return tmp
 	end,
 	rfc822 = function (val)
-		return os.date("!%a, %d %b %y %T %z", val)
+		return os.date("!%a, %d %b %Y %T GMT", val)
 	end,
 	unixTimestamp = function (val)
-		return tostring(os.time(val))
+		return tostring(val)
 	end,
 }
 
@@ -453,6 +463,43 @@ function _M.script_path()
    local str = debug.getinfo(2, "S").source:sub(2)
    local res = str:match("(.*/)")
    return res
+end
+
+-- js's decodeURIComponent implementation in lua
+-- (from http://stackoverflow.com/questions/20405985/lua-decodeuri-luvit)
+local hexmap={}
+for i=0,255 do
+    hexmap[string.format("%0x",i)]=string.char(i)
+    hexmap[string.format("%0X",i)]=string.char(i)
+end
+
+_M.decodeURI = function (s)
+    return (s:gsub('%%(%x%x)',hex))
+end
+
+_M.encodeURI = function (s)
+	return s:gsub('[^%w_%.~\\%-%%]', function (i) return string.format("%02x", string.byte(i)) end)
+end
+
+_M.encodeURIPath = function (s)
+    local parts = {}
+    for _, e in ipairs(_M.split(s, '/')) do
+    	table.insert(parts, _M.encodeURI(e))
+    end
+    return table.concat(parts, '/')
+end
+
+_M.merge_table = function (dest, src)
+	for k,v in pairs(src) do
+		dest[k] = v
+	end
+	return dest
+end
+
+_M.filesize = function (fh)
+	local sz = fh:seek('end')
+	fh:seek('set')
+	return sz
 end
 
 return _M

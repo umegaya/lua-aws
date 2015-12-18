@@ -5,24 +5,24 @@
 
 local class = (function ()
 	local classes = {}
-	local class_factory = function (name)
+	local class_factory = function (class_name)
 		local __mixer = function (mixin, self)
 			mixin.mixed(self)
 			return self
 		end
 		local __class_lookup = {}
 		__class_lookup.exec = function (class, method)
-			-->print('classlookupexec:', class.name, method, rawget(class, method))
+			-->print('classlookupexec:', class.class_name, method, rawget(class, method))
 			if rawget(class, method) then return rawget(class, method) end
 			for _,v in ipairs(class.mixin_lookup) do
 				local tmp = v[method]
-				-->print('mixin', v.name, method, tmp)
+				-->print('mixin', v.class_name, method, tmp)
 				if tmp then return tmp end
 			end
 			local super = class.super
 			while super do
 				local tmp = super[method]
-				-->print('super', super.name, method, tmp, super.super)
+				-->print('super', super.class_name, method, tmp, super.super)
 				if tmp then return tmp end
 				super = super.super
 			end
@@ -42,22 +42,22 @@ local class = (function ()
 				end,
 				__newindex = function (t, k, v) 
 					if rawget(t.__proxy, k) then
-						error('value for key:' .. k .. ' from mixin:' .. t.__name .. ' of class:' .. t.__proxy.name .. ' already set')
+						error('value for key:' .. k .. ' from mixin:' .. t.__class_name .. ' of class:' .. t.__proxy.class_name .. ' already set')
 					end
 					t.__proxy[k] = v
 				end
 			})
 		end
 		local __constructor = function (self, ...)
-			-->print('call initialize', self.class.name)
+			-->print('call initialize', self.class.class_name)
 			if not self.class.initialize then
 				print('no initializer:', debug.traceback())
 			end
 			self.class.initialize(self, ...)
 			local setter = __conflict_detector(self)
 			for _,trait in pairs(self.class.mixin) do
-				-->print('mixed:', trait.name)
-				rawset(setter, "__name", trait.name)
+				-->print('mixed:', trait.class_name)
+				rawset(setter, "__class_name", trait.class_name)
 				trait.mixed(setter)
 			end
 			local twk = rawget(self.class, "tweak")
@@ -88,7 +88,7 @@ local class = (function ()
 				end
 				klass = klass.super
 			end
-			return klass.name
+			return klass.class_name
 		end
 		local __mix = function (protoclass, mixed)
 			local mixed_class = (type(mixed) == 'string' and classes[mixed] or mixed)
@@ -105,10 +105,10 @@ local class = (function ()
 			--> if this class does not have 'aspect' method, its not mixable
 			if not tmp then
 				print(debug.traceback())
-				assert(false, 'cannot mixable:' .. mixed_class.name) 
+				assert(false, 'cannot mixable:' .. mixed_class.class_name) 
 			end
 			assert(__root_class_name(mixed_class))
-			print('mixin:', __root_class_name(mixed_class), mixed_class.name)
+			print('mixin:', __root_class_name(mixed_class), mixed_class.class_name)
 			table.insert(protoclass.mixin_lookup, 1, mixed_class)
 			return protoclass
 		end
@@ -121,7 +121,7 @@ local class = (function ()
 					if k == kk and __is_builtin_func_name(k) then
 						print(
 							"warning: built in function " .. kk .. 
-							" will override by "  .. protoclass.name .. 
+							" will override by "  .. protoclass.class_name .. 
 							" it may cause unpredictable problem"
 						)
 					end
@@ -135,7 +135,7 @@ local class = (function ()
 						if aspect ~= aspect2 and type(v) == 'function' and mx2[k] then
 							--> if protoclass itself have define, we regard function conflict is resolved.
 							if (not rawget(protoclass, k)) and (not __is_builtin_func_name(k))then
-								assert(false, 'method ' .. k .. ' from mixin:' .. mx.name .. ' and mixin:' .. mx2.name .. ' conflict')
+								assert(false, 'method ' .. k .. ' from mixin:' .. mx.class_name .. ' and mixin:' .. mx2.class_name .. ' conflict')
 							end
 						end
 					end
@@ -154,10 +154,10 @@ local class = (function ()
 			end
 			
 			for idx,v in ipairs(protoclass.mixin_lookup) do
-				-->print('lookup order:', idx, v.name)
+				-->print('lookup order:', idx, v.class_name)
 			end
 			for k,v in pairs(protoclass.mixin) do
-				-->print('mix order:', v.name)
+				-->print('mix order:', v.class_name)
 			end
 			
 			local class = protoclass
@@ -166,27 +166,27 @@ local class = (function ()
 			end
 			protoclass.initialize = (class and rawget(class, 'initialize') or (function () end))
 			protoclass.__aspect = __root_class_name(protoclass)
-			assert(protoclass.name)
-			classes[protoclass.name] = protoclass
-			return classes[protoclass.name]
+			assert(protoclass.class_name)
+			classes[protoclass.class_name] = protoclass
+			return classes[protoclass.class_name]
 		end
 		local protoclass = {
-			name = name,
+			class_name = class_name,
 			super = false,
 			-->__cache = {},
-			has = function (self_or_class, name)
+			has = function (self_or_class, class_name)
 				local klass = (self_or_class.class or self_or_class)
 				for k,v in pairs(klass.mixin) do
-					if v.name == name then
+					if v.class_name == class_name then
 						return true
 					end
 				end
 				return false
 			end,
-			is_a = function (self_or_class, name)
+			is_a = function (self_or_class, class_name)
 				local tmp = (self_or_class.class or self_or_class)
 				while tmp do
-					if tmp.name == name then
+					if tmp.class_name == class_name then
 						return true
 					end
 					tmp = tmp.super

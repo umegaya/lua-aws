@@ -4,7 +4,7 @@ local Serializer = require ('lua-aws.requests.query_string_serializer')
 local util = require ('lua-aws.util')
 
 return class.AWS_JsonRequest.extends(Request) {
-	build_request = function (self, req)
+	build_request = function (self, req, params)
 		local api = self._api
 		local target = api:target_prefix()..'.'..self:method_name()
 		local version = api:json_version()
@@ -13,7 +13,7 @@ return class.AWS_JsonRequest.extends(Request) {
 		req.headers['Content-Type'] = 'application/x-amz-json-'..version
 		req.headers['X-Amz-Target'] = target
 		req.headers['host'] = req.host
-		req.body = api:json().encode(self._params)
+		req.body = api:json().encode(params)
 		return req
 	end,
 	

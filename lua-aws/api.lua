@@ -1,6 +1,7 @@
 local class = require ('lua-aws.class')
 local util = require ('lua-aws.util')
 local Request = require ('lua-aws.request')
+local Shape = require('lua-aws.shape.shape')
 
 local get_endpoint_from_env = function ()
 	local ec2url = os.getenv('EC2_URL')
@@ -27,6 +28,7 @@ return class.AWS_API {
 	initialize = function (self, service, defs)
 		self._service = service
 		self._defs = defs
+		self._shapes = {}
 		self:build_methods()
 	end,
 	version = function (self)
@@ -44,10 +46,17 @@ return class.AWS_API {
 	target_prefix = function (self)
 		return self._defs.metadata.targetPrefix
 	end,
+	global_endpoint = function (self)
+		return self._defs.metadata.globalEndpoint
+	end,
 	json_version = function (self)
 		return self._defs.metadata.jsonVersion or "1.0"
 	end,
 	endpoint = function (self)
+		local gep = self:global_endpoint()
+		if gep then
+			return gep
+		end
 		local config = self:config()
 		local endpoint = (config.endpoint or get_endpoint_from_env())
 		return (self:endpoint_prefix() .. '.' .. endpoint)
@@ -78,8 +87,22 @@ return class.AWS_API {
 	config = function (self)
 		return self._service:aws():config()
 	end,
-	http_request = function (self, req)
-		return self._service:aws():http_request(req)
+	resolve_shape = function (self, shape_id)
+		if not self._shapes then
+			self._shapes = {}
+		end
+		if not self._shapes[shape_id] then
+			self._shapes[shape_id] = Shape.create(self._defs.shapes[shape_id], { api = self })
+		end
+		return self._shapes[shape_id]
+	end,
+	http_request = function (self, req, resp)
+		return self._service:aws():http_request(req, resp)
+		--[[return {
+			status = 200,
+			headers = {},
+			body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Owner><ID>2ce54f564fefe4a9a9f7227b7b4294638d6a65833510c025c7d3f74bef569785</ID><DisplayName>iyatomi_takehiro</DisplayName></Owner><Buckets><Bucket><Name>dokyogames-redshift-bucket</Name><CreationDate>2015-11-05T03:30:58.000Z</CreationDate></Bucket><Bucket><Name>elasticbeanstalk-us-east-1-871570535967</Name><CreationDate>2014-07-17T02:23:53.000Z</CreationDate></Bucket></Buckets></ListAllMyBucketsResult>",
+		}]]
 	end,
 	json = function (self)
 		return self._service:aws():json()
@@ -90,13 +113,15 @@ return class.AWS_API {
 	build_methods = function (self)
 		local defs = self._defs
 		for method,operation in pairs(defs.operations) do
-			self[method] = function (API, param)
-				local ok, status_or_err, r = pcall(function ()
-					local req = Request[API:request_protocol()].new(API, method, operation, param)
-					return req:send()
+			self[method] = function (API, param, resp)
+				local ok, status_or_err, r = xpcall(function ()
+					local req = Request[API:request_protocol()].new(API, method, operation)
+					return req:send(param or {}, resp)
+				end, function (e)
+					API:log(method .. ':error:' .. e .. " @ " .. debug.traceback())
+					return e
 				end)
 				if not ok then
-					API:log(method .. ':error:' .. status_or_err)
 					return false,status_or_err
 				end
 				if API:config().oldReturnValue then

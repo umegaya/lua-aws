@@ -10,33 +10,36 @@ util.make_curl_header = function (headers)
 	table.insert(res, "Expect:")
 	return res
 end
-return function (req)
+return function (req, resp)
 	util.fill_header(req)
 	local c = curl.easy_init()
 	c:setopt_url(req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path)
 	c:setopt_useragent(req.headers["User-Agent"])
 	c:setopt_httpheader(util.make_curl_header(req.headers))
 	if req.method == 'GET' then
-	elseif req.method == 'POST' then
+	elseif req.method == 'POST' or req.method == 'PUT' or req.method == 'DELETE' then
 		c:setopt_postfields(req.body)
 	else
 		assert(false, "not supported:" .. req.method)
 	end
+	resp = resp or {}
 	local headers = {}
-	local body = ""
+	local body = resp.body or ""
+	local wf = io.type(body) and function (str)
+		body:write(str)
+	end or function (str)
+		body = (body .. str)
+	end
 	c:perform({
 		headerfunction = function(str)
 			str:gsub('(.*):% (.*)', function (s1, s2)
 				headers[s1] = util.chop(s2)
 			end)
 		end,
-		writefunction = function(str)
-			body = (body .. str)
-		end
+		writefunction = wf
 	})
-	return {
-		status = c:getinfo_response_code(),
-		body = body,
-		headers = headers,
-	}
+	resp.status = c:getinfo_response_code()
+	resp.body = body
+	resp.headers = headers
+	return resp
 end
