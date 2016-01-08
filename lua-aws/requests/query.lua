@@ -5,7 +5,7 @@ local util = require ('lua-aws.util')
 
 return class.AWS_QueryRequest.extends(Request) {
 	serialize_query = function (self, query_params, params)
-		local rules = self._operation.input
+		local rules = self:input_format()
 		if rules then 
 			rules = rules.members 
 		end
@@ -15,7 +15,6 @@ return class.AWS_QueryRequest.extends(Request) {
 		end)
 	end,
 	build_request = function (self, req, params)
-		local operation = self._operation
 		req.path = '/'
 		req.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8'
 		req.headers['host'] = req.host

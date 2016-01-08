@@ -28,7 +28,7 @@ return class.AWS_API {
 	initialize = function (self, service, defs)
 		self._service = service
 		self._defs = defs
-		self._shapes = {}
+		self._shapes = false
 		self:build_methods()
 	end,
 	version = function (self)
@@ -87,10 +87,15 @@ return class.AWS_API {
 	config = function (self)
 		return self._service:aws():config()
 	end,
-	resolve_shape = function (self, shape_id)
+	init_shapes = function (self)
 		if not self._shapes then
 			self._shapes = {}
+			for k,v in pairs(self._defs.shapes) do
+				self._shapes[k] = Shape.create(v, { api = self })
+			end
 		end
+	end,
+	resolve_shape = function (self, shape_id)
 		if not self._shapes[shape_id] then
 			self._shapes[shape_id] = Shape.create(self._defs.shapes[shape_id], { api = self })
 		end

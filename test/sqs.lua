@@ -22,6 +22,37 @@ ok,r = aws.SQS:api_by_version('2012-11-05'):sendMessage(params)
 assert(ok, r)
 dump_res('message', r)
 
+local params = {
+	QueueUrl = QueueUrl,
+	Entries = {
+		{
+			Id = "msg1",
+			MessageBody = "test msg 1",
+		},
+		{
+			Id = "msg2",
+			MessageBody = "test msg 2",
+			MessageAttributes = {
+				test_attribute_name_1 = {
+					StringValue = "test_attribute_value_1",
+					DataType = "String",
+				},
+			},
+		},
+	},	
+}
+ok,r = aws.SQS:api_by_version('2012-11-05'):sendMessageBatch(params)
+assert(ok, r)
+dump_res('send', r)
+
+
+ok,r = aws.SQS:api_by_version('2012-11-05'):receiveMessage({
+	QueueUrl = QueueUrl,
+	Foo = Bar, -- un-ruled parameter test
+})
+assert(ok, r)
+dump_res('recv', r)
+
 
 ok,r = aws.SQS:api_by_version('2012-11-05'):deleteQueue({
 	QueueUrl = QueueUrl,

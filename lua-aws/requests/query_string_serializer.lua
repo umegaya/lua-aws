@@ -13,9 +13,13 @@ return class.AWS_RequestSerializer {
 
 	serialize_struct = function (self, prefix, struct, rules, fn)
 		for name, member in pairs(struct) do
-			local n = rules[name].name or name
-			local memberName = prefix and (prefix .. '.' .. n) or tostring(n)
-			self:serialize_member(memberName, member, rules[name], fn);
+			if rules[name] then
+				local n = rules[name].name or name
+				local memberName = prefix and (prefix .. '.' .. n) or tostring(n)
+				self:serialize_member(memberName, member, rules[name], fn)
+			else
+				print("parameter", name, "has no rule to handle. ignored.")
+			end
 		end
 	end,
 
@@ -25,21 +29,25 @@ return class.AWS_RequestSerializer {
 			local prefix = rules.flattened and '.' or '.entry.'
 			local position = prefix .. tostring(i) .. '.'
 			i = (i + 1)
-			local keyName = (position .. (rules.keys.name or 'key'))
-			local valueName = (position .. (rules.members.name or 'value'))
-			self:serialize_member(name .. keyName, key, rules.keys, fn)
-			self:serialize_member(name .. valueName, value, rules.members, fn)
+			local keyName = (position .. (rules.key.name or 'key'))
+			local valueName = (position .. (rules.value.name or 'value'))
+			self:serialize_member(name .. keyName, key, rules.key, fn)
+			self:serialize_member(name .. valueName, value, rules.value, fn)
 		end
 	end,
 
 	serialize_list = function (self, name, list, rules, fn)
-		local memberRules = rules.members or {}
+		local memberRules = rules.member or {}
 		for n,v in ipairs(list) do
-			local suffix = ('.' .. tostring(n + 1))
+			local suffix = ('.' .. tostring(n))
 			if rules.flattened then
 				if memberRules.name then
 					local parts = util.split(name, '.')
 					table.remove(parts, 1)
+					-- There may have been an empty entry on the end, remove it
+					if #parts > 0 and parts[#parts] == "" then
+						table.remove(parts, #parts)
+					end
 					table.insert(parts, memberRules.name)
 					name = util.join(parts, '.')
 				end
