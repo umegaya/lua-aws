@@ -1,0 +1,29 @@
+-- Copyright (c) 2015, 2016 Message Systems, Inc. All rights reserved
+
+require('msys.http.client');
+local util = require 'lua-aws.util'
+
+return function (req)
+  local h = msys.http.client.new();
+  util.fill_header(req)
+  for k, v in pairs(req.headers) do
+    h:set_header(k .. ": " .. v)
+  end
+  if req.method == 'GET' then
+  elseif req.method == 'POST' then
+  else
+    assert(false, "not supported:" .. req.method)
+  end
+  -- XXX Make this support parsing req.protocol
+  local uri = "https://" .. req.host .. ":" .. req.port .. req.path
+  local success, errstr, errcode = h:do_request(req.method, uri, req.body);
+
+  local status = h:get_status();
+  return {
+    status = tonumber(status),
+    body = success and h:get_body() or nil,
+    headers = success and h:get_headers() or nil,
+  }
+end
+
+-- vim:ts=2:sw=2:et:
