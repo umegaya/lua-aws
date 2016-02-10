@@ -11,7 +11,7 @@ return class.AWS_XmlRestRequest.extends(RestRequest) {
         local payload = input.payload;
         if payload then
             local payload_member = input.members[payload];
-            payload_param = params[payload]
+            local payload_param = params[payload]
             if not payload_param then return end
             if payload_member.isStreaming and io.type(payload_param) == 'file' then
                 if io.type(req.body) then

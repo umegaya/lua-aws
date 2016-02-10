@@ -46,10 +46,10 @@ return class.AWS_RestRequest.extends(Request) {
             table.sort(tmp)
             for _, k in ipairs(tmp) do
                 if type(queryString[k]) ~= 'table' then
-                    queryString[key] = {queryString[key]}
+                    queryString[k] = {queryString[k]}
                 end
-                for _, v in ipairs(queryString[key]) do 
-                    table.insert(parts, util.uriEscape(tostring(key)) .. '=' .. v);
+                for _, v in ipairs(queryString[k]) do
+                    table.insert(parts, util.uriEscape(tostring(k)) .. '=' .. v);
                 end
             end
             uri = uri .. table.concat(parts, '&');
@@ -112,7 +112,7 @@ return class.AWS_RestRequest.extends(Request) {
                     data[name] = headers[header]
                 end
             elseif member.location == 'statusCode' then
-                data[name] = tonumber(r.status)
+                data[name] = tonumber(resp.status)
             end
         end
         return data
