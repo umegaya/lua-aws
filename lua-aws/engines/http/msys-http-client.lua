@@ -16,7 +16,11 @@ return function (req)
   end
   -- XXX Make this support parsing req.protocol
   local uri = "https://" .. req.host .. ":" .. req.port .. req.path
-  local success, errstr, errcode = h:do_request(req.method, uri, req.body);
+  -- XXX: Unable to transparently hand off work to a threadpool here,
+  -- so we use a sync request and require the caller of lua-aws
+  -- to use msys.runInPool().
+  -- See https://github.com/MessageSystems/lua-aws/issues/6
+  local success, errstr, errcode = h:request(req.method, uri, req.body);
 
   local status = h:get_status();
   return {
