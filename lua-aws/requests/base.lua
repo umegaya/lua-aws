@@ -18,6 +18,7 @@ return class.AWS_Request {
 	send = function (self, params, resp)
 		assert(params)
 		local req = self:base_build_request()
+                local params_for_sign
 		req, params_for_sign = self:build_request(req, params)
 		self:validate(req)
 		local ts = self._api:signature_timestamp()

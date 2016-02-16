@@ -12,7 +12,7 @@ end
 _M.xml_parser = xml_parser_factory:parser()
 _M.xml = (function ()
 	-- parser code is from http://lua-users.org/wiki/LuaXml. thanks!
-	function parseargs(s)
+	local function parseargs(s)
 		local arg = {}
 		string.gsub(s, "(%w+)=([\"'])(.-)%2", function (w, _, a)
 			arg[w] = a
@@ -474,7 +474,7 @@ for i=0,255 do
 end
 
 _M.decodeURI = function (s)
-    return (s:gsub('%%(%x%x)',hex))
+    return (s:gsub('%%(%x%x)',hexmap))
 end
 
 _M.encodeURI = function (s)
