@@ -26,7 +26,7 @@ return function (req)
   return {
     status = tonumber(status),
     body = success and h:get_body() or nil,
-    headers = success and h:get_headers() or nil,
+    headers = success and h:parse_headers() or nil,
   }
 end
 
