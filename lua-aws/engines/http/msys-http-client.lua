@@ -9,11 +9,6 @@ return function (req)
   for k, v in pairs(req.headers) do
     h:set_header(k .. ": " .. v)
   end
-  if req.method == 'GET' then
-  elseif req.method == 'POST' then
-  else
-    assert(false, "not supported:" .. req.method)
-  end
   -- XXX Make this support parsing req.protocol
   local uri = "https://" .. req.host .. ":" .. req.port .. req.path
   -- XXX: Unable to transparently hand off work to a threadpool here,
