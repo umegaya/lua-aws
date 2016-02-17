@@ -100,7 +100,7 @@ local AWS = class.AWS {
 		return selected_engines
 	end,
 	try_load_engines = function (self, engine_type, engine_name)
-		ok, r = pcall(require, 'lua-aws.engines.'..engine_type..'.'..engine_name)
+		local ok, r = pcall(require, 'lua-aws.engines.'..engine_type..'.'..engine_name)
 		if not ok then
 			if not r:match('module.+not found') then
 				print('try_load_engines error:', r)
