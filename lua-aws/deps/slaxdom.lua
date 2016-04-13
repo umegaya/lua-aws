@@ -1,3 +1,8 @@
+--[=====================================================================[
+v0.5.1 Copyright © 2013 Gavin Kistner <!@phrogz.net>; MIT Licensed
+See http://github.com/Phrogz/SLAXML for details.
+--]=====================================================================]
+
 -- Optional parser that creates a flat DOM from parsing
 local SLAXML = require 'lua-aws.deps.slaxml'
 function SLAXML:dom(xml,opts)
