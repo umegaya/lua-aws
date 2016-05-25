@@ -1,7 +1,6 @@
 local class = require ('lua-aws.class')
 local Signer = require ('lua-aws.signers.base')
 local util = require ('lua-aws.util')
-local sec_cache = {}
 local unsignable_headers = {
 	'authorization', 'content-type', 'user-agent',
 	'x-amz-user-agent', 'x-amz-content-sha256'
@@ -10,13 +9,14 @@ local unsignable_headers = {
 return class.AWS_V4Signer.extends(Signer) {
 	initialize = function (self, api)
 		self._api = api
+		self._sec_cache = {}
 	end,
 	sign = function (self, req, credentials, timestamp)
 		self:add_authorization(req, credentials, timestamp)
 	end,
     signature = function (self, req, credentials, datetime)
 		local signature_name = self._api:signature_name()
-		local c = sec_cache[signature_name]
+		local c = self._sec_cache[signature_name]
 		local date = datetime:sub(1, 8)
 		if (not c) or
 			(c.akid ~= credentials.accessKeyId) or
@@ -27,13 +27,13 @@ return class.AWS_V4Signer.extends(Signer) {
 			local kRegion = util.hmac(kDate, self._api:region(), 'buffer')
 			local kService = util.hmac(kRegion, self._api:signature_name(), 'buffer')
 			local kCredentials = util.hmac(kService, 'aws4_request', 'buffer')
-			sec_cache[signature_name] = {
+			self._sec_cache[signature_name] = {
 				region = self._api:region(), date = date,
 				key = kCredentials, akid = credentials.accessKeyId
 			}
 		end
 
-		local key = sec_cache[signature_name].key
+		local key = self._sec_cache[signature_name].key
 		return util.hmac(key, self:string_to_sign(req, datetime), 'hex');
 	end,
 	string_to_sign = function (self, req, datetime)
