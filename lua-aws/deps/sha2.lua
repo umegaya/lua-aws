@@ -193,11 +193,10 @@ end
 
 
 ----------------------------------------------------------------------
-local HH = {}    -- to reuse
 
 local function hash224 (msg)
   msg = preproc(msg, #msg)
-  local H = initH224(HH)
+  local H = initH224({})
 
   -- Process the message in successive 512-bit (64 bytes) chunks:
   for i = 1, #msg, 64 do
@@ -210,7 +209,7 @@ end
 
 local function hash256 (msg)
   msg = preproc(msg, #msg)
-  local H = initH256(HH)
+  local H = initH256({})
 
   -- Process the message in successive 512-bit (64 bytes) chunks:
   for i = 1, #msg, 64 do

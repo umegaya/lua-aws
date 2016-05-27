@@ -1,7 +1,6 @@
 local class = require ('lua-aws.class')
 local Signer = require ('lua-aws.signers.base')
 local util = require ('lua-aws.util')
-local sec_cache = {}
 --[[
   When building the stringToSign, these sub resource params should be
   part of the canonical resource string with their NON-decoded values
