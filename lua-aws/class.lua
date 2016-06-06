@@ -67,7 +67,7 @@ local class = (function ()
 			return self
 		end	
 		local __extends = function (protoclass, super)
-			local super_class = (type(super) == 'string' or classes[super] and super)
+			local super_class = (type(super) == 'string' and classes[super] or super)
 			if not super_class then
 				assert(false, 'no such class: ' .. super)
 			end
