@@ -19,6 +19,20 @@ _M.xml = (function ()
 		end)
 		return arg
 	end
+	local unescape_map = {
+		amp = "&",
+		lt = "<",
+		gt = ">",
+		quot = "\"",
+		apos = "'",
+	}
+	local function unescape(text)
+		return text:gsub("&([a-z]+);", function (s)
+			return unescape_map[s] or ("&"..s..";")
+		end)
+	end
+	local tmp = "&amp;&lt;&gt;&quot;&apos;&invalid;"
+	assert(unescape(tmp) == "&<>\"'&invalid;")
 	return {
 		encode = function (data)
 			return xml_build:dom(data)
@@ -38,7 +52,7 @@ _M.xml = (function ()
 					if text:find('<?xml') then
 						top.header = text
 					else
-						top.value = text
+						top.value = unescape(text)
 					end
 				end
 				if empty == "/" then  -- empty element tag
