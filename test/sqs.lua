@@ -14,7 +14,7 @@ dump_res('create', r)
 
 local QueueUrl = r.value.CreateQueueResponse.value.CreateQueueResult.value.QueueUrl.value
 print("QueueUrl:", QueueUrl)
-local jsonmsg = [[{"email_id":2,"contact_id":"1-xxxxx@hotmail.es","bulk_id":1,"email_version_id":14,"client_id":1}]]
+local jsonmsg = [[{"email_id":2,"contact_id":"1-xxxmlxx@hotmail.es","bulk_id":1,"email_version_id":14,"client_id":1}]]
 local params = {
 	QueueUrl = QueueUrl,
 	MessageBody = jsonmsg

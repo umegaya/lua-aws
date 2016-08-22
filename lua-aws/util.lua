@@ -50,7 +50,7 @@ _M.xml = (function ()
 				if not ni then break end
 				local text = string.sub(s, i, ni-1)
 				if not string.find(text, "^%s*$") then
-					if text:find('<?xml') then
+					if text:find('<?xml', 1, true) then
 						top.header = text
 					else
 						top.value = unescape(text)
