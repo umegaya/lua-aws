@@ -10,7 +10,7 @@ local aws = AWS.new({
 	preferred_engines = preferred,
 })
 
-local BUCKET_NAME = "lua-aws-test"
+local BUCKET_NAME = "lua-aws-test-"..os.time()
 local FILE_NAME = "BmB9X3YIEAARNWy.jpg"
 local DEST_FILE_NAME = "dest.jpg"
 local DEST_FILE_NAME2 = "dest2.jpg"
