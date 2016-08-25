@@ -14,13 +14,22 @@ dump_res('create', r)
 
 local QueueUrl = r.value.CreateQueueResponse.value.CreateQueueResult.value.QueueUrl.value
 print("QueueUrl:", QueueUrl)
+local jsonmsg = [[{"email_id":2,"contact_id":"1-xxxmlxx@hotmail.es","bulk_id":1,"email_version_id":14,"client_id":1}]]
 local params = {
 	QueueUrl = QueueUrl,
-	MessageBody = [[{"email_id":2,"contact_id":"1-xxxxx@hotmail.es","bulk_id":1,"email_version_id":14,"client_id":1}]]
+	MessageBody = jsonmsg
 }
 ok,r = aws.SQS:api_by_version('2012-11-05'):sendMessage(params)
 assert(ok, r)
-dump_res('message', r)
+dump_res('send', r)
+
+ok,r = aws.SQS:api_by_version('2012-11-05'):receiveMessage({
+	QueueUrl = QueueUrl,
+	Foo = Bar, -- un-ruled parameter test
+})
+assert(ok, r)
+dump_res('recv1', r)
+assert(r.value.ReceiveMessageResponse.value.ReceiveMessageResult.value.Message.value.Body.value == jsonmsg)
 
 local params = {
 	QueueUrl = QueueUrl,
@@ -43,7 +52,7 @@ local params = {
 }
 ok,r = aws.SQS:api_by_version('2012-11-05'):sendMessageBatch(params)
 assert(ok, r)
-dump_res('send', r)
+dump_res('sendbatch', r)
 
 
 ok,r = aws.SQS:api_by_version('2012-11-05'):receiveMessage({
@@ -51,7 +60,7 @@ ok,r = aws.SQS:api_by_version('2012-11-05'):receiveMessage({
 	Foo = Bar, -- un-ruled parameter test
 })
 assert(ok, r)
-dump_res('recv', r)
+dump_res('recv2', r)
 
 
 ok,r = aws.SQS:api_by_version('2012-11-05'):deleteQueue({
