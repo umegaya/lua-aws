@@ -19,6 +19,7 @@ local AWS = class.AWS {
 		self._http_engine = engines.http
 		self._json_engine = engines.json
 		self._fs_engine = engines.fs
+                self._crypto_engine = engines.crypto
 		--self._http_engine = http_engine or self:get_http_engine()
 		--> define service
 		self.DynamoDB = require('lua-aws.services.dynamodb').new(self)
@@ -126,6 +127,9 @@ local AWS = class.AWS {
 	http_request = function (self, req, resp)
 		return self._http_engine(req, resp)
 	end,
+        crypto = function (self)
+                return self._crypto_engine
+        end,
 }
 --[[
 require('./sequential_executor');

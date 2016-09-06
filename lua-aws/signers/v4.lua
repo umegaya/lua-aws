@@ -15,6 +15,7 @@ return class.AWS_V4Signer.extends(Signer) {
 		self:add_authorization(req, credentials, timestamp)
 	end,
     signature = function (self, req, credentials, datetime)
+                local hmac = self._api:crypto().hmac_sha256
 		local signature_name = self._api:signature_name()
 		local c = self._sec_cache[signature_name]
 		local date = datetime:sub(1, 8)
@@ -23,10 +24,10 @@ return class.AWS_V4Signer.extends(Signer) {
 			(c.region ~= self._api:region()) or 
 			(c.date ~= date) then
 			local kSecret = credentials.secretAccessKey
-			local kDate = util.hmac('AWS4'..kSecret, date, 'buffer')
-			local kRegion = util.hmac(kDate, self._api:region(), 'buffer')
-			local kService = util.hmac(kRegion, self._api:signature_name(), 'buffer')
-			local kCredentials = util.hmac(kService, 'aws4_request', 'buffer')
+			local kDate = hmac('AWS4'..kSecret, date, 'buffer')
+			local kRegion = hmac(kDate, self._api:region(), 'buffer')
+			local kService = hmac(kRegion, self._api:signature_name(), 'buffer')
+			local kCredentials = hmac(kService, 'aws4_request', 'buffer')
 			self._sec_cache[signature_name] = {
 				region = self._api:region(), date = date,
 				key = kCredentials, akid = credentials.accessKeyId
@@ -34,7 +35,7 @@ return class.AWS_V4Signer.extends(Signer) {
 		end
 
 		local key = self._sec_cache[signature_name].key
-		return util.hmac(key, self:string_to_sign(req, datetime), 'hex');
+		return hmac(key, self:string_to_sign(req, datetime), 'hex');
 	end,
 	string_to_sign = function (self, req, datetime)
 		local parts = {
@@ -59,7 +60,7 @@ return class.AWS_V4Signer.extends(Signer) {
 		return r
 	end,
 	hex_encoded_hash = function (self, str)
-		return util.sha2.hash256(str, 'hex')
+                return self._api:crypto().hash_sha256(str, 'hex')
 	end,
 	canonical_string = function (self, req)
 		local parts = {
