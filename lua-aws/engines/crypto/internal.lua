@@ -2,11 +2,6 @@ local util = require('lua-aws.util')
 local sha2 = require('lua-aws.deps.sha2')
 
 return {
-    hash_sha256 = function (message, output_format)
-      return sha2.hash256(message, output_format)
-    end,
-
-    hmac_sha256 = function (key, message, output_format)
-      return util.hmac(key, message, output_format) 
-    end,
+    hash_sha256 = sha2.hash256,  -- args: (message, output_format)
+    hmac_sha256 = util.hmac,     -- args: (key, message, output_format)
 }

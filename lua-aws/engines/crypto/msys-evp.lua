@@ -10,7 +10,7 @@ return {
         return evp.hex_digest('sha256', message)
       else
         error("output_format '" .. output_format ..
-              "' is not supposed by the msys-evp crypto engine")
+              "' is not supported by the msys-evp crypto engine")
       end
     end,
 
@@ -21,7 +21,7 @@ return {
         return evp.hex_hmac('sha256', key, message)
       else
         error("output_format '" .. output_format ..
-              "' is not supposed by the msys-evp crypto engine")
+              "' is not supported by the msys-evp crypto engine")
       end
     end,
      
