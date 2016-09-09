@@ -115,6 +115,9 @@ return class.AWS_API {
 	log = function (self, ...)
 		self._service:aws():api_log(self, ...)
 	end,
+        crypto = function (self)
+                   return self._service:aws():crypto()
+        end,
 	build_methods = function (self)
 		local defs = self._defs
 		for method,operation in pairs(defs.operations) do
