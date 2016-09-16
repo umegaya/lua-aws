@@ -40,7 +40,19 @@ return class.AWS_QueryRequest.extends(Request) {
 			}
 		else
 			data = util.xml.decode(body)
-		end
+                end
+
+                -- First check for the SQS error response format:
+                local code    = util.safe_read(data, "value", "ErrorResponse", "value", "Error", "value", "Code", "value")
+                local message = util.safe_read(data, "value", "ErrorResponse", "value", "Error", "value", "Message", "value")
+                if code and message then
+			return {
+				code = code,
+				message = message
+			}
+                end
+
+                -- Continue on to other error response formats:
 		if data.Errors then data = data.Errors end
 		if data.Error then data = data.Error end
 		if data.Code then
@@ -57,6 +69,6 @@ return class.AWS_QueryRequest.extends(Request) {
 	end,
 
 	extract_data = function (self, resp) 
-		return util.xml.decode(resp.body)
+                return util.xml.decode(resp.body)
   	end,
 }
