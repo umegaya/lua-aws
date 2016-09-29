@@ -546,4 +546,21 @@ _M.filesize = function (fh)
 	return sz
 end
 
+-- Attempts nested table reads where each
+-- variable argument value acts as the key
+-- into the next nested table.  Stops when
+-- all variable arguments have been read,
+-- or when a nil table value is encountered.
+_M.safe_read = function(tbl, ...)
+  local t = tbl
+  for i,v in ipairs(arg) do
+    t = t[v]
+    if t == nil then
+      return nil
+    end
+  end
+
+  return t
+end
+
 return _M

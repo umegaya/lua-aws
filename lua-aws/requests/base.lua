@@ -23,15 +23,23 @@ return class.AWS_Request {
 		self:validate(req)
 		local ts = self._api:signature_timestamp()
 		-- if params_for_sign is specified, use it as signature parameter.
-		req.params = params_for_sign or params 
+		req.params = params_for_sign or params
 		self._signer:sign(req, self._api:config(), ts)
 		req.params = nil
-		resp = self._api:http_request(req, resp)
+
+                local errmsg
+		resp, errmsg = self._api:http_request(req, resp)
+
+                if resp == nil then  -- The HTTP request didn't even connect
+                  return false, {
+                    code = "HttpEngineError",
+	            message = errmsg
+                  }
 		-- aws sometimes returns 2xx codes other than 200. (eg. 204 No Content)
-		if resp.status >= 200 and resp.status < 300 then
+                elseif (resp.status >= 200 and resp.status < 300) then
 			return true, self:extract_data(resp)
 		else
-			self._api:log("Something wrong in the request", resp.status, resp.body)
+			self._api:log("lua-aws detected AWS error response:", resp.status, resp.body)
 			return false, self:extract_error(resp)
 		end
 	end,

@@ -18,11 +18,17 @@ return function (req)
   local success, errstr, errcode = h:request(req.method, uri, req.body);
 
   local status = h:get_status();
-  return {
-    status = tonumber(status),
-    body = success and h:get_body() or nil,
-    headers = success and h:parse_headers() or nil,
-  }
+
+  if (not success) or (status == nil) then
+     return nil, string.format("msys.http.client error: %s; curl code %s",
+                   tostring(errstr), tostring(errcode))
+  else
+    return {
+      status = status and tonumber(status),
+      body = success and h:get_body() or nil,
+      headers = success and h:parse_headers() or nil,
+    }
+  end
 end
 
 -- vim:ts=2:sw=2:et:
