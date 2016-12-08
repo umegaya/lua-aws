@@ -9,6 +9,14 @@ return function (req)
   for k, v in pairs(req.headers) do
     h:set_header(k .. ": " .. v)
   end
+
+  -- req.config is a reference to the lua-aws config
+  -- i.e. it is the table passed in as the
+  -- argument to AWS.new
+  if req.config and req.config.http_timeout then
+    h:set_timeout(req.config.http_timeout)
+  end
+
   -- XXX Make this support parsing req.protocol
   local uri = "https://" .. req.host .. ":" .. req.port .. req.path
   -- XXX: Unable to transparently hand off work to a threadpool here,

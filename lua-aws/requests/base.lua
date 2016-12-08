@@ -17,6 +17,7 @@ return class.AWS_Request {
 	end,
 	send = function (self, params, resp)
 		assert(params)
+                local cfg = self._api:config()
 		local req = self:base_build_request()
                 local params_for_sign
 		req, params_for_sign = self:build_request(req, params)
@@ -24,7 +25,9 @@ return class.AWS_Request {
 		local ts = self._api:signature_timestamp()
 		-- if params_for_sign is specified, use it as signature parameter.
 		req.params = params_for_sign or params
-		self._signer:sign(req, self._api:config(), ts)
+                req.config = cfg
+
+		self._signer:sign(req, cfg, ts)
 		req.params = nil
 
                 local errmsg
