@@ -14,6 +14,7 @@ local run_http_engine = function (eng, req, resp)
 	local respbody = resp.body or {}
 	local sink = io.type(respbody) and ltn12.sink.file or ltn12.sink.table
 	local source = io.type(req.body) and ltn12.source.file or ltn12.source.string
+    print("url[", req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path, "]")
 	local result, respcode, respheaders, respstatus = eng.request {
 		url = req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path,
 		headers = req.headers,

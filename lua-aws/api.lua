@@ -59,8 +59,12 @@ return class.AWS_API {
 			return gep
 		end
 		local config = self:config()
-		local endpoint = (config.endpoint or get_endpoint_from_env())
-		return (self:endpoint_prefix() .. '.' .. endpoint)
+        if config.LocalEndpoint then
+		    return config.endpoint or get_endpoint_from_env()
+        else
+		    local endpoint = (config.endpoint or get_endpoint_from_env())
+		    return (self:endpoint_prefix() .. '.' .. endpoint)
+        end
 	end,
 	region = function (self)
 		return self:config().region or get_region_from_env()

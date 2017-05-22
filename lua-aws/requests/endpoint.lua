@@ -32,7 +32,12 @@ return class.AWS_Endpoint {
 					host,port,path = s2,false,false
 				end
 			end
-			self._protocol,self._host,self._port,self._path = s1, host, port, path
+            --if config.LocalEndpoint then
+			--   self._protocol,self._host,self._port,self._path = s1, "127.0.0.1", "8000", path
+            --else
+			    self._protocol,self._host,self._port,self._path = s1, host, port, path
+                print("hhhhhhhhhhh[", s1, host, port, path, "]")
+            --end
 		end)
 		if not self._port then
 			self._port = (self._protocol == 'http' and 80 or 443)
