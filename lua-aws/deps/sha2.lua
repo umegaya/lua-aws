@@ -1,6 +1,6 @@
-local bit = _G.bit or require ('bit')
+local bit = _G.bit32 or require ('bit32')
 local band, rrotate, bxor, rshift, bnot =
-  bit.band, bit.ror, bit.bxor, bit.rshift, bit.bnot
+  bit.band, bit.rrotate, bit.bxor, bit.rshift, bit.bnot
 
 local string, setmetatable, assert = string, setmetatable, assert
 
