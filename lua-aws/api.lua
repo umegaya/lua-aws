@@ -4,7 +4,7 @@ local Request = require ('lua-aws.request')
 local Shape = require('lua-aws.shape.shape')
 
 local get_endpoint_from_env = function ()
-	local ec2url = os.getenv('EC2_URL')
+	local ec2url = os.getenv('EC2_URL') or "127.0.0.1:8080"
 	if not ec2url then
  		error('neither config.endpoint given nor EC2_URL environment set.')
 	else
@@ -12,7 +12,7 @@ local get_endpoint_from_env = function ()
 	end
 end
 local get_region_from_env = function ()
-	local ec2url = os.getenv('EC2_URL')
+	local ec2url = os.getenv('EC2_URL') or "127.0.0.1:8080"
 	if not ec2url then
 		error('neither config.region given nor EC2_URL environment set.')
 	else
