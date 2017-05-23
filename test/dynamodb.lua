@@ -3,8 +3,8 @@ local AWS = require ('lua-aws.init')
 package.path = package.path..";/root/lua-aws/?.lua"
 helper.iterate_all_engines("dynamodb", function (preferred)
 	local aws = AWS.new({
-		accessKeyId = os.getenv('AWS_ACCESS_KEY'),
-		secretAccessKey = os.getenv('AWS_SECRET_KEY')",
+		accessKeyId = os.getenv('AWS_ACCESS_KEY') or "123",
+		secretAccessKey = os.getenv('AWS_SECRET_KEY') or "234",
 		preferred_engines = preferred,
         --endpoint = "ap-northeast-1.amazonaws.com",
         endpoint = "http://127.0.0.1:8000",
