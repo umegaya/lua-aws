@@ -4,7 +4,6 @@ local Request = require ('lua-aws.request')
 local Shape = require('lua-aws.shape.shape')
 
 local get_endpoint_from_env = function ()
-    
 	local ec2url = os.getenv('EC2_URL') 
 	if not ec2url then
  		error('neither config.endpoint given nor EC2_URL environment set.')
@@ -42,7 +41,12 @@ return class.AWS_API {
 		return self._defs.metadata.signingName or self:endpoint_prefix()
 	end,
 	endpoint_prefix = function (self)
-		return self._defs.metadata.endpointPrefix
+		local config = self:config()
+        if config.is_local then
+            return "localhost"
+        else
+		    return self._defs.metadata.endpointPrefix
+        end
 	end,
 	target_prefix = function (self)
 		return self._defs.metadata.targetPrefix
@@ -59,11 +63,11 @@ return class.AWS_API {
 			return gep
 		end
 		local config = self:config()
-        if config.LocalEndpoint then
-		    return config.endpoint or get_endpoint_from_env()
-        else
-		    local endpoint = (config.endpoint or get_endpoint_from_env())
+		local endpoint = (config.endpoint or get_endpoint_from_env())
+        if self:endpoint_prefix() ~= "localhost" then
 		    return (self:endpoint_prefix() .. '.' .. endpoint)
+        else
+		    return  endpoint
         end
 	end,
 	region = function (self)

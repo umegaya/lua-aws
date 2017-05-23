@@ -32,7 +32,7 @@ return class.AWS_Endpoint {
 					host,port,path = s2,false,false
 				end
 			end
-		    self._protocol,self._host,self._port,self._path = s1, host, port, path
+		        self._protocol,self._host,self._port,self._path = s1, host, port, path
 		end)
 		if not self._port then
 			self._port = (self._protocol == 'http' and 80 or 443)
