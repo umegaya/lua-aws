@@ -1,12 +1,11 @@
 local helper = require 'test.helper.util'
 local AWS = require ('lua-aws.init')
-package.path = package.path..";/root/lua-aws/?.lua"
 helper.iterate_all_engines("dynamodb", function (preferred)
 	local aws = AWS.new({
 		accessKeyId = os.getenv('AWS_ACCESS_KEY'),
 		secretAccessKey = os.getenv('AWS_SECRET_KEY'),
 		preferred_engines = preferred,
-        --is_local = false,
+		--is_local = false,
 	})
 
 	local ok,r 
