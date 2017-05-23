@@ -1,3 +1,9 @@
+--[[
+  Based on http://lua-users.org/wiki/SecureHashAlgorithm
+  by Roberto Ierusalimschy.  MIT licensed according to his post
+  http://lua-users.org/lists/lua-l/2014-08/msg00628.html
+]]--
+
 local bit = _G.bit or require ('bit')
 local band, rrotate, bxor, rshift, bnot =
   bit.band, bit.ror, bit.bxor, bit.rshift, bit.bnot
