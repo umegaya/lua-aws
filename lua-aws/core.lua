@@ -19,6 +19,7 @@ local AWS = class.AWS {
 		self._http_engine = engines.http
 		self._json_engine = engines.json
 		self._fs_engine = engines.fs
+                self._crypto_engine = engines.crypto
 		--self._http_engine = http_engine or self:get_http_engine()
 		--> define service
 		self.DynamoDB = require('lua-aws.services.dynamodb').new(self)
@@ -103,7 +104,7 @@ local AWS = class.AWS {
 	try_load_engines = function (self, engine_type, engine_name)
 		local ok, r = pcall(require, 'lua-aws.engines.'..engine_type..'.'..engine_name)
 		if not ok then
-			if not r:match('module.+not found') then
+			if not r:match('module.+not found') and not r:match('loop or previous error loading module') then
 				print('try_load_engines error:', r)
 			end
 		end
@@ -127,6 +128,9 @@ local AWS = class.AWS {
 	http_request = function (self, req, resp)
 		return self._http_engine(req, resp)
 	end,
+        crypto = function (self)
+                return self._crypto_engine
+        end,
 }
 --[[
 require('./sequential_executor');

@@ -9,11 +9,14 @@ return function (req)
   for k, v in pairs(req.headers) do
     h:set_header(k .. ": " .. v)
   end
-  if req.method == 'GET' then
-  elseif req.method == 'POST' then
-  else
-    assert(false, "not supported:" .. req.method)
+
+  -- req.config is a reference to the lua-aws config
+  -- i.e. it is the table passed in as the
+  -- argument to AWS.new
+  if req.config and req.config.http_timeout then
+    h:set_timeout(req.config.http_timeout)
   end
+
   -- XXX Make this support parsing req.protocol
   local uri = "https://" .. req.host .. ":" .. req.port .. req.path
   -- XXX: Unable to transparently hand off work to a threadpool here,
@@ -23,11 +26,17 @@ return function (req)
   local success, errstr, errcode = h:request(req.method, uri, req.body);
 
   local status = h:get_status();
-  return {
-    status = tonumber(status),
-    body = success and h:get_body() or nil,
-    headers = success and h:get_headers() or nil,
-  }
+
+  if (not success) or (status == nil) then
+     return nil, string.format("msys.http.client error: %s; curl code %s",
+                   tostring(errstr), tostring(errcode))
+  else
+    return {
+      status = status and tonumber(status),
+      body = success and h:get_body() or nil,
+      headers = success and h:parse_headers() or nil,
+    }
+  end
 end
 
 -- vim:ts=2:sw=2:et:

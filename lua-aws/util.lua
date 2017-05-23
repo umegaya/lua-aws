@@ -10,8 +10,9 @@ _M.assert = function (cond, msg)
 	assert(cond, (msg or '') .. "\n" .. debug.traceback())
 end
 _M.xml_parser = xml_parser_factory:parser()
+-- parser code is from http://lua-users.org/wiki/LuaXml. thanks!
+-- Code by Roberto Ierusalimschy
 _M.xml = (function ()
-	-- parser code is from http://lua-users.org/wiki/LuaXml. thanks!
 	local function parseargs(s)
 		local arg = {}
 		string.gsub(s, "(%w+)=([\"'])(.-)%2", function (w, _, a)
@@ -49,7 +50,7 @@ _M.xml = (function ()
 				if not ni then break end
 				local text = string.sub(s, i, ni-1)
 				if not string.find(text, "^%s*$") then
-					if text:find('<?xml') then
+					if text:find('<?xml', 1, true) then
 						top.header = text
 					else
 						top.value = unescape(text)
@@ -99,8 +100,11 @@ _M.xml = (function ()
 		end,
 	}
 end)()
+-- End of code from http://lua-users.org/wiki/LuaXml
 
 -- this code from lua-users.org/wiki/BaseSixtyFour. thanks!
+-- Lua 5.1+ base64 v3.0 (c) 2009 by Alex Kloss <alexthkloss@web.de>
+-- licensed under the terms of the LGPL2
 _M.b64 = (function ()
 	-- character table string
 	local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
@@ -138,6 +142,7 @@ _M.b64 = (function ()
 		decode = dec,
 	}
 end)()
+-- End of code from lua-users.org/wiki/BaseSixtyFour.
 
 _M.hexdigit2int = function (ch)
 	local b = ch:byte()
@@ -168,12 +173,35 @@ end
 
 _M.sha2 = require 'lua-aws.deps.sha2'
 
+-- these hmac-ize routine is from https://github.com/bjc/prosody/blob/master/util/hmac.lua.
+-- thanks!
+--[[
+
+Copyright (c) 2008-2011 Matthew Wild
+Copyright (c) 2008-2011 Waqas Hussain
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+]]--
 _M.hmac = (function ()
 	--local hmac = require 'hmac'
 	local sha2 = _M.sha2
 
-	-- these hmac-ize routine is from https://github.com/bjc/prosody/blob/master/util/hmac.lua.
-	-- thanks!
 	local s_char = string.char;
 	local s_gsub = string.gsub;
 	local s_rep = string.rep;
@@ -239,6 +267,7 @@ AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Action=DescribeJobFlows&SignatureMethod=Hmac
 	}
 	return hmac_sha256
 end)()
+-- End of code from https://github.com/bjc/prosody/blob/master/util/hmac.lua
 
 _M.split = function (str, seps)
 	local r = {}
@@ -362,6 +391,7 @@ function _M.unescape(s)
          return string.char(tonumber(hex, 16))
     end)
 end
+-- End of code taken from Lua Socket / lua-curl
 
 _M.query_params_to_string = function (params)
 	local items = {};
@@ -514,6 +544,23 @@ _M.filesize = function (fh)
 	local sz = fh:seek('end')
 	fh:seek('set')
 	return sz
+end
+
+-- Attempts nested table reads where each
+-- variable argument value acts as the key
+-- into the next nested table.  Stops when
+-- all variable arguments have been read,
+-- or when a nil table value is encountered.
+_M.safe_read = function(tbl, ...)
+  local t = tbl
+  for i,v in ipairs(arg) do
+    t = t[v]
+    if t == nil then
+      return nil
+    end
+  end
+
+  return t
 end
 
 return _M

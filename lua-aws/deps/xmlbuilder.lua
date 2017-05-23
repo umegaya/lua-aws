@@ -1,4 +1,5 @@
 -- originally from https://github.com/lubyk/xml/blob/master/xml/init.lua. thanks!
+-- *MIT license* &copy Marcin Kalicinski 2006, 2009, Gaspard Bucher 2014.
 
 local _M = {}
 

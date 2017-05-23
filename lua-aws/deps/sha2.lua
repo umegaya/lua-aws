@@ -1,3 +1,9 @@
+--[[
+  Based on http://lua-users.org/wiki/SecureHashAlgorithm
+  by Roberto Ierusalimschy.  MIT licensed according to his post
+  http://lua-users.org/lists/lua-l/2014-08/msg00628.html
+]]--
+
 local bit = _G.bit or require ('bit')
 local band, rrotate, bxor, rshift, bnot =
   bit.band, bit.ror, bit.bxor, bit.rshift, bit.bnot
@@ -187,11 +193,10 @@ end
 
 
 ----------------------------------------------------------------------
-local HH = {}    -- to reuse
 
 local function hash224 (msg)
   msg = preproc(msg, #msg)
-  local H = initH224(HH)
+  local H = initH224({})
 
   -- Process the message in successive 512-bit (64 bytes) chunks:
   for i = 1, #msg, 64 do
@@ -204,7 +209,7 @@ end
 
 local function hash256 (msg)
   msg = preproc(msg, #msg)
-  local H = initH256(HH)
+  local H = initH256({})
 
   -- Process the message in successive 512-bit (64 bytes) chunks:
   for i = 1, #msg, 64 do

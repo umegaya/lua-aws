@@ -1,3 +1,10 @@
+--[[
+  There are no restrictions on the use of this code. From the author's blog
+  http://regex.info/blog/lua/sha1?comments=all#comment-38898 :
+
+  "Feel free to use it as you like. --Jeffrey"
+]]--
+
 --
 -- SHA-1 secure hash computation, and HMAC-SHA1 signature computation,
 -- in pure Lua (tested on Lua 5.1)
