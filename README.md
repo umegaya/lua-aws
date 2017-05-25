@@ -1,3 +1,4 @@
+for skynet dynamodb http
 lua-aws
 =======
 
