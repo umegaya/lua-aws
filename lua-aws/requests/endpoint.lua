@@ -15,7 +15,7 @@ return class.AWS_Endpoint {
 			local host, port, path
 			local pos = s2:find(':')
 			if pos then
-				host = s2:sub(1,pos)
+				host = s2:sub(1,pos-1)
 				local remain = s2:sub(pos + 1)
 				pos = remain:find('/')
 				if pos then
@@ -32,7 +32,7 @@ return class.AWS_Endpoint {
 					host,port,path = s2,false,false
 				end
 			end
-			self._protocol,self._host,self._port,self._path = s1, host, port, path
+		        self._protocol,self._host,self._port,self._path = s1, host, port, path
 		end)
 		if not self._port then
 			self._port = (self._protocol == 'http' and 80 or 443)

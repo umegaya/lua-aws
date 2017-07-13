@@ -41,7 +41,12 @@ return class.AWS_API {
 		return self._defs.metadata.signingName or self:endpoint_prefix()
 	end,
 	endpoint_prefix = function (self)
-		return self._defs.metadata.endpointPrefix
+		local config = self:config()
+        if config.is_local then
+            return "localhost"
+        else
+		    return self._defs.metadata.endpointPrefix
+        end
 	end,
 	target_prefix = function (self)
 		return self._defs.metadata.targetPrefix
@@ -59,7 +64,11 @@ return class.AWS_API {
 		end
 		local config = self:config()
 		local endpoint = (config.endpoint or get_endpoint_from_env())
-		return (self:endpoint_prefix() .. '.' .. endpoint)
+        if self:endpoint_prefix() ~= "localhost" then
+		    return (self:endpoint_prefix() .. '.' .. endpoint)
+        else
+		    return  endpoint
+        end
 	end,
 	region = function (self)
 		return self:config().region or get_region_from_env()
@@ -123,7 +132,7 @@ return class.AWS_API {
 					local req = Request[API:request_protocol()].new(API, method, operation)
 					return req:send(param or {}, resp)
 				end, function (e)
-					API:log(method .. ':error:' .. e .. " @ " .. debug.traceback())
+					API:log(method .. ':error:' .. tostring(e) .. " @ " .. debug.traceback())
 					return e
 				end)
 				if not ok then
