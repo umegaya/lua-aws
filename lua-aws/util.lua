@@ -492,7 +492,7 @@ _M.decodeURI = function (s)
 end
 
 _M.encodeURI = function (s)
-	return s:gsub('[^%w_%.~\\%-%%]', function (i) return string.format("%02x", string.byte(i)) end)
+	return s:gsub('[^%w_%.~\\%-%%]', function (i) return string.format("%%%02x", string.byte(i)) end)
 end
 
 _M.encodeURIPath = function (s)
