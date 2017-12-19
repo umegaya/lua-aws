@@ -53,13 +53,16 @@ return class.AWS_API {
 		return self._defs.metadata.jsonVersion or "1.0"
 	end,
 	endpoint = function (self)
+		-- give 1st priority to manually configured endpoint
+		local config = self:config()
+		if config.endpoint then
+			return config.endpoint
+		end
 		local gep = self:global_endpoint()
 		if gep then
 			return gep
 		end
-		local config = self:config()
-		local endpoint = (config.endpoint or get_endpoint_from_env())
-		return (self:endpoint_prefix() .. '.' .. endpoint)
+		return (self:endpoint_prefix() .. '.' .. get_endpoint_from_env())
 	end,
 	region = function (self)
 		return self:config().region or get_region_from_env()
