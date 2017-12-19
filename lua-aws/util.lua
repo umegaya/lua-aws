@@ -469,7 +469,7 @@ _M.date = {
 		return os.date("!%a, %d %b %Y %T GMT", val)
 	end,
 	unixTimestamp = function (val)
-		return tostring(val)
+		return tostring(val or os.time())
 	end,
 }
 

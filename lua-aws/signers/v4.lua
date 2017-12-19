@@ -122,7 +122,8 @@ return class.AWS_V4Signer.extends(Signer) {
 	end,
 
 	add_authorization = function (self, req, credentials, date)
-		local datetime = date:gsub('[:%-]', ''):gsub('%.%d%d%d', '')
+		local tmp = util.date.iso8601()
+		local datetime = tmp:gsub('[:%-]', ''):gsub('%.%d%d%d', '')
 		self:add_headers(req, credentials, datetime)
 		self:update_body(req, credentials)
 		req.headers['Authorization'] = self:authorization(req, credentials, datetime)

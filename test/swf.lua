@@ -15,5 +15,7 @@ if ok then
 	--print(serpent.dump(res, { compact = false }))
 	assert(type(r.domainInfos) == 'table')
 else
+	helper.dump = true
+	helper.dump_res('swf', r)
 	assert(false, 'error:' .. r)
 end
