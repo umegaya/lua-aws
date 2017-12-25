@@ -1,2 +1,0 @@
-require ('./test/ec2')
-

@@ -10,6 +10,7 @@ Timestamp=2014-10-06T03%3A46%3A55.305Z&
 Version=2012-11-05
 ]]--
 
+--[==[
 local v2signer = require 'lua-aws.signers.v2'
 local endpoint = require 'lua-aws.requests.endpoint'
 local util = require 'lua-aws.util'
@@ -20,7 +21,7 @@ local params = {
 	Action = "SendMessage",
 	QueueUrl = "http://sqs.ap-northeast-1.amazonaws.com/871570535967/testQueue",
 	MessageBody = "testing",
-	Version = "2012-11-05"
+	Version = "2012-11-05",
 }
 
 signer:sign({
@@ -28,6 +29,7 @@ signer:sign({
 	headers = {},
 	host = "sqs.ap-northeast-1.amazonaws.com",
 	path = "/",
+	body_has_sign = true,
 	params = params,
 }, {
 	accessKeyId = os.getenv('AWS_ACCESS_KEY'),
@@ -47,6 +49,7 @@ signer:sign({
 	headers = {},
 	host = "sqs.ap-northeast-1.amazonaws.com",
 	path = "/",
+	body_has_sign = true,
 	params = params,
 }, {
 	accessKeyId = os.getenv('AWS_ACCESS_KEY'),
@@ -55,10 +58,4 @@ signer:sign({
 
 print('params2:', params.Signature, util.unescape("VwPl0RHrLKPjTi64XgqDMqT9cVPoJ72MQFS7Q8AgPBc%3D"))
 assert(params.Signature == util.unescape("VwPl0RHrLKPjTi64XgqDMqT9cVPoJ72MQFS7Q8AgPBc%3D"))
-
-
-
-
-
-
-
+]==]
