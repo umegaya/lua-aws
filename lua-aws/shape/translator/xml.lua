@@ -5,6 +5,7 @@ local _M = {}
 
 function _M.translate(xml, shape)
     for k,v in pairs(xml.value) do
+        -- each k should be XXXResult, and v.value should be table of shape member key => xml node of corresponding values
         return _M.parseXml(v.value, shape)
     end
 end
@@ -18,10 +19,11 @@ function _M.parseXml(xml, shape)
         return _M.parseList(xml, shape)
     --case undefined: case null: return parseUnknown(xml) => really used?
     else
-        return _M.parseScalar(xml, shape)
+        return _M.parseScalar(xml.value, shape)
     end
 end
 
+-- here, xml means table which has string key and xml node value.
 function _M.parseStructure(xml, shape)
     local data = {}
     if not xml then return data end
@@ -29,7 +31,8 @@ function _M.parseStructure(xml, shape)
     for memberName, memberShape in pairs(shape.members) do
         local child = xml[memberName]
         if child then
-            data[memberName] = _M.parseXml(child.value, memberShape)
+            --print('parse child:', memberName, child.value, memberShape.type)
+            data[memberName] = _M.parseXml(child, memberShape)
         end
     end
 
@@ -53,7 +56,29 @@ function _M.parseMap(xml, shape)
     return data;
 end
 
+-- here, xml means table which is: 
+--  1. array of xml node (when flattened and number of element > 1), 
+--  2. xml node which value contains array of xml node whose key is shape.member.name (non-flattened)
 function _M.parseList(xml, shape)
+    local data = {}
+    local iterable
+    if shape.flattened then
+        -- if flattened, xml is array of node
+        iterable = xml
+        if not xml[1] then
+          -- if only single element, xml directly be node.
+          table.insert(data, _M.parseXml(xml.value, shape.member))
+          return data
+        end
+    else
+        local name = shape.member.name
+        -- regardless element count is 1 or more, value contains proper table structure.
+        iterable = xml.value[name]
+    end
+    for _, child in ipairs(iterable) do
+        table.insert(data, _M.parseXml(child.value, shape.member))
+    end
+--[[
     local data = {}
     local name = shape.member.name
     local iterable = shape.flattened and xml or xml[name]
@@ -62,6 +87,7 @@ function _M.parseList(xml, shape)
             table.insert(data, _M.parseXml(child.value, shape.member))
         end
     end
+]]
 
     return data;
 end

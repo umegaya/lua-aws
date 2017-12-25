@@ -39,15 +39,44 @@ assert(found, "bucket not created")
 
 
 
-local f = io.open(DIR_PATH..FILE_NAME)
-ok, r = aws.S3:api():putObject({
+-- create multiple object in s3
+local NUM_SUB_FILE = 1
+for idx = 1,NUM_SUB_FILE+1,1 do
+	local f = io.open(DIR_PATH..FILE_NAME)
+	local dest_file_name = FILE_NAME
+	if idx ~= 1 then
+		dest_file_name = "file" .. idx .. ".jpg"
+	end
+	ok, r = aws.S3:api():putObject({
+		Bucket = BUCKET_NAME, 
+		Key = dest_file_name, 
+		Body = f,
+		ContentLength = util.filesize(f), -- otherwise got error.
+	})
+	if not ok then error(r) end
+	helper.dump_res('s3-putobject', r)
+end
+
+
+
+-- test list object can resturns correct
+ok, r = aws.S3:api():listObjects({
 	Bucket = BUCKET_NAME, 
-	Key = FILE_NAME, 
-	Body = f,
-	ContentLength = util.filesize(f), -- otherwise got error.
 })
 if not ok then error(r) end
-helper.dump_res('s3-putobject', r)
+helper.dump_res('s3-listobjects', r)
+assert(type(r.Contents) == 'table' and #r.Contents == 2
+	and r.Contents[1].ETag and r.Contents[1].Key and r.Contents[1].Size)
+
+
+
+ok, r = aws.S3:api():listObjectsV2({
+	Bucket = BUCKET_NAME, 
+})
+if not ok then error(r) end
+helper.dump_res('s3-listobjectsv2', r)
+assert(type(r.Contents) == 'table' and #r.Contents == 2
+	and r.Contents[1].ETag and r.Contents[1].Key and r.Contents[1].Size)
 
 
 
@@ -62,10 +91,45 @@ helper.dump_res('s3-getobject', r)
 
 
 
+-- check contents stored correctly by comparing check sum
 local f1, f2 = os.execute("md5 -q "..DIR_PATH..FILE_NAME), os.execute("md5 -q "..DIR_PATH..DEST_FILE_NAME)
 if f1 ~= f2 then
 	error("both file should be same: but: " .. f1 .. " vs " .. f2)
 end
+
+
+
+-- remove sub files
+if NUM_SUB_FILE > 0 then
+	for idx = 2,NUM_SUB_FILE+1,1 do
+		ok, r = aws.S3:api():deleteObject({
+			Bucket = BUCKET_NAME, 
+			Key = "file" .. idx .. ".jpg", 
+		})
+		if not ok then error(r) end
+	end
+end
+
+
+
+-- test list Object for single object in bucket
+ok, r = aws.S3:api():listObjects({
+	Bucket = BUCKET_NAME, 
+})
+if not ok then error(r) end
+helper.dump_res('s3-listobjects', r)
+assert(type(r.Contents) == 'table' and #r.Contents == 1
+	and r.Contents[1].ETag and r.Contents[1].Key and r.Contents[1].Size)
+
+
+
+ok, r = aws.S3:api():listObjectsV2({
+	Bucket = BUCKET_NAME, 
+})
+if not ok then error(r) end
+helper.dump_res('s3-listobjectsv2', r)
+assert(type(r.Contents) == 'table' and #r.Contents == 1
+	and r.Contents[1].ETag and r.Contents[1].Key and r.Contents[1].Size)
 
 
 

@@ -41,18 +41,24 @@ _M.xml = (function ()
 			local stack = {}
 			local top = {}
 			table.insert(stack, top)
-			local ni,c,label,xarg, empty
+			local ni,c,label,xarg,empty
 			local i, j = 1, 1
 			local no_xarg = options and options.no_xarg
 			while true do
-				ni,j,c,label,xarg, empty = string.find(s, "<(%/?)([%w:]+)(.-)(%/?)>", i)
+				ni,j,c,label,xarg,empty = string.find(s, "<(%/?)([%w:]+)(.-)(%/?)>", i)
+				-- print('string.find = ', ni,j,c,label,xarg,empty)
 				if not ni then break end
 				local text = string.sub(s, i, ni-1)
+				-- print('text = ', text)
 				if not string.find(text, "^%s*$") then
 					if text:find('<?xml') then
 						top.header = text
-					else
+					elseif not top.value then
 						top.value = unescape(text)
+					elseif type(top.value) == 'table' then
+						-- <label>text<child_label>value</child_label>text case, after first child tag appears.
+						table.insert(top.value, text)
+					else
 					end
 				end
 				if empty == "/" then  -- empty element tag
@@ -70,10 +76,14 @@ _M.xml = (function ()
 					if toclose.label ~= label then
 						error("trying to close "..toclose.label.." with "..label)
 					end
-					--print('node value', top.value, #stack, label, toclose.value)
+					-- print('node value', top.value, #stack, label, toclose.value)
 					top.value = (top.value or {})
 					local v = top.value[label]
 					if not v then
+						if type(top.value) ~= 'table' then
+							-- <label>text<child_label>value</child_label>text case, before first child tag appears
+							top.value = { top.value } -- texts are stored as value for numeric key
+						end
 						top.value[label] = toclose
 					-- if same label element exists in same tag, they are treated as list
 					elseif top.list then
