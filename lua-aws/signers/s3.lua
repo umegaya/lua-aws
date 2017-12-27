@@ -94,7 +94,7 @@ return class.AWS_S3Signer.extends(Signer) {
         end
 
         table.sort(amzHeaders, function (a, b)
-            return a:lower() < b:lower() and -1 or 1
+            return a:lower() < b:lower()
         end)
 
         local parts = {};
@@ -133,7 +133,7 @@ return class.AWS_S3Signer.extends(Signer) {
                 table.insert(resources, subresource)
             end
 
-            table.sort(resources, function (a, b) return a.name < b.name and -1 or 1 end)
+            table.sort(resources, function (a, b) return a.name < b.name end)
             if #resources > 0 then
                 local querystrings = {};
                 for _, res in ipairs(resources) do

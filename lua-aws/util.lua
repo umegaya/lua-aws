@@ -419,6 +419,11 @@ _M.user_agent = function ()
 	return "lua-aws"
 end
 
+_M.escape_header_name_as_regex = function (name)
+	-- append % to controll character which is allowed as header field name https://tools.ietf.org/html/rfc7230#section-3.2.6
+	return name:gsub("[%!%#%$%%%&%'%*%+%-%.%^%_%`%|%~]", "%%%1")
+end
+
 _M.chop = function (str)
 	local l = #str
 	local cnt = 0

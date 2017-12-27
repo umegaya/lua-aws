@@ -17,6 +17,7 @@ local DEST_FILE_NAME2 = "subdir/dest2.jpg"
 local DIR_PATH="./test/resource/"
 local ok, r
 
+----[[
 os.remove(DIR_PATH..DEST_FILE_NAME)
 
 ok, r = aws.S3:api():createBucket({Bucket = BUCKET_NAME})
@@ -50,6 +51,9 @@ for idx = 1,NUM_SUB_FILE+1,1 do
 	ok, r = aws.S3:api():putObject({
 		Bucket = BUCKET_NAME, 
 		Key = dest_file_name, 
+		Metadata = {
+			fuga = 'hoge',
+		},
 		Body = f,
 		ContentLength = util.filesize(f), -- otherwise got error.
 	})
@@ -77,7 +81,7 @@ if not ok then error(r) end
 helper.dump_res('s3-listobjectsv2', r)
 assert(type(r.Contents) == 'table' and #r.Contents == 2
 	and r.Contents[1].ETag and r.Contents[1].Key and r.Contents[1].Size)
-
+--]]--
 
 
 ok, r = aws.S3:api():getObject({
@@ -88,6 +92,7 @@ ok, r = aws.S3:api():getObject({
 })
 if not ok then error(r) end
 helper.dump_res('s3-getobject', r)
+assert(r.Metadata.fuga == 'hoge')
 
 
 
@@ -139,6 +144,7 @@ ok, r = aws.S3:api():deleteObject({
 })
 if not ok then error(r) end
 helper.dump_res('s3-deleteobject', r)
+--]]--
 
 
 

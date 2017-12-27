@@ -17,3 +17,9 @@ assert(r.value.html.value.body.value.p.value[1] ==	'The document has moved ')
 assert(r.value.html.value.body.value.p.value[2] == '.')
 assert(r.value.html.value.body.value.p.value.a.xarg.href =='http://s3.amazonaws.com/index.php?http://s3.amazonaws.com/lua-aws-test-1514166120')
 assert(r.value.html.value.body.value.p.value.a.value =='here')
+
+
+local header_field_name = 'x-amz-meta-'
+local header_field_name2 = "!#$%&'*+-.^_`|~"
+assert(util.escape_header_name_as_regex(header_field_name) == 'x%-amz%-meta%-')
+assert(util.escape_header_name_as_regex(header_field_name2) == "%!%#%$%%%&%'%*%+%-%.%^%_%`%|%~")
