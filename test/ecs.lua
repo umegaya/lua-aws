@@ -4,7 +4,8 @@ local AWS = require ('lua-aws.init')
 local aws = AWS.new({
 	accessKeyId = os.getenv('AWS_ACCESS_KEY'),
 	secretAccessKey = os.getenv('AWS_SECRET_KEY'),
-	sslEnabled = true,
+	sslEnabled = not helper.MOCK_HOST(),
+	endpoint = helper.MOCK_HOST(),
 })
 
 local api = aws.ECS:api_by_version('2014-11-13')

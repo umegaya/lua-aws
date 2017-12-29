@@ -31,7 +31,7 @@ function _M.parseStructure(xml, shape)
     for memberName, memberShape in pairs(shape.members) do
         local child = xml[memberName]
         if child then
-            --print('parse child:', memberName, child.value, memberShape.type)
+            -- print('parse child:', memberName, child.value, memberShape.type)
             data[memberName] = _M.parseXml(child, memberShape)
         end
     end
@@ -65,18 +65,19 @@ function _M.parseList(xml, shape)
     if shape.flattened then
         -- if flattened, xml is array of node
         iterable = xml
-        if not xml[1] then
-          -- if only single element, xml directly be node.
-          table.insert(data, _M.parseXml(xml.value, shape.member))
-          return data
-        end
     else
         local name = shape.member.name
         -- regardless element count is 1 or more, value contains proper table structure.
         iterable = xml.value[name]
     end
-    for _, child in ipairs(iterable) do
-        table.insert(data, _M.parseXml(child.value, shape.member))
+    if not iterable[1] then
+        -- if only single element, xml directly be node.
+        table.insert(data, _M.parseXml(iterable.value, shape.member))
+        return data
+    else 
+        for _, child in ipairs(iterable) do
+            table.insert(data, _M.parseXml(child.value, shape.member))
+        end
     end
 --[[
     local data = {}

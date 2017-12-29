@@ -15,7 +15,7 @@ return class.AWS_Endpoint {
 			local host, port, path
 			local pos = s2:find(':')
 			if pos then
-				host = s2:sub(1,pos)
+				host = s2:sub(1,pos-1)
 				local remain = s2:sub(pos + 1)
 				pos = remain:find('/')
 				if pos then
@@ -40,6 +40,7 @@ return class.AWS_Endpoint {
 		if not self._path then
 			self._path = '/'
 		end
+		-- print(self._protocol,self._host,self._port,self._path)
 	end,
 	host = function (self) return self._host end,
 	port = function (self) return self._port end,

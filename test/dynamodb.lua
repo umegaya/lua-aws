@@ -5,6 +5,7 @@ helper.iterate_all_engines("dynamodb", function (preferred)
 		accessKeyId = os.getenv('AWS_ACCESS_KEY'),
 		secretAccessKey = os.getenv('AWS_SECRET_KEY'),
 		preferred_engines = preferred,
+		endpoint = helper.MOCK_HOST(),
 	})
 
 	local ok,r 
