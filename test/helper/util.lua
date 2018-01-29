@@ -28,4 +28,8 @@ function _M.dump_res(tag, res)
 	end
 end
 
+function _M.MOCK_HOST()
+	return arg[1]
+end
+
 return _M

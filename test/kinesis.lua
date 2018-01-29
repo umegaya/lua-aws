@@ -6,7 +6,8 @@ local dump_res = helper.dump_res
 local aws = AWS.new({
 	accessKeyId = os.getenv('AWS_ACCESS_KEY'),
 	secretAccessKey = os.getenv('AWS_SECRET_KEY'),
-	sslEnabled = true,
+	sslEnabled = not helper.MOCK_HOST(),
+	endpoint = helper.MOCK_HOST(),
 })
 
 local ffi = require 'ffi'

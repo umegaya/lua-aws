@@ -100,7 +100,7 @@ return class.AWS_RestRequest.extends(Request) {
             if member.location == 'headers' and member.type == 'map' then
                 data[name] = {}
                 local location = member.isLocationName and member.name or ''
-                local pattern = '^' .. location .. '(.+)'
+                local pattern = '^' .. util.escape_header_name_as_regex(location) .. '(.+)'
                 for kk, vv in pairs(resp.headers) do
                     local result = kk:match(pattern)
                     if result then

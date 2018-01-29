@@ -12,7 +12,10 @@ return class.AWS_XmlRestRequest.extends(RestRequest) {
         if payload then
             local payload_member = input.members[payload];
             local payload_param = params[payload]
-            if not payload_param then return end
+            if not payload_param then 
+                req.headers["Content-Length"] = 0
+                return 
+            end
             if payload_member.isStreaming and io.type(payload_param) == 'file' then
                 if io.type(req.body) then
                     error('only 1 file payload can be attached to request')
@@ -21,13 +24,16 @@ return class.AWS_XmlRestRequest.extends(RestRequest) {
             elseif payload_member.type == 'structure' then
                 local root_element = payload_member.name
                 req.body = builder.build(payload_param, payload_member, root_element, true)
+                req.headers["Content-Length"] = #req.body
             else -- non-xml payload
                 req.body = payload_member:toWireFormat(payload_param)
+                req.headers["Content-Length"] = #req.body
             end
         else
             local m = self:method_name()
             local ucfirst_op = m:sub(1, 1):upper()..m:sub(2)
             req.body = builder.build(params, input, input.name or input.shape or (ucfirst_op .. 'Request'))
+            req.headers["Content-Length"] = #req.body
         end
     end,
     build_request = function (self, req, params)
@@ -36,6 +42,8 @@ return class.AWS_XmlRestRequest.extends(RestRequest) {
         local m = req.method:upper()
         if m ~= 'GET' and m ~= 'HEAD' then
             self:populate_body(req, params)
+        else
+            req.headers["Content-Length"] = 0
         end
         return req
     end,
