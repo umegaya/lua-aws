@@ -31,6 +31,8 @@ local AWS = class.AWS {
 	    self.CloudWatchLog = require('lua-aws.services.cloudwatchlog').new(self, "log")
 	    self.S3 = require('lua-aws.services.s3').new(self)
 	    self.ECS = require('lua-aws.services.ecs').new(self)
+	    self.Athena = require('lua-aws.services.athena').new(self)
+	    self.Firehose = require('lua-aws.services.firehose').new(self)
 
 		--[[
 		require('./services/autoscaling')
