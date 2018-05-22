@@ -37,6 +37,7 @@ EDIT: now some guys seems to use this at least their playground. and v4 signatur
 - [sha2](http://lua-users.org/wiki/SecureHashAlgorithm) to generate SHA-256 hash
 - [hmac](https://github.com/bjc/prosody/blob/master/util/hmac.lua) to implement Hmac_SHA256 routine
 - [base64](http://lua-users.org/wiki/BaseSixtyFour) for base64 encoder
+- [bit](https://github.com/aryajur/bit.git) Suggested module to work across Lua versions 5.2 and 5.3
 
 and more code snippets help me to build authentication routines. thanks!
 
