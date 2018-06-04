@@ -37,7 +37,6 @@ EDIT: now some guys seems to use this at least their playground. and v4 signatur
 - [sha2](http://lua-users.org/wiki/SecureHashAlgorithm) to generate SHA-256 hash
 - [hmac](https://github.com/bjc/prosody/blob/master/util/hmac.lua) to implement Hmac_SHA256 routine
 - [base64](http://lua-users.org/wiki/BaseSixtyFour) for base64 encoder
-- [bit](https://github.com/aryajur/bit.git) Suggested module to work across Lua versions 5.2 and 5.3
 
 and more code snippets help me to build authentication routines. thanks!
 
@@ -47,7 +46,10 @@ and more code snippets help me to build authentication routines. thanks!
 now there is no rockspec so please copy them directory like /usr/local/share/lua/5.1/ manually.
 
 
-
+## Caveats for lua 5.3 user
+- bit library is missing 
+  - as of lua 5.3, built-in bit operator like ```&``` is introduced. as a result, no standard bit library is shipped with lua itself, which we used in lua-aws/deps/sha2.lua. so if you want to use lua-aws in such environment, you manually install a module like below which gives compatibility to old bit module. 
+    - [bit](https://github.com/aryajur/bit.git) Suggested module to work across Lua versions 5.2 and 5.3
 
 ## Usage
 
