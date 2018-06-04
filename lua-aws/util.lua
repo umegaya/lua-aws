@@ -477,7 +477,7 @@ end
 
 _M.date = {
 	iso8601 = function (val)
-		local tmp = os.date("!%Y-%m-%dT%TZ", val)
+		local tmp = os.date("!%Y-%m-%dT%H:%M:%SZ", val)
 		return tmp
 	end,
 	rfc822 = function (val)
@@ -489,7 +489,7 @@ _M.date = {
 }
 
 function _M.script_path()
-   local str = debug.getinfo(2, "S").source:sub(2)
+   local str = debug.getinfo(2, "S").source:sub(2):gsub([[\]],[[/]])
    local res = str:match("(.*/)")
    return res
 end
