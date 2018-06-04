@@ -6,6 +6,7 @@
     "jsonVersion":"1.1",
     "protocol":"json",
     "serviceFullName":"AWS Device Farm",
+    "serviceId":"Device Farm",
     "signatureVersion":"v4",
     "targetPrefix":"DeviceFarm_20150623",
     "uid":"devicefarm-2015-06-23"
@@ -26,6 +27,22 @@
         {"shape":"ServiceAccountException"}
       ],
       "documentation":"<p>Creates a device pool.</p>"
+    },
+    "CreateInstanceProfile":{
+      "name":"CreateInstanceProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateInstanceProfileRequest"},
+      "output":{"shape":"CreateInstanceProfileResult"},
+      "errors":[
+        {"shape":"ArgumentException"},
+        {"shape":"NotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ServiceAccountException"}
+      ],
+      "documentation":"<p>Creates a profile that can be applied to one or more private fleet device instances.</p>"
     },
     "CreateNetworkProfile":{
       "name":"CreateNetworkProfile",
@@ -106,6 +123,22 @@
         {"shape":"ServiceAccountException"}
       ],
       "documentation":"<p>Deletes a device pool given the pool ARN. Does not allow deletion of curated pools owned by the system.</p>"
+    },
+    "DeleteInstanceProfile":{
+      "name":"DeleteInstanceProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteInstanceProfileRequest"},
+      "output":{"shape":"DeleteInstanceProfileResult"},
+      "errors":[
+        {"shape":"ArgumentException"},
+        {"shape":"NotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ServiceAccountException"}
+      ],
+      "documentation":"<p>Deletes a profile that can be applied to one or more private device instances.</p>"
     },
     "DeleteNetworkProfile":{
       "name":"DeleteNetworkProfile",
@@ -219,6 +252,22 @@
       ],
       "documentation":"<p>Gets information about a unique device type.</p>"
     },
+    "GetDeviceInstance":{
+      "name":"GetDeviceInstance",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDeviceInstanceRequest"},
+      "output":{"shape":"GetDeviceInstanceResult"},
+      "errors":[
+        {"shape":"ArgumentException"},
+        {"shape":"NotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ServiceAccountException"}
+      ],
+      "documentation":"<p>Returns information about a device instance belonging to a private device fleet.</p>"
+    },
     "GetDevicePool":{
       "name":"GetDevicePool",
       "http":{
@@ -250,6 +299,22 @@
         {"shape":"ServiceAccountException"}
       ],
       "documentation":"<p>Gets information about compatibility with a device pool.</p>"
+    },
+    "GetInstanceProfile":{
+      "name":"GetInstanceProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetInstanceProfileRequest"},
+      "output":{"shape":"GetInstanceProfileResult"},
+      "errors":[
+        {"shape":"ArgumentException"},
+        {"shape":"NotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ServiceAccountException"}
+      ],
+      "documentation":"<p>Returns information about the specified instance profile.</p>"
     },
     "GetJob":{
       "name":"GetJob",
@@ -428,6 +493,22 @@
       ],
       "documentation":"<p>Gets information about artifacts.</p>"
     },
+    "ListDeviceInstances":{
+      "name":"ListDeviceInstances",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDeviceInstancesRequest"},
+      "output":{"shape":"ListDeviceInstancesResult"},
+      "errors":[
+        {"shape":"ArgumentException"},
+        {"shape":"NotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ServiceAccountException"}
+      ],
+      "documentation":"<p>Returns information about the private device instances associated with one or more AWS accounts.</p>"
+    },
     "ListDevicePools":{
       "name":"ListDevicePools",
       "http":{
@@ -460,6 +541,22 @@
       ],
       "documentation":"<p>Gets information about unique device types.</p>"
     },
+    "ListInstanceProfiles":{
+      "name":"ListInstanceProfiles",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListInstanceProfilesRequest"},
+      "output":{"shape":"ListInstanceProfilesResult"},
+      "errors":[
+        {"shape":"ArgumentException"},
+        {"shape":"NotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ServiceAccountException"}
+      ],
+      "documentation":"<p>Returns information about all the instance profiles in an AWS account.</p>"
+    },
     "ListJobs":{
       "name":"ListJobs",
       "http":{
@@ -474,7 +571,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"ServiceAccountException"}
       ],
-      "documentation":"<p>Gets information about jobs.</p>"
+      "documentation":"<p>Gets information about jobs for a given test run.</p>"
     },
     "ListNetworkProfiles":{
       "name":"ListNetworkProfiles",
@@ -621,7 +718,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"ServiceAccountException"}
       ],
-      "documentation":"<p>Gets information about suites.</p>"
+      "documentation":"<p>Gets information about test suites for a given job.</p>"
     },
     "ListTests":{
       "name":"ListTests",
@@ -637,7 +734,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"ServiceAccountException"}
       ],
-      "documentation":"<p>Gets information about tests.</p>"
+      "documentation":"<p>Gets information about tests in a given test suite.</p>"
     },
     "ListUniqueProblems":{
       "name":"ListUniqueProblems",
@@ -754,6 +851,22 @@
       ],
       "documentation":"<p>Initiates a stop request for the current test run. AWS Device Farm will immediately stop the run on devices where tests have not started executing, and you will not be billed for these devices. On devices where tests have started executing, Setup Suite and Teardown Suite tests will run to completion before stopping execution on those devices. You will be billed for Setup, Teardown, and any tests that were in progress or already completed.</p>"
     },
+    "UpdateDeviceInstance":{
+      "name":"UpdateDeviceInstance",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateDeviceInstanceRequest"},
+      "output":{"shape":"UpdateDeviceInstanceResult"},
+      "errors":[
+        {"shape":"ArgumentException"},
+        {"shape":"NotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ServiceAccountException"}
+      ],
+      "documentation":"<p>Updates information about an existing private device instance.</p>"
+    },
     "UpdateDevicePool":{
       "name":"UpdateDevicePool",
       "http":{
@@ -769,6 +882,22 @@
         {"shape":"ServiceAccountException"}
       ],
       "documentation":"<p>Modifies the name, description, and rules in a device pool given the attributes and the pool ARN. Rule updates are all-or-nothing, meaning they can only be updated as a whole (or not at all).</p>"
+    },
+    "UpdateInstanceProfile":{
+      "name":"UpdateInstanceProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateInstanceProfileRequest"},
+      "output":{"shape":"UpdateInstanceProfileResult"},
+      "errors":[
+        {"shape":"ArgumentException"},
+        {"shape":"NotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ServiceAccountException"}
+      ],
+      "documentation":"<p>Updates information about an existing private device instance profile.</p>"
     },
     "UpdateNetworkProfile":{
       "name":"UpdateNetworkProfile",
@@ -839,6 +968,10 @@
         "defaultJobTimeoutMinutes":{
           "shape":"JobTimeoutMinutes",
           "documentation":"<p>The default number of minutes (at the account level) a test run will execute before it times out. Default value is 60 minutes.</p>"
+        },
+        "skipAppResign":{
+          "shape":"SkipAppResign",
+          "documentation":"<p>When set to <code>true</code>, for private devices, Device Farm will not sign your app again. For public devices, Device Farm always signs your apps again and this parameter has no effect.</p> <p>For more information about how Device Farm re-signs your app(s), see <a href=\"https://aws.amazon.com/device-farm/faq/\">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>"
         }
       },
       "documentation":"<p>A container for account-level settings within AWS Device Farm.</p>"
@@ -851,6 +984,10 @@
     "AmazonResourceNames":{
       "type":"list",
       "member":{"shape":"AmazonResourceName"}
+    },
+    "AndroidPaths":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "AppPackagesCleanup":{"type":"boolean"},
     "ArgumentException":{
@@ -925,7 +1062,9 @@
         "EXPLORER_SUMMARY_LOG",
         "APPLICATION_CRASH_REPORT",
         "XCTEST_LOG",
-        "VIDEO"
+        "VIDEO",
+        "CUSTOMER_ARTIFACT",
+        "CUSTOMER_ARTIFACT_LOG"
       ]
     },
     "Artifacts":{
@@ -957,6 +1096,11 @@
         }
       },
       "documentation":"<p>Represents the amount of CPU that an app is using on a physical device.</p> <p>Note that this does not represent system-wide CPU usage.</p>"
+    },
+    "ClientId":{
+      "type":"string",
+      "max":64,
+      "min":0
     },
     "ContentType":{
       "type":"string",
@@ -1033,6 +1177,41 @@
         }
       },
       "documentation":"<p>Represents the result of a create device pool request.</p>"
+    },
+    "CreateInstanceProfileRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of your instance profile.</p>"
+        },
+        "description":{
+          "shape":"Message",
+          "documentation":"<p>The description of your instance profile.</p>"
+        },
+        "packageCleanup":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to <code>true</code>, Device Farm will remove app packages after a test run. The default value is <code>false</code> for private devices.</p>"
+        },
+        "excludeAppPackagesFromCleanup":{
+          "shape":"PackageIds",
+          "documentation":"<p>An array of strings specifying the list of app packages that should not be cleaned up from the device after a test run is over.</p> <p>The list of packages is only considered if you set <code>packageCleanup</code> to <code>true</code>.</p>"
+        },
+        "rebootAfterUse":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to <code>true</code>, Device Farm will reboot the instance after a test run. The default value is <code>true</code>.</p>"
+        }
+      }
+    },
+    "CreateInstanceProfileResult":{
+      "type":"structure",
+      "members":{
+        "instanceProfile":{
+          "shape":"InstanceProfile",
+          "documentation":"<p>An object containing information about your instance profile.</p>"
+        }
+      }
     },
     "CreateNetworkProfileRequest":{
       "type":"structure",
@@ -1130,10 +1309,10 @@
       "members":{
         "billingMethod":{
           "shape":"BillingMethod",
-          "documentation":"<p>Returns the billing method for purposes of configuring a remote access session.</p>"
+          "documentation":"<p>The billing method for the remote access session.</p>"
         }
       },
-      "documentation":"<p>Creates the configuration settings for a remote access session, including the device model and type.</p>"
+      "documentation":"<p>Configuration settings for a remote access session, including billing method.</p>"
     },
     "CreateRemoteAccessSessionRequest":{
       "type":"structure",
@@ -1150,13 +1329,45 @@
           "shape":"AmazonResourceName",
           "documentation":"<p>The Amazon Resource Name (ARN) of the device for which you want to create a remote access session.</p>"
         },
+        "instanceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the device instance for which you want to create a remote access session.</p>"
+        },
+        "sshPublicKey":{
+          "shape":"SshPublicKey",
+          "documentation":"<p>The public key of the <code>ssh</code> key pair you want to use for connecting to remote devices in your remote debugging session. This is only required if <code>remoteDebugEnabled</code> is set to <code>true</code>.</p>"
+        },
+        "remoteDebugEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to <code>true</code> if you want to access devices remotely for debugging in your remote access session.</p>"
+        },
+        "remoteRecordEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to <code>true</code> to enable remote recording for the remote access session.</p>"
+        },
+        "remoteRecordAppArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the app to be recorded in the remote access session.</p>"
+        },
         "name":{
           "shape":"Name",
           "documentation":"<p>The name of the remote access session that you wish to create.</p>"
         },
+        "clientId":{
+          "shape":"ClientId",
+          "documentation":"<p>Unique identifier for the client. If you want access to multiple devices on the same client, you should pass the same <code>clientId</code> value in each call to <code>CreateRemoteAccessSession</code>. This is required only if <code>remoteDebugEnabled</code> is set to <code>true</code>.</p>"
+        },
         "configuration":{
           "shape":"CreateRemoteAccessSessionConfiguration",
           "documentation":"<p>The configuration information for the remote access session request.</p>"
+        },
+        "interactionMode":{
+          "shape":"InteractionMode",
+          "documentation":"<p>The interaction mode of the remote access session. Valid values are:</p> <ul> <li> <p>INTERACTIVE: You can interact with the iOS device by viewing, touching, and rotating the screen. You <b>cannot</b> run XCUITest framework-based tests in this mode.</p> </li> <li> <p>NO_VIDEO: You are connected to the device but cannot interact with it or view the screen. This mode has the fastest test execution speed. You <b>can</b> run XCUITest framework-based tests in this mode.</p> </li> <li> <p>VIDEO_ONLY: You can view the screen but cannot touch or rotate it. You <b>can</b> run XCUITest framework-based tests and watch the screen in this mode.</p> </li> </ul>"
+        },
+        "skipAppResign":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to <code>true</code>, for private devices, Device Farm will not sign your app again. For public devices, Device Farm always signs your apps again and this parameter has no effect.</p> <p>For more information about how Device Farm re-signs your app(s), see <a href=\"https://aws.amazon.com/device-farm/faq/\">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>"
         }
       },
       "documentation":"<p>Creates and submits a request to start a remote access session.</p>"
@@ -1212,6 +1423,24 @@
       "type":"string",
       "enum":["USD"]
     },
+    "CustomerArtifactPaths":{
+      "type":"structure",
+      "members":{
+        "iosPaths":{
+          "shape":"IosPaths",
+          "documentation":"<p>Comma-separated list of paths on the iOS device where the artifacts generated by the customer's tests will be pulled from.</p>"
+        },
+        "androidPaths":{
+          "shape":"AndroidPaths",
+          "documentation":"<p>Comma-separated list of paths on the Android device where the artifacts generated by the customer's tests will be pulled from.</p>"
+        },
+        "deviceHostPaths":{
+          "shape":"DeviceHostPaths",
+          "documentation":"<p>Comma-separated list of paths in the test execution environment where the artifacts generated by the customer's tests will be pulled from.</p>"
+        }
+      },
+      "documentation":"<p>A JSON object specifying the paths where the artifacts generated by the customer's tests, on the device or in the test environment, will be pulled from.</p> <p>Specify <code>deviceHostPaths</code> and optionally specify either <code>iosPaths</code> or <code>androidPaths</code>.</p> <p>For web app tests, you can specify both <code>iosPaths</code> and <code>androidPaths</code>.</p>"
+    },
     "DateTime":{"type":"timestamp"},
     "DeleteDevicePoolRequest":{
       "type":"structure",
@@ -1229,6 +1458,21 @@
       "members":{
       },
       "documentation":"<p>Represents the result of a delete device pool request.</p>"
+    },
+    "DeleteInstanceProfileRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the instance profile you are requesting to delete.</p>"
+        }
+      }
+    },
+    "DeleteInstanceProfileResult":{
+      "type":"structure",
+      "members":{
+      }
     },
     "DeleteNetworkProfileRequest":{
       "type":"structure",
@@ -1332,6 +1576,10 @@
           "shape":"String",
           "documentation":"<p>The device's model name.</p>"
         },
+        "modelId":{
+          "shape":"String",
+          "documentation":"<p>The device's model ID.</p>"
+        },
         "formFactor":{
           "shape":"DeviceFormFactor",
           "documentation":"<p>The device's form factor.</p> <p>Allowed values include:</p> <ul> <li> <p>PHONE: The phone form factor.</p> </li> <li> <p>TABLET: The tablet form factor.</p> </li> </ul>"
@@ -1376,6 +1624,10 @@
           "shape":"Boolean",
           "documentation":"<p>Specifies whether remote access has been enabled for the specified device.</p>"
         },
+        "remoteDebugEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>This flag is set to <code>true</code> if remote debugging is enabled for the device.</p>"
+        },
         "fleetType":{
           "shape":"String",
           "documentation":"<p>The type of fleet to which this device belongs. Possible values for fleet type are PRIVATE and PUBLIC.</p>"
@@ -1383,6 +1635,10 @@
         "fleetName":{
           "shape":"String",
           "documentation":"<p>The name of the fleet to which this device belongs.</p>"
+        },
+        "instances":{
+          "shape":"DeviceInstances",
+          "documentation":"<p>The instances belonging to this device.</p>"
         }
       },
       "documentation":"<p>Represents a device type that an app is tested against.</p>"
@@ -1395,7 +1651,10 @@
         "FORM_FACTOR",
         "MANUFACTURER",
         "REMOTE_ACCESS_ENABLED",
-        "APPIUM_VERSION"
+        "REMOTE_DEBUG_ENABLED",
+        "APPIUM_VERSION",
+        "INSTANCE_ARN",
+        "INSTANCE_LABELS"
       ]
     },
     "DeviceFormFactor":{
@@ -1404,6 +1663,44 @@
         "PHONE",
         "TABLET"
       ]
+    },
+    "DeviceHostPaths":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "DeviceInstance":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the device instance.</p>"
+        },
+        "deviceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the device.</p>"
+        },
+        "labels":{
+          "shape":"InstanceLabels",
+          "documentation":"<p>An array of strings describing the device instance.</p>"
+        },
+        "status":{
+          "shape":"InstanceStatus",
+          "documentation":"<p>The status of the device instance. Valid values are listed below.</p>"
+        },
+        "udid":{
+          "shape":"String",
+          "documentation":"<p>Unique device identifier for the device instance.</p>"
+        },
+        "instanceProfile":{
+          "shape":"InstanceProfile",
+          "documentation":"<p>A object containing information about the instance profile.</p>"
+        }
+      },
+      "documentation":"<p>Represents the device instance.</p>"
+    },
+    "DeviceInstances":{
+      "type":"list",
+      "member":{"shape":"DeviceInstance"}
     },
     "DeviceMinutes":{
       "type":"structure",
@@ -1508,6 +1805,10 @@
         "appPackagesCleanup":{
           "shape":"AppPackagesCleanup",
           "documentation":"<p>True if app package cleanup is enabled at the beginning of the test; otherwise, false.</p>"
+        },
+        "skipAppResign":{
+          "shape":"SkipAppResign",
+          "documentation":"<p>When set to <code>true</code>, for private devices, Device Farm will not sign your app again. For public devices, Device Farm always signs your apps again and this parameter has no effect.</p> <p>For more information about how Device Farm re-signs your app(s), see <a href=\"https://aws.amazon.com/device-farm/faq/\">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>"
         }
       },
       "documentation":"<p>Represents configuration information about a test run, such as the execution timeout (in minutes).</p>"
@@ -1523,6 +1824,10 @@
         "ERRORED",
         "STOPPED"
       ]
+    },
+    "ExecutionResultCode":{
+      "type":"string",
+      "enum":["PARSING_FAILED"]
     },
     "ExecutionStatus":{
       "type":"string",
@@ -1558,6 +1863,25 @@
         }
       },
       "documentation":"<p>Represents the account settings return values from the <code>GetAccountSettings</code> request.</p>"
+    },
+    "GetDeviceInstanceRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the instance you're requesting information about.</p>"
+        }
+      }
+    },
+    "GetDeviceInstanceResult":{
+      "type":"structure",
+      "members":{
+        "deviceInstance":{
+          "shape":"DeviceInstance",
+          "documentation":"<p>An object containing information about your device instance.</p>"
+        }
+      }
     },
     "GetDevicePoolCompatibilityRequest":{
       "type":"structure",
@@ -1637,6 +1961,25 @@
         }
       },
       "documentation":"<p>Represents the result of a get device request.</p>"
+    },
+    "GetInstanceProfileRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of your instance profile.</p>"
+        }
+      }
+    },
+    "GetInstanceProfileResult":{
+      "type":"structure",
+      "members":{
+        "instanceProfile":{
+          "shape":"InstanceProfile",
+          "documentation":"<p>An object containing information about your instance profile.</p>"
+        }
+      }
     },
     "GetJobRequest":{
       "type":"structure",
@@ -1832,6 +2175,10 @@
       },
       "documentation":"<p>Represents the result of a get upload request.</p>"
     },
+    "HostAddress":{
+      "type":"string",
+      "max":1024
+    },
     "IdempotencyException":{
       "type":"structure",
       "members":{
@@ -1889,7 +2236,68 @@
       },
       "documentation":"<p>Represents the response from the server after AWS Device Farm makes a request to install to a remote access session.</p>"
     },
+    "InstanceLabels":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "InstanceProfile":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the instance profile.</p>"
+        },
+        "packageCleanup":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to <code>true</code>, Device Farm will remove app packages after a test run. The default value is <code>false</code> for private devices.</p>"
+        },
+        "excludeAppPackagesFromCleanup":{
+          "shape":"PackageIds",
+          "documentation":"<p>An array of strings specifying the list of app packages that should not be cleaned up from the device after a test run is over.</p> <p>The list of packages is only considered if you set <code>packageCleanup</code> to <code>true</code>.</p>"
+        },
+        "rebootAfterUse":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to <code>true</code>, Device Farm will reboot the instance after a test run. The default value is <code>true</code>.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the instance profile.</p>"
+        },
+        "description":{
+          "shape":"Message",
+          "documentation":"<p>The description of the instance profile.</p>"
+        }
+      },
+      "documentation":"<p>Represents the instance profile.</p>"
+    },
+    "InstanceProfiles":{
+      "type":"list",
+      "member":{"shape":"InstanceProfile"}
+    },
+    "InstanceStatus":{
+      "type":"string",
+      "enum":[
+        "IN_USE",
+        "PREPARING",
+        "AVAILABLE",
+        "NOT_AVAILABLE"
+      ]
+    },
     "Integer":{"type":"integer"},
+    "InteractionMode":{
+      "type":"string",
+      "enum":[
+        "INTERACTIVE",
+        "NO_VIDEO",
+        "VIDEO_ONLY"
+      ],
+      "max":64,
+      "min":0
+    },
+    "IosPaths":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "Job":{
       "type":"structure",
       "members":{
@@ -1936,6 +2344,10 @@
         "device":{
           "shape":"Device",
           "documentation":"<p>The device (phone or tablet).</p>"
+        },
+        "instanceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the instance.</p>"
         },
         "deviceMinutes":{
           "shape":"DeviceMinutes",
@@ -1995,6 +2407,32 @@
         }
       },
       "documentation":"<p>Represents the result of a list artifacts operation.</p>"
+    },
+    "ListDeviceInstancesRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>An integer specifying the maximum number of items you want to return in the API response.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.</p>"
+        }
+      }
+    },
+    "ListDeviceInstancesResult":{
+      "type":"structure",
+      "members":{
+        "deviceInstances":{
+          "shape":"DeviceInstances",
+          "documentation":"<p>An object containing information about your device instances.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>An identifier that can be used in the next call to this operation to return the next set of items in the list.</p>"
+        }
+      }
     },
     "ListDevicePoolsRequest":{
       "type":"structure",
@@ -2057,13 +2495,39 @@
       },
       "documentation":"<p>Represents the result of a list devices operation.</p>"
     },
+    "ListInstanceProfilesRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>An integer specifying the maximum number of items you want to return in the API response.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.</p>"
+        }
+      }
+    },
+    "ListInstanceProfilesResult":{
+      "type":"structure",
+      "members":{
+        "instanceProfiles":{
+          "shape":"InstanceProfiles",
+          "documentation":"<p>An object containing information about your instance profiles.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>An identifier that can be used in the next call to this operation to return the next set of items in the list.</p>"
+        }
+      }
+    },
     "ListJobsRequest":{
       "type":"structure",
       "required":["arn"],
       "members":{
         "arn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The jobs' ARNs.</p>"
+          "documentation":"<p>The run's Amazon Resource Name (ARN).</p>"
         },
         "nextToken":{
           "shape":"PaginationToken",
@@ -2308,7 +2772,7 @@
       "members":{
         "arn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The suites' ARNs.</p>"
+          "documentation":"<p>The job's Amazon Resource Name (ARN).</p>"
         },
         "nextToken":{
           "shape":"PaginationToken",
@@ -2337,7 +2801,7 @@
       "members":{
         "arn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The tests' ARNs.</p>"
+          "documentation":"<p>The test suite's Amazon Resource Name (ARN).</p>"
         },
         "nextToken":{
           "shape":"PaginationToken",
@@ -2683,6 +3147,10 @@
       "type":"list",
       "member":{"shape":"Offering"}
     },
+    "PackageIds":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "PaginationToken":{
       "type":"string",
       "max":1024,
@@ -2887,6 +3355,30 @@
           "shape":"Device",
           "documentation":"<p>The device (phone or tablet) used in the remote access session.</p>"
         },
+        "instanceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the instance.</p>"
+        },
+        "remoteDebugEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>This flag is set to <code>true</code> if remote debugging is enabled for the remote access session.</p>"
+        },
+        "remoteRecordEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>This flag is set to <code>true</code> if remote recording is enabled for the remote access session.</p>"
+        },
+        "remoteRecordAppArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the app to be recorded in the remote access session.</p>"
+        },
+        "hostAddress":{
+          "shape":"HostAddress",
+          "documentation":"<p>IP address of the EC2 host where you need to connect to remotely debug devices. Only returned if remote debugging is enabled for the remote access session.</p>"
+        },
+        "clientId":{
+          "shape":"ClientId",
+          "documentation":"<p>Unique identifier of your client for the remote access session. Only returned if remote debugging is enabled for the remote access session.</p>"
+        },
         "billingMethod":{
           "shape":"BillingMethod",
           "documentation":"<p>The billing method of the remote access session. Possible values include <code>METERED</code> or <code>UNMETERED</code>. For more information about metered devices, see <a href=\"http://docs.aws.amazon.com/devicefarm/latest/developerguide/welcome.html#welcome-terminology\">AWS Device Farm terminology</a>.\"</p>"
@@ -2898,6 +3390,18 @@
         "endpoint":{
           "shape":"String",
           "documentation":"<p>The endpoint for the remote access sesssion.</p>"
+        },
+        "deviceUdid":{
+          "shape":"String",
+          "documentation":"<p>Unique device identifier for the remote device. Only returned if remote debugging is enabled for the remote access session.</p>"
+        },
+        "interactionMode":{
+          "shape":"InteractionMode",
+          "documentation":"<p>The interaction mode of the remote access session. Valid values are:</p> <ul> <li> <p>INTERACTIVE: You can interact with the iOS device by viewing, touching, and rotating the screen. You <b>cannot</b> run XCUITest framework-based tests in this mode.</p> </li> <li> <p>NO_VIDEO: You are connected to the device but cannot interact with it or view the screen. This mode has the fastest test execution speed. You <b>can</b> run XCUITest framework-based tests in this mode.</p> </li> <li> <p>VIDEO_ONLY: You can view the screen but cannot touch or rotate it. You <b>can</b> run XCUITest framework-based tests and watch the screen in this mode.</p> </li> </ul>"
+        },
+        "skipAppResign":{
+          "shape":"SkipAppResign",
+          "documentation":"<p>When set to <code>true</code>, for private devices, Device Farm will not sign your app again. For public devices, Device Farm always signs your apps again and this parameter has no effect.</p> <p>For more information about how Device Farm re-signs your app(s), see <a href=\"https://aws.amazon.com/device-farm/faq/\">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>"
         }
       },
       "documentation":"<p>Represents information about the remote access session.</p>"
@@ -2949,7 +3453,7 @@
       "members":{
         "attribute":{
           "shape":"DeviceAttribute",
-          "documentation":"<p>The rule's stringified attribute. For example, specify the value as <code>\"\\\"abc\\\"\"</code>.</p> <p>Allowed values include:</p> <ul> <li> <p>ARN: The ARN.</p> </li> <li> <p>FORM_FACTOR: The form factor (for example, phone or tablet).</p> </li> <li> <p>MANUFACTURER: The manufacturer.</p> </li> <li> <p>PLATFORM: The platform (for example, Android or iOS).</p> </li> <li> <p>REMOTE_ACCESS_ENABLED: Whether the device is enabled for remote access.</p> </li> <li> <p>APPIUM_VERSION: The Appium version for the test.</p> </li> </ul>"
+          "documentation":"<p>The rule's stringified attribute. For example, specify the value as <code>\"\\\"abc\\\"\"</code>.</p> <p>Allowed values include:</p> <ul> <li> <p>ARN: The ARN.</p> </li> <li> <p>FORM_FACTOR: The form factor (for example, phone or tablet).</p> </li> <li> <p>MANUFACTURER: The manufacturer.</p> </li> <li> <p>PLATFORM: The platform (for example, Android or iOS).</p> </li> <li> <p>REMOTE_ACCESS_ENABLED: Whether the device is enabled for remote access.</p> </li> <li> <p>APPIUM_VERSION: The Appium version for the test.</p> </li> <li> <p>INSTANCE_ARN: The Amazon Resource Name (ARN) of the device instance.</p> </li> <li> <p>INSTANCE_LABELS: The label of the device instance.</p> </li> </ul>"
         },
         "operator":{
           "shape":"RuleOperator",
@@ -3043,9 +3547,61 @@
         "networkProfile":{
           "shape":"NetworkProfile",
           "documentation":"<p>The network profile being used for a test run.</p>"
+        },
+        "parsingResultUrl":{
+          "shape":"String",
+          "documentation":"<p>Read-only URL for an object in S3 bucket where you can get the parsing results of the test package. If the test package doesn't parse, the reason why it doesn't parse appears in the file that this URL points to.</p>"
+        },
+        "resultCode":{
+          "shape":"ExecutionResultCode",
+          "documentation":"<p>Supporting field for the result field. Set only if <code>result</code> is <code>SKIPPED</code>. <code>PARSING_FAILED</code> if the result is skipped because of test package parsing failure.</p>"
+        },
+        "seed":{
+          "shape":"Integer",
+          "documentation":"<p>For fuzz tests, this is a seed to use for randomizing the UI fuzz test. Using the same seed value between tests ensures identical event sequences.</p>"
+        },
+        "appUpload":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>An app to upload or that has been uploaded.</p>"
+        },
+        "eventCount":{
+          "shape":"Integer",
+          "documentation":"<p>For fuzz tests, this is the number of events, between 1 and 10000, that the UI fuzz test should perform.</p>"
+        },
+        "jobTimeoutMinutes":{
+          "shape":"JobTimeoutMinutes",
+          "documentation":"<p>The number of minutes the job will execute before it times out.</p>"
+        },
+        "devicePoolArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN of the device pool for the run.</p>"
+        },
+        "locale":{
+          "shape":"String",
+          "documentation":"<p>Information about the locale that is used for the run.</p>"
+        },
+        "radios":{
+          "shape":"Radios",
+          "documentation":"<p>Information about the radio states for the run.</p>"
+        },
+        "location":{
+          "shape":"Location",
+          "documentation":"<p>Information about the location that is used for the run.</p>"
+        },
+        "customerArtifactPaths":{
+          "shape":"CustomerArtifactPaths",
+          "documentation":"<p>Output <code>CustomerArtifactPaths</code> object for the test run.</p>"
+        },
+        "webUrl":{
+          "shape":"String",
+          "documentation":"<p>The Device Farm console URL for the recording of the run.</p>"
+        },
+        "skipAppResign":{
+          "shape":"SkipAppResign",
+          "documentation":"<p>When set to <code>true</code>, for private devices, Device Farm will not sign your app again. For public devices, Device Farm always signs your apps again and this parameter has no effect.</p> <p>For more information about how Device Farm re-signs your app(s), see <a href=\"https://aws.amazon.com/device-farm/faq/\">Do you modify my app?</a> in the <i>AWS Device Farm FAQs</i>.</p>"
         }
       },
-      "documentation":"<p>Represents an app on a set of devices with a specific test and configuration.</p>"
+      "documentation":"<p>Represents a test run on a set of devices with a given app package, test parameters, etc.</p>"
     },
     "Runs":{
       "type":"list",
@@ -3113,6 +3669,10 @@
         "location":{
           "shape":"Location",
           "documentation":"<p>Information about the location that is used for the run.</p>"
+        },
+        "customerArtifactPaths":{
+          "shape":"CustomerArtifactPaths",
+          "documentation":"<p>Input <code>CustomerArtifactPaths</code> object for the scheduled run configuration.</p>"
         },
         "radios":{
           "shape":"Radios",
@@ -3211,6 +3771,12 @@
       },
       "documentation":"<p>There was a problem with the service account.</p>",
       "exception":true
+    },
+    "SkipAppResign":{"type":"boolean"},
+    "SshPublicKey":{
+      "type":"string",
+      "max":8192,
+      "min":0
     },
     "StopRemoteAccessSessionRequest":{
       "type":"structure",
@@ -3369,6 +3935,7 @@
       "enum":[
         "BUILTIN_FUZZ",
         "BUILTIN_EXPLORER",
+        "WEB_PERFORMANCE_PROFILE",
         "APPIUM_JAVA_JUNIT",
         "APPIUM_JAVA_TESTNG",
         "APPIUM_PYTHON",
@@ -3380,7 +3947,9 @@
         "UIAUTOMATION",
         "UIAUTOMATOR",
         "XCTEST",
-        "XCTEST_UI"
+        "XCTEST_UI",
+        "REMOTE_ACCESS_RECORD",
+        "REMOTE_ACCESS_REPLAY"
       ]
     },
     "Tests":{
@@ -3433,6 +4002,33 @@
       "key":{"shape":"ExecutionResult"},
       "value":{"shape":"UniqueProblems"}
     },
+    "UpdateDeviceInstanceRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the device instance.</p>"
+        },
+        "profileArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the profile that you want to associate with the device instance.</p>"
+        },
+        "labels":{
+          "shape":"InstanceLabels",
+          "documentation":"<p>An array of strings that you want to associate with the device instance.</p>"
+        }
+      }
+    },
+    "UpdateDeviceInstanceResult":{
+      "type":"structure",
+      "members":{
+        "deviceInstance":{
+          "shape":"DeviceInstance",
+          "documentation":"<p>An object containing information about your device instance.</p>"
+        }
+      }
+    },
     "UpdateDevicePoolRequest":{
       "type":"structure",
       "required":["arn"],
@@ -3466,13 +4062,52 @@
       },
       "documentation":"<p>Represents the result of an update device pool request.</p>"
     },
+    "UpdateInstanceProfileRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the instance profile.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The updated name for your instance profile.</p>"
+        },
+        "description":{
+          "shape":"Message",
+          "documentation":"<p>The updated description for your instance profile.</p>"
+        },
+        "packageCleanup":{
+          "shape":"Boolean",
+          "documentation":"<p>The updated choice for whether you want to specify package cleanup. The default value is <code>false</code> for private devices.</p>"
+        },
+        "excludeAppPackagesFromCleanup":{
+          "shape":"PackageIds",
+          "documentation":"<p>An array of strings specifying the list of app packages that should not be cleaned up from the device after a test run is over.</p> <p>The list of packages is only considered if you set <code>packageCleanup</code> to <code>true</code>.</p>"
+        },
+        "rebootAfterUse":{
+          "shape":"Boolean",
+          "documentation":"<p>The updated choice for whether you want to reboot the device after use. The default value is <code>true</code>.</p>"
+        }
+      }
+    },
+    "UpdateInstanceProfileResult":{
+      "type":"structure",
+      "members":{
+        "instanceProfile":{
+          "shape":"InstanceProfile",
+          "documentation":"<p>An object containing information about your instance profile.</p>"
+        }
+      }
+    },
     "UpdateNetworkProfileRequest":{
       "type":"structure",
       "required":["arn"],
       "members":{
         "arn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the project that you wish to update network profile settings.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project for which you want to update network profile settings.</p>"
         },
         "name":{
           "shape":"Name",
