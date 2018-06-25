@@ -82,12 +82,12 @@ local AWS = class.AWS {
 				protocol = 'http',
 				method = 'GET'
 			})
-			local obj = self._json_engine:decode(resp.body)
-			config.accessKeyId = obj.accessKeyId
-			config.secretAccessKey = obj.secretAccessKey
-		else
-			assert(config.accessKeyId and config.secretAccessKey)
+			local obj = self._json_engine.decode(resp.body)
+			config.accessKeyId = obj.AccessKeyId
+			config.secretAccessKey = obj.SecretAccessKey
+			config.sessionToken = obj.Token
 		end
+		assert(config.accessKeyId and config.secretAccessKey)
 		return config
 	end,
 	init_engines = function (self, preferred)

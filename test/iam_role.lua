@@ -3,9 +3,15 @@ local util = require 'lua-aws.util'
 local AWS = require ('lua-aws.init')
 local dump_res = helper.dump_res
 
+if os.getenv('AWS_ACCESS_KEY') then
+	-- ignored in non-aws instance environment
+	return
+end
+
 local aws = AWS.new({
-	role = '',
+	role = 'aws_auto_cred_test',
 	sslEnabled = not helper.MOCK_HOST(),
+	region = 'ap-northeast-1',
 	endpoint = helper.MOCK_HOST(),
 })
 
