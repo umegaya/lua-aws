@@ -6,9 +6,7 @@ assert(available_engines)
 local AWS = class.AWS {
 	VERSION = 'v0.1.0',
 	initialize = function (self, config, http_engine)
-		assert(config and config.accessKeyId and config.secretAccessKey)
-		self._config = self:verify_and_fill_config(config)
-
+		assert(config)
 		if http_engine then -- backward conpatibility
 			if not config.preferred_engines then
 				config.preferred_engines = {}
@@ -19,6 +17,8 @@ local AWS = class.AWS {
 		self._http_engine = engines.http
 		self._json_engine = engines.json
 		self._fs_engine = engines.fs
+		-- check or retrieve credentials / force enable SSL for default
+		self._config = self:verify_and_fill_config(config)
 		--self._http_engine = http_engine or self:get_http_engine()
 		--> define service
 		self.DynamoDB = require('lua-aws.services.dynamodb').new(self)
@@ -71,6 +71,23 @@ local AWS = class.AWS {
 		elseif not config.sslEnabled then
 			print('https disabled: its strongly recommended to use https instead of non-secure version')
 		end
+		if config.role then
+			-- get credential from role
+			assert(self._http_engine and self._json_engine) -- http/json should be already initialized
+			local resp = self:http_request({
+				path = ('/latest/meta-data/iam/security-credentials/' .. config.role),
+				headers = {},
+				host = '169.254.169.254',
+				port = 80,
+				protocol = 'http',
+				method = 'GET'
+			})
+			local obj = self._json_engine.decode(resp.body)
+			config.accessKeyId = obj.AccessKeyId
+			config.secretAccessKey = obj.SecretAccessKey
+			config.sessionToken = obj.Token
+		end
+		assert(config.accessKeyId and config.secretAccessKey)
 		return config
 	end,
 	init_engines = function (self, preferred)

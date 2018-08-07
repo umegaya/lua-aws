@@ -51,6 +51,7 @@ now there is no rockspec so please copy them directory like /usr/local/share/lua
   - as of lua 5.3, built-in bit operator like ```&``` is introduced. as a result, no standard bit library is shipped with lua itself, which we used in lua-aws/deps/sha2.lua. so if you want to use lua-aws in such environment, you manually install a module like below which gives compatibility to old bit module. 
     - [bit](https://github.com/aryajur/bit.git) Suggested module to work across Lua versions 5.2 and 5.3
 
+
 ## Usage
 
 see test/ec2.lua
