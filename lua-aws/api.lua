@@ -52,6 +52,9 @@ return class.AWS_API {
 	json_version = function (self)
 		return self._defs.metadata.jsonVersion or "1.0"
 	end,
+	protocol = function (self)
+		return self._defs.metadata.protocol
+	end,
 	endpoint = function (self)
 		-- give 1st priority to manually configured endpoint
 		local config = self:config()
