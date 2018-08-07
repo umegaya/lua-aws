@@ -7,10 +7,14 @@ local aws = AWS.new({
 	endpoint = helper.MOCK_HOST(),
 })
 
-local ok,r = aws.Firehose:api():listDeliveryStreams()
+if not helper.MOCK_HOST() then
+	-- 2018/08/07 iyatomi moto_server does not seem to support 
 
-if not ok then
-	helper.dump = true
-	helper.dump_res('athena', r)
-	assert(false, 'error:' .. r)
+	local ok,r = aws.Firehose:api():listDeliveryStreams()
+
+	if not ok then
+		helper.dump = true
+		helper.dump_res('athena', r)
+		assert(false, 'error:' .. r)
+	end
 end

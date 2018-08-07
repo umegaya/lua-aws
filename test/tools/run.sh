@@ -28,7 +28,8 @@ if [ ! -z $2 ]; then
 			echo "cannot get pid"
 			exit 1
 		fi
-		sleep 1
+		echo "running mock server at $PID"
+		sleep 2
 		# run test with using mock
 		$LUA $1 http://127.0.0.1:5000
 		RESULT=$?

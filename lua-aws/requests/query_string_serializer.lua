@@ -38,9 +38,12 @@ return class.AWS_RequestSerializer {
 
 	serialize_list = function (self, name, list, rules, fn)
 		local memberRules = rules.member or {}
+		local ec2 = self._api:protocol() == 'ec2'
 		for n,v in ipairs(list) do
 			local suffix = ('.' .. tostring(n))
-			if rules.flattened then
+			if ec2 then
+				-- do nothing for ec2 protcol (borrow from aws-sdk-js)
+			elseif rules.flattened then
 				if memberRules.name then
 					local parts = util.split(name, '.')
 					table.remove(parts, 1)
