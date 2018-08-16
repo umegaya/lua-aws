@@ -6,7 +6,7 @@ lua-aws
 
 
 ## Concept
-it heavily inspired by [aws-sdk-js](https://raw.github.com/aws/aws-sdk-js/),
+it heavily inspired by [aws-sdk-js](https://github.com/aws/aws-sdk-js/),
 which main good point is define all AWS sevices by JS data structure. and library read these data and 
 building API code on the fly. so AWS JS SDK is:
 - less code to maintain
