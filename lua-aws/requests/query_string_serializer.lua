@@ -14,7 +14,7 @@ return class.AWS_RequestSerializer {
 	serialize_struct = function (self, prefix, struct, rules, fn)
 		for name, member in pairs(struct) do
 			if rules[name] then
-				local n = rules[name].name or name
+				local n = util.ucfirst(rules[name].name or name)
 				local memberName = prefix and (prefix .. '.' .. n) or tostring(n)
 				self:serialize_member(memberName, member, rules[name], fn)
 			else
@@ -51,7 +51,7 @@ return class.AWS_RequestSerializer {
 					if #parts > 0 and parts[#parts] == "" then
 						table.remove(parts, #parts)
 					end
-					table.insert(parts, memberRules.name)
+					table.insert(parts, util.ucfirst(memberRules.name))
 					name = util.join(parts, '.')
 				end
 			else

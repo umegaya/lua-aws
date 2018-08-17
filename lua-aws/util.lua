@@ -531,4 +531,8 @@ _M.filesize = function (fh)
 	return sz
 end
 
+_M.ucfirst = function (str)
+	return str:gsub("^%l", string.upper)
+end
+
 return _M
