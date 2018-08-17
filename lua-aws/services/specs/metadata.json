@@ -26,7 +26,10 @@
     "name": "Budgets"
   },
   "clouddirectory": {
-    "name": "CloudDirectory"
+    "name": "CloudDirectory",
+    "versions": [
+      "2016-05-10*"
+    ]
   },
   "cloudformation": {
     "name": "CloudFormation",
@@ -50,7 +53,8 @@
       "2016-09-07*",
       "2016-09-29*",
       "2016-11-25*",
-      "2017-03-25*"
+      "2017-03-25*",
+      "2017-10-30*"
     ],
     "cors": true
   },
@@ -87,7 +91,8 @@
     "cors": true
   },
   "codebuild": {
-    "name": "CodeBuild"
+    "name": "CodeBuild",
+    "cors": true
   },
   "codecommit": {
     "name": "CodeCommit",
@@ -495,14 +500,16 @@
   },
   "kinesisvideoarchivedmedia": {
     "prefix": "kinesis-video-archived-media",
-    "name": "KinesisVideoArchivedMedia"
+    "name": "KinesisVideoArchivedMedia",
+    "cors": true
   },
   "kinesisvideomedia": {
     "prefix": "kinesis-video-media",
     "name": "KinesisVideoMedia"
   },
   "kinesisvideo": {
-    "name": "KinesisVideo"
+    "name": "KinesisVideo",
+    "cors": true
   },
   "sagemakerruntime": {
     "prefix": "runtime.sagemaker",
@@ -512,7 +519,8 @@
     "name": "SageMaker"
   },
   "translate": {
-    "name": "Translate"
+    "name": "Translate",
+    "cors": true
   },
   "resourcegroups": {
     "prefix": "resource-groups",
@@ -553,6 +561,36 @@
     "name": "FMS"
   },
   "secretsmanager": {
-    "name": "SecretsManager"
+    "name": "SecretsManager",
+    "cors": true
+  },
+  "iotanalytics": {
+    "name": "IoTAnalytics"
+  },
+  "iot1clickdevicesservice": {
+    "prefix": "iot1click-devices",
+    "name": "IoT1ClickDevicesService"
+  },
+  "iot1clickprojects": {
+    "prefix": "iot1click-projects",
+    "name": "IoT1ClickProjects"
+  },
+  "pi": {
+    "name": "PI"
+  },
+  "neptune": {
+    "name": "Neptune"
+  },
+  "mediatailor": {
+    "name": "MediaTailor"
+  },
+  "eks": {
+    "name": "EKS"
+  },
+  "macie": {
+    "name": "Macie"
+  },
+  "dlm": {
+    "name": "DLM"
   }
 }
