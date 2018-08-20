@@ -99,6 +99,24 @@
       "documentation":"<p>Attaches the specified policy to the specified principal (certificate or other credential).</p> <p> <b>Note:</b> This API is deprecated. Please use <a>AttachPolicy</a> instead.</p>",
       "deprecated":true
     },
+    "AttachSecurityProfile":{
+      "name":"AttachSecurityProfile",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/security-profiles/{securityProfileName}/targets"
+      },
+      "input":{"shape":"AttachSecurityProfileRequest"},
+      "output":{"shape":"AttachSecurityProfileResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"VersionConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Associates a Device Defender security profile with a thing group or with this account. Each thing group or account can have up to five security profiles associated with it.</p>"
+    },
     "AttachThingPrincipal":{
       "name":"AttachThingPrincipal",
       "http":{
@@ -116,6 +134,22 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Attaches the specified principal to the specified thing.</p>"
+    },
+    "CancelAuditTask":{
+      "name":"CancelAuditTask",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/audit/tasks/{taskId}/cancel"
+      },
+      "input":{"shape":"CancelAuditTaskRequest"},
+      "output":{"shape":"CancelAuditTaskResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Cancels an audit that is in progress. The audit can be either scheduled or on-demand. If the audit is not in progress, an \"InvalidRequestException\" occurs.</p>"
     },
     "CancelCertificateTransfer":{
       "name":"CancelCertificateTransfer",
@@ -150,6 +184,23 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Cancels a job.</p>"
+    },
+    "CancelJobExecution":{
+      "name":"CancelJobExecution",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/things/{thingName}/jobs/{jobId}/cancel"
+      },
+      "input":{"shape":"CancelJobExecutionRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidStateTransitionException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"VersionConflictException"}
+      ],
+      "documentation":"<p>Cancels the execution of a job for a given thing.</p>"
     },
     "ClearDefaultAuthorizer":{
       "name":"ClearDefaultAuthorizer",
@@ -317,6 +368,38 @@
       ],
       "documentation":"<p>Creates a role alias.</p>"
     },
+    "CreateScheduledAudit":{
+      "name":"CreateScheduledAudit",
+      "http":{
+        "method":"POST",
+        "requestUri":"/audit/scheduledaudits/{scheduledAuditName}"
+      },
+      "input":{"shape":"CreateScheduledAuditRequest"},
+      "output":{"shape":"CreateScheduledAuditResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Creates a scheduled audit that is run at a specified time interval.</p>"
+    },
+    "CreateSecurityProfile":{
+      "name":"CreateSecurityProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/security-profiles/{securityProfileName}"
+      },
+      "input":{"shape":"CreateSecurityProfileRequest"},
+      "output":{"shape":"CreateSecurityProfileResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Creates a Device Defender security profile.</p>"
+    },
     "CreateStream":{
       "name":"CreateStream",
       "http":{
@@ -353,7 +436,7 @@
         {"shape":"ResourceAlreadyExistsException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Creates a thing record in the thing registry.</p>"
+      "documentation":"<p>Creates a thing record in the registry.</p> <note> <p>This is a control plane operation. See <a href=\"http://docs.aws.amazon.com/iot/latest/developerguide/authorization.html\">Authorization</a> for information about authorizing control plane actions.</p> </note>"
     },
     "CreateThingGroup":{
       "name":"CreateThingGroup",
@@ -369,7 +452,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Create a thing group.</p>"
+      "documentation":"<p>Create a thing group.</p> <note> <p>This is a control plane operation. See <a href=\"http://docs.aws.amazon.com/iot/latest/developerguide/authorization.html\">Authorization</a> for information about authorizing control plane actions.</p> </note>"
     },
     "CreateThingType":{
       "name":"CreateThingType",
@@ -404,6 +487,22 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Creates a rule. Creating rules is an administrator-level action. Any user who has permission to create rules will be able to access data processed by the rule.</p>"
+    },
+    "DeleteAccountAuditConfiguration":{
+      "name":"DeleteAccountAuditConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/audit/configuration"
+      },
+      "input":{"shape":"DeleteAccountAuditConfigurationRequest"},
+      "output":{"shape":"DeleteAccountAuditConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Restores the default settings for Device Defender audits for this account. Any configuration data you entered is deleted and all audit checks are reset to disabled. </p>"
     },
     "DeleteAuthorizer":{
       "name":"DeleteAuthorizer",
@@ -461,6 +560,39 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deletes the specified certificate.</p> <p>A certificate cannot be deleted if it has a policy attached to it or if its status is set to ACTIVE. To delete a certificate, first use the <a>DetachPrincipalPolicy</a> API to detach all policies. Next, use the <a>UpdateCertificate</a> API to set the certificate to the INACTIVE status.</p>"
+    },
+    "DeleteJob":{
+      "name":"DeleteJob",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/jobs/{jobId}"
+      },
+      "input":{"shape":"DeleteJobRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidStateTransitionException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Deletes a job and its related job executions.</p> <p>Deleting a job may take time, depending on the number of job executions created for the job and various other factors. While the job is being deleted, the status of the job will be shown as \"DELETION_IN_PROGRESS\". Attempting to delete or cancel a job whose status is already \"DELETION_IN_PROGRESS\" will result in an error.</p> <p>Only 10 jobs may have status \"DELETION_IN_PROGRESS\" at the same time, or a LimitExceededException will occur.</p>"
+    },
+    "DeleteJobExecution":{
+      "name":"DeleteJobExecution",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/things/{thingName}/jobs/{jobId}/executionNumber/{executionNumber}"
+      },
+      "input":{"shape":"DeleteJobExecutionRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidStateTransitionException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Deletes a job execution.</p>"
     },
     "DeleteOTAUpdate":{
       "name":"DeleteOTAUpdate",
@@ -551,6 +683,38 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deletes a role alias</p>"
+    },
+    "DeleteScheduledAudit":{
+      "name":"DeleteScheduledAudit",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/audit/scheduledaudits/{scheduledAuditName}"
+      },
+      "input":{"shape":"DeleteScheduledAuditRequest"},
+      "output":{"shape":"DeleteScheduledAuditResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes a scheduled audit.</p>"
+    },
+    "DeleteSecurityProfile":{
+      "name":"DeleteSecurityProfile",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/security-profiles/{securityProfileName}"
+      },
+      "input":{"shape":"DeleteSecurityProfileRequest"},
+      "output":{"shape":"DeleteSecurityProfileResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"VersionConflictException"}
+      ],
+      "documentation":"<p>Deletes a Device Defender security profile.</p>"
     },
     "DeleteStream":{
       "name":"DeleteStream",
@@ -670,6 +834,36 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Deprecates a thing type. You can not associate new things with deprecated thing type.</p>"
+    },
+    "DescribeAccountAuditConfiguration":{
+      "name":"DescribeAccountAuditConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/audit/configuration"
+      },
+      "input":{"shape":"DescribeAccountAuditConfigurationRequest"},
+      "output":{"shape":"DescribeAccountAuditConfigurationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Gets information about the Device Defender audit settings for this account. Settings include how audit notifications are sent and which audit checks are enabled or disabled.</p>"
+    },
+    "DescribeAuditTask":{
+      "name":"DescribeAuditTask",
+      "http":{
+        "method":"GET",
+        "requestUri":"/audit/tasks/{taskId}"
+      },
+      "input":{"shape":"DescribeAuditTaskRequest"},
+      "output":{"shape":"DescribeAuditTaskResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Gets information about a Device Defender audit.</p>"
     },
     "DescribeAuthorizer":{
       "name":"DescribeAuthorizer",
@@ -841,6 +1035,38 @@
       ],
       "documentation":"<p>Describes a role alias.</p>"
     },
+    "DescribeScheduledAudit":{
+      "name":"DescribeScheduledAudit",
+      "http":{
+        "method":"GET",
+        "requestUri":"/audit/scheduledaudits/{scheduledAuditName}"
+      },
+      "input":{"shape":"DescribeScheduledAuditRequest"},
+      "output":{"shape":"DescribeScheduledAuditResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Gets information about a scheduled audit.</p>"
+    },
+    "DescribeSecurityProfile":{
+      "name":"DescribeSecurityProfile",
+      "http":{
+        "method":"GET",
+        "requestUri":"/security-profiles/{securityProfileName}"
+      },
+      "input":{"shape":"DescribeSecurityProfileRequest"},
+      "output":{"shape":"DescribeSecurityProfileResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Gets information about a Device Defender security profile.</p>"
+    },
     "DescribeStream":{
       "name":"DescribeStream",
       "http":{
@@ -963,6 +1189,22 @@
       "documentation":"<p>Removes the specified policy from the specified certificate.</p> <p> <b>Note:</b> This API is deprecated. Please use <a>DetachPolicy</a> instead.</p>",
       "deprecated":true
     },
+    "DetachSecurityProfile":{
+      "name":"DetachSecurityProfile",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/security-profiles/{securityProfileName}/targets"
+      },
+      "input":{"shape":"DetachSecurityProfileRequest"},
+      "output":{"shape":"DetachSecurityProfileResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Disassociates a Device Defender security profile from a thing group or from this account.</p>"
+    },
     "DetachThingPrincipal":{
       "name":"DetachThingPrincipal",
       "http":{
@@ -1028,7 +1270,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Gets effective policies.</p>"
+      "documentation":"<p>Gets a list of the policies that have an effect on the authorization behavior of the specified device when it connects to the AWS IoT device gateway.</p>"
     },
     "GetIndexingConfiguration":{
       "name":"GetIndexingConfiguration",
@@ -1076,7 +1318,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Gets the logging options.</p>"
+      "documentation":"<p>Gets the logging options.</p> <p>NOTE: use of this command is not recommended. Use <code>GetV2LoggingOptions</code> instead.</p>"
     },
     "GetOTAUpdate":{
       "name":"GetOTAUpdate",
@@ -1175,10 +1417,26 @@
       "output":{"shape":"GetV2LoggingOptionsResponse"},
       "errors":[
         {"shape":"InternalException"},
-        {"shape":"InvalidRequestException"},
+        {"shape":"NotConfiguredException"},
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Gets the fine grained logging options.</p>"
+    },
+    "ListActiveViolations":{
+      "name":"ListActiveViolations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/active-violations"
+      },
+      "input":{"shape":"ListActiveViolationsRequest"},
+      "output":{"shape":"ListActiveViolationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists the active violations for a given Device Defender security profile.</p>"
     },
     "ListAttachedPolicies":{
       "name":"ListAttachedPolicies",
@@ -1198,6 +1456,36 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Lists the policies attached to the specified thing group.</p>"
+    },
+    "ListAuditFindings":{
+      "name":"ListAuditFindings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/audit/findings"
+      },
+      "input":{"shape":"ListAuditFindingsRequest"},
+      "output":{"shape":"ListAuditFindingsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists the findings (results) of a Device Defender audit or of the audits performed during a specified time period. (Findings are retained for 180 days.)</p>"
+    },
+    "ListAuditTasks":{
+      "name":"ListAuditTasks",
+      "http":{
+        "method":"GET",
+        "requestUri":"/audit/tasks"
+      },
+      "input":{"shape":"ListAuditTasksRequest"},
+      "output":{"shape":"ListAuditTasksResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists the Device Defender audits that have been performed during a given time period.</p>"
     },
     "ListAuthorizers":{
       "name":"ListAuthorizers",
@@ -1474,6 +1762,52 @@
       ],
       "documentation":"<p>Lists the role aliases registered in your account.</p>"
     },
+    "ListScheduledAudits":{
+      "name":"ListScheduledAudits",
+      "http":{
+        "method":"GET",
+        "requestUri":"/audit/scheduledaudits"
+      },
+      "input":{"shape":"ListScheduledAuditsRequest"},
+      "output":{"shape":"ListScheduledAuditsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists all of your scheduled audits.</p>"
+    },
+    "ListSecurityProfiles":{
+      "name":"ListSecurityProfiles",
+      "http":{
+        "method":"GET",
+        "requestUri":"/security-profiles"
+      },
+      "input":{"shape":"ListSecurityProfilesRequest"},
+      "output":{"shape":"ListSecurityProfilesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists the Device Defender security profiles you have created. You can use filters to list only those security profiles associated with a thing group or only those associated with your account.</p>"
+    },
+    "ListSecurityProfilesForTarget":{
+      "name":"ListSecurityProfilesForTarget",
+      "http":{
+        "method":"GET",
+        "requestUri":"/security-profiles-for-target"
+      },
+      "input":{"shape":"ListSecurityProfilesForTargetRequest"},
+      "output":{"shape":"ListSecurityProfilesForTargetResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the Device Defender security profiles attached to a target (thing group).</p>"
+    },
     "ListStreams":{
       "name":"ListStreams",
       "http":{
@@ -1509,6 +1843,22 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>List targets for the specified policy.</p>"
+    },
+    "ListTargetsForSecurityProfile":{
+      "name":"ListTargetsForSecurityProfile",
+      "http":{
+        "method":"GET",
+        "requestUri":"/security-profiles/{securityProfileName}/targets"
+      },
+      "input":{"shape":"ListTargetsForSecurityProfileRequest"},
+      "output":{"shape":"ListTargetsForSecurityProfileResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists the targets (thing groups) associated with a given Device Defender security profile.</p>"
     },
     "ListThingGroups":{
       "name":"ListThingGroups",
@@ -1669,6 +2019,21 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Lists logging levels.</p>"
+    },
+    "ListViolationEvents":{
+      "name":"ListViolationEvents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/violation-events"
+      },
+      "input":{"shape":"ListViolationEventsRequest"},
+      "output":{"shape":"ListViolationEventsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists the Device Defender security profile violations discovered during the given time period. You can use filters to limit the results to those alerts issued for a particular security profile, behavior or thing (device).</p>"
     },
     "RegisterCACertificate":{
       "name":"RegisterCACertificate",
@@ -1849,7 +2214,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Sets the logging options.</p>"
+      "documentation":"<p>Sets the logging options.</p> <p>NOTE: use of this command is not recommended. Use <code>SetV2LoggingOptions</code> instead.</p>"
     },
     "SetV2LoggingLevel":{
       "name":"SetV2LoggingLevel",
@@ -1879,6 +2244,22 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Sets the logging options for the V2 logging service.</p>"
+    },
+    "StartOnDemandAuditTask":{
+      "name":"StartOnDemandAuditTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/audit/tasks"
+      },
+      "input":{"shape":"StartOnDemandAuditTaskRequest"},
+      "output":{"shape":"StartOnDemandAuditTaskResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Starts an on-demand Device Defender audit.</p>"
     },
     "StartThingRegistrationTask":{
       "name":"StartThingRegistrationTask",
@@ -1930,7 +2311,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Test custom authorization.</p>"
+      "documentation":"<p>Tests if a specified principal is authorized to perform an AWS IoT action on a specified resource. Use this to test and debug the authorization behavior of devices that connect to the AWS IoT device gateway.</p>"
     },
     "TestInvokeAuthorizer":{
       "name":"TestInvokeAuthorizer",
@@ -1949,7 +2330,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"InvalidResponseException"}
       ],
-      "documentation":"<p>Invoke the specified custom authorizer for testing purposes.</p>"
+      "documentation":"<p>Tests a custom authorization behavior by invoking a specified custom authorizer. Use this to test and debug the custom authorization behavior of devices that connect to the AWS IoT device gateway.</p>"
     },
     "TransferCertificate":{
       "name":"TransferCertificate",
@@ -1970,6 +2351,21 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Transfers the specified certificate to the specified AWS account.</p> <p>You can cancel the transfer until it is acknowledged by the recipient.</p> <p>No notification is sent to the transfer destination's account. It is up to the caller to notify the transfer target.</p> <p>The certificate being transferred must not be in the ACTIVE state. You can use the UpdateCertificate API to deactivate it.</p> <p>The certificate must not have any policies attached to it. You can use the DetachPrincipalPolicy API to detach them.</p>"
+    },
+    "UpdateAccountAuditConfiguration":{
+      "name":"UpdateAccountAuditConfiguration",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/audit/configuration"
+      },
+      "input":{"shape":"UpdateAccountAuditConfigurationRequest"},
+      "output":{"shape":"UpdateAccountAuditConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Configures or reconfigures the Device Defender audit settings for this account. Settings include how audit notifications are sent and which audit checks are enabled or disabled.</p>"
     },
     "UpdateAuthorizer":{
       "name":"UpdateAuthorizer",
@@ -2075,6 +2471,39 @@
       ],
       "documentation":"<p>Updates a role alias.</p>"
     },
+    "UpdateScheduledAudit":{
+      "name":"UpdateScheduledAudit",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/audit/scheduledaudits/{scheduledAuditName}"
+      },
+      "input":{"shape":"UpdateScheduledAuditRequest"},
+      "output":{"shape":"UpdateScheduledAuditResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates a scheduled audit, including what checks are performed and how often the audit takes place.</p>"
+    },
+    "UpdateSecurityProfile":{
+      "name":"UpdateSecurityProfile",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/security-profiles/{securityProfileName}"
+      },
+      "input":{"shape":"UpdateSecurityProfileRequest"},
+      "output":{"shape":"UpdateSecurityProfileResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"VersionConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates a Device Defender security profile.</p>"
+    },
     "UpdateStream":{
       "name":"UpdateStream",
       "http":{
@@ -2144,6 +2573,21 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Updates the groups to which the thing belongs.</p>"
+    },
+    "ValidateSecurityProfileBehaviors":{
+      "name":"ValidateSecurityProfileBehaviors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/security-profile-behaviors/validate"
+      },
+      "input":{"shape":"ValidateSecurityProfileBehaviorsRequest"},
+      "output":{"shape":"ValidateSecurityProfileBehaviorsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Validates a Device Defender security profile behaviors specification.</p>"
     }
   },
   "shapes":{
@@ -2153,7 +2597,7 @@
       "members":{
         "certificateId":{
           "shape":"CertificateId",
-          "documentation":"<p>The ID of the certificate.</p>",
+          "documentation":"<p>The ID of the certificate. (The last part of the certificate ARN contains the certificate ID.)</p>",
           "location":"uri",
           "locationName":"certificateId"
         },
@@ -2220,6 +2664,14 @@
         "salesforce":{
           "shape":"SalesforceAction",
           "documentation":"<p>Send a message to a Salesforce IoT Cloud Input Stream.</p>"
+        },
+        "iotAnalytics":{
+          "shape":"IotAnalyticsAction",
+          "documentation":"<p>Sends message data to an AWS IoT Analytics channel.</p>"
+        },
+        "stepFunctions":{
+          "shape":"StepFunctionsAction",
+          "documentation":"<p>Starts execution of a Step Functions state machine.</p>"
         }
       },
       "documentation":"<p>Describes the actions associated with a rule.</p>"
@@ -2238,6 +2690,44 @@
         "RECEIVE",
         "CONNECT"
       ]
+    },
+    "ActiveViolation":{
+      "type":"structure",
+      "members":{
+        "violationId":{
+          "shape":"ViolationId",
+          "documentation":"<p>The ID of the active violation.</p>"
+        },
+        "thingName":{
+          "shape":"ThingName",
+          "documentation":"<p>The name of the thing responsible for the active violation.</p>"
+        },
+        "securityProfileName":{
+          "shape":"SecurityProfileName",
+          "documentation":"<p>The security profile whose behavior is in violation.</p>"
+        },
+        "behavior":{
+          "shape":"Behavior",
+          "documentation":"<p>The behavior which is being violated.</p>"
+        },
+        "lastViolationValue":{
+          "shape":"MetricValue",
+          "documentation":"<p>The value of the metric (the measurement) which caused the most recent violation.</p>"
+        },
+        "lastViolationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the most recent violation occurred.</p>"
+        },
+        "violationStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the violation started.</p>"
+        }
+      },
+      "documentation":"<p>Information about an active Device Defender security profile behavior violation.</p>"
+    },
+    "ActiveViolations":{
+      "type":"list",
+      "member":{"shape":"ActiveViolation"}
     },
     "AddThingToThingGroupRequest":{
       "type":"structure",
@@ -2271,6 +2761,35 @@
       "value":{"shape":"Value"}
     },
     "AlarmName":{"type":"string"},
+    "AlertTarget":{
+      "type":"structure",
+      "required":[
+        "alertTargetArn",
+        "roleArn"
+      ],
+      "members":{
+        "alertTargetArn":{
+          "shape":"AlertTargetArn",
+          "documentation":"<p>The ARN of the notification target to which alerts are sent.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the role that grants permission to send alerts to the notification target.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing the alert target ARN and the role ARN.</p>"
+    },
+    "AlertTargetArn":{"type":"string"},
+    "AlertTargetType":{
+      "type":"string",
+      "documentation":"<p>The type of alert target: one of \"SNS\".</p>",
+      "enum":["SNS"]
+    },
+    "AlertTargets":{
+      "type":"map",
+      "key":{"shape":"AlertTargetType"},
+      "value":{"shape":"AlertTarget"}
+    },
     "AllowAutoRegistration":{"type":"boolean"},
     "Allowed":{
       "type":"structure",
@@ -2364,6 +2883,32 @@
       },
       "documentation":"<p>The input for the AttachPrincipalPolicy operation.</p>"
     },
+    "AttachSecurityProfileRequest":{
+      "type":"structure",
+      "required":[
+        "securityProfileName",
+        "securityProfileTargetArn"
+      ],
+      "members":{
+        "securityProfileName":{
+          "shape":"SecurityProfileName",
+          "documentation":"<p>The security profile that is attached.</p>",
+          "location":"uri",
+          "locationName":"securityProfileName"
+        },
+        "securityProfileTargetArn":{
+          "shape":"SecurityProfileTargetArn",
+          "documentation":"<p>The ARN of the target (thing group) to which the security profile is attached.</p>",
+          "location":"querystring",
+          "locationName":"securityProfileTargetArn"
+        }
+      }
+    },
+    "AttachSecurityProfileResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "AttachThingPrincipalRequest":{
       "type":"structure",
       "required":[
@@ -2425,6 +2970,206 @@
       "type":"map",
       "key":{"shape":"Key"},
       "value":{"shape":"Value"}
+    },
+    "AuditCheckConfiguration":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"Enabled",
+          "documentation":"<p>True if this audit check is enabled for this account.</p>"
+        }
+      },
+      "documentation":"<p>Which audit checks are enabled and disabled for this account.</p>"
+    },
+    "AuditCheckConfigurations":{
+      "type":"map",
+      "key":{"shape":"AuditCheckName"},
+      "value":{"shape":"AuditCheckConfiguration"}
+    },
+    "AuditCheckDetails":{
+      "type":"structure",
+      "members":{
+        "checkRunStatus":{
+          "shape":"AuditCheckRunStatus",
+          "documentation":"<p>The completion status of this check, one of \"IN_PROGRESS\", \"WAITING_FOR_DATA_COLLECTION\", \"CANCELED\", \"COMPLETED_COMPLIANT\", \"COMPLETED_NON_COMPLIANT\", or \"FAILED\".</p>"
+        },
+        "checkCompliant":{
+          "shape":"CheckCompliant",
+          "documentation":"<p>True if the check completed and found all resources compliant.</p>"
+        },
+        "totalResourcesCount":{
+          "shape":"TotalResourcesCount",
+          "documentation":"<p>The number of resources on which the check was performed.</p>"
+        },
+        "nonCompliantResourcesCount":{
+          "shape":"NonCompliantResourcesCount",
+          "documentation":"<p>The number of resources that the check found non-compliant.</p>"
+        },
+        "errorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The code of any error encountered when performing this check during this audit. One of \"INSUFFICIENT_PERMISSIONS\", or \"AUDIT_CHECK_DISABLED\".</p>"
+        },
+        "message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The message associated with any error encountered when performing this check during this audit.</p>"
+        }
+      },
+      "documentation":"<p>Information about the audit check.</p>"
+    },
+    "AuditCheckName":{
+      "type":"string",
+      "documentation":"<p>An audit check name. Checks must be enabled for your account. (Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks including those that are enabled or <code>UpdateAccountAuditConfiguration</code> to select which checks are enabled.)</p>"
+    },
+    "AuditCheckRunStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "WAITING_FOR_DATA_COLLECTION",
+        "CANCELED",
+        "COMPLETED_COMPLIANT",
+        "COMPLETED_NON_COMPLIANT",
+        "FAILED"
+      ]
+    },
+    "AuditDetails":{
+      "type":"map",
+      "key":{"shape":"AuditCheckName"},
+      "value":{"shape":"AuditCheckDetails"}
+    },
+    "AuditFinding":{
+      "type":"structure",
+      "members":{
+        "taskId":{
+          "shape":"AuditTaskId",
+          "documentation":"<p>The ID of the audit that generated this result (finding)</p>"
+        },
+        "checkName":{
+          "shape":"AuditCheckName",
+          "documentation":"<p>The audit check that generated this result.</p>"
+        },
+        "taskStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the audit started.</p>"
+        },
+        "findingTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the result (finding) was discovered.</p>"
+        },
+        "severity":{
+          "shape":"AuditFindingSeverity",
+          "documentation":"<p>The severity of the result (finding).</p>"
+        },
+        "nonCompliantResource":{
+          "shape":"NonCompliantResource",
+          "documentation":"<p>The resource that was found to be non-compliant with the audit check.</p>"
+        },
+        "relatedResources":{
+          "shape":"RelatedResources",
+          "documentation":"<p>The list of related resources.</p>"
+        },
+        "reasonForNonCompliance":{
+          "shape":"ReasonForNonCompliance",
+          "documentation":"<p>The reason the resource was non-compliant.</p>"
+        },
+        "reasonForNonComplianceCode":{
+          "shape":"ReasonForNonComplianceCode",
+          "documentation":"<p>A code which indicates the reason that the resource was non-compliant.</p>"
+        }
+      },
+      "documentation":"<p>The findings (results) of the audit.</p>"
+    },
+    "AuditFindingSeverity":{
+      "type":"string",
+      "enum":[
+        "CRITICAL",
+        "HIGH",
+        "MEDIUM",
+        "LOW"
+      ]
+    },
+    "AuditFindings":{
+      "type":"list",
+      "member":{"shape":"AuditFinding"}
+    },
+    "AuditFrequency":{
+      "type":"string",
+      "enum":[
+        "DAILY",
+        "WEEKLY",
+        "BIWEEKLY",
+        "MONTHLY"
+      ]
+    },
+    "AuditNotificationTarget":{
+      "type":"structure",
+      "members":{
+        "targetArn":{
+          "shape":"TargetArn",
+          "documentation":"<p>The ARN of the target (SNS topic) to which audit notifications are sent.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the role that grants permission to send notifications to the target.</p>"
+        },
+        "enabled":{
+          "shape":"Enabled",
+          "documentation":"<p>True if notifications to the target are enabled.</p>"
+        }
+      },
+      "documentation":"<p>Information about the targets to which audit notifications are sent.</p>"
+    },
+    "AuditNotificationTargetConfigurations":{
+      "type":"map",
+      "key":{"shape":"AuditNotificationType"},
+      "value":{"shape":"AuditNotificationTarget"}
+    },
+    "AuditNotificationType":{
+      "type":"string",
+      "enum":["SNS"]
+    },
+    "AuditTaskId":{
+      "type":"string",
+      "max":40,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\-]+"
+    },
+    "AuditTaskMetadata":{
+      "type":"structure",
+      "members":{
+        "taskId":{
+          "shape":"AuditTaskId",
+          "documentation":"<p>The ID of this audit.</p>"
+        },
+        "taskStatus":{
+          "shape":"AuditTaskStatus",
+          "documentation":"<p>The status of this audit: one of \"IN_PROGRESS\", \"COMPLETED\", \"FAILED\" or \"CANCELED\".</p>"
+        },
+        "taskType":{
+          "shape":"AuditTaskType",
+          "documentation":"<p>The type of this audit: one of \"ON_DEMAND_AUDIT_TASK\" or \"SCHEDULED_AUDIT_TASK\".</p>"
+        }
+      },
+      "documentation":"<p>The audits that were performed.</p>"
+    },
+    "AuditTaskMetadataList":{
+      "type":"list",
+      "member":{"shape":"AuditTaskMetadata"}
+    },
+    "AuditTaskStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED",
+        "CANCELED"
+      ]
+    },
+    "AuditTaskType":{
+      "type":"string",
+      "enum":[
+        "ON_DEMAND_AUDIT_TASK",
+        "SCHEDULED_AUDIT_TASK"
+      ]
     },
     "AuthDecision":{
       "type":"string",
@@ -2564,12 +3309,63 @@
     },
     "AwsAccountId":{
       "type":"string",
-      "pattern":"[0-9]{12}"
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]+"
     },
     "AwsArn":{"type":"string"},
     "AwsIotJobArn":{"type":"string"},
     "AwsIotJobId":{"type":"string"},
     "AwsIotSqlVersion":{"type":"string"},
+    "Behavior":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"BehaviorName",
+          "documentation":"<p>The name you have given to the behavior.</p>"
+        },
+        "metric":{
+          "shape":"BehaviorMetric",
+          "documentation":"<p>What is measured by the behavior.</p>"
+        },
+        "criteria":{
+          "shape":"BehaviorCriteria",
+          "documentation":"<p>The criteria that determine if a device is behaving normally in regard to the <code>metric</code>.</p>"
+        }
+      },
+      "documentation":"<p>A Device Defender security profile behavior.</p>"
+    },
+    "BehaviorCriteria":{
+      "type":"structure",
+      "members":{
+        "comparisonOperator":{
+          "shape":"ComparisonOperator",
+          "documentation":"<p>The operator that relates the thing measured (<code>metric</code>) to the criteria (<code>value</code>).</p>"
+        },
+        "value":{
+          "shape":"MetricValue",
+          "documentation":"<p>The value to be compared with the <code>metric</code>.</p>"
+        },
+        "durationSeconds":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>Use this to specify the period of time over which the behavior is evaluated, for those criteria which have a time dimension (for example, <code>NUM_MESSAGES_SENT</code>).</p>"
+        }
+      },
+      "documentation":"<p>The criteria by which the behavior is determined to be normal.</p>"
+    },
+    "BehaviorMetric":{"type":"string"},
+    "BehaviorName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9:_-]+"
+    },
+    "Behaviors":{
+      "type":"list",
+      "member":{"shape":"Behavior"},
+      "max":100
+    },
     "Boolean":{"type":"boolean"},
     "BucketName":{"type":"string"},
     "CACertificate":{
@@ -2625,9 +3421,22 @@
           "shape":"AutoRegistrationStatus",
           "documentation":"<p>Whether the CA certificate configured for auto registration of device certificates. Valid values are \"ENABLE\" and \"DISABLE\"</p>"
         },
-        "lastModifiedDate":{"shape":"DateType"},
-        "customerVersion":{"shape":"CustomerVersion"},
-        "generationId":{"shape":"GenerationId"}
+        "lastModifiedDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date the CA certificate was last modified.</p>"
+        },
+        "customerVersion":{
+          "shape":"CustomerVersion",
+          "documentation":"<p>The customer version of the CA certificate.</p>"
+        },
+        "generationId":{
+          "shape":"GenerationId",
+          "documentation":"<p>The generation ID of the CA certificate.</p>"
+        },
+        "validity":{
+          "shape":"CertificateValidity",
+          "documentation":"<p>When the CA certificate is valid.</p>"
+        }
       },
       "documentation":"<p>Describes a CA certificate.</p>"
     },
@@ -2642,18 +3451,70 @@
       "type":"list",
       "member":{"shape":"CACertificate"}
     },
+    "CancelAuditTaskRequest":{
+      "type":"structure",
+      "required":["taskId"],
+      "members":{
+        "taskId":{
+          "shape":"AuditTaskId",
+          "documentation":"<p>The ID of the audit you want to cancel. You can only cancel an audit that is \"IN_PROGRESS\".</p>",
+          "location":"uri",
+          "locationName":"taskId"
+        }
+      }
+    },
+    "CancelAuditTaskResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "CancelCertificateTransferRequest":{
       "type":"structure",
       "required":["certificateId"],
       "members":{
         "certificateId":{
           "shape":"CertificateId",
-          "documentation":"<p>The ID of the certificate.</p>",
+          "documentation":"<p>The ID of the certificate. (The last part of the certificate ARN contains the certificate ID.)</p>",
           "location":"uri",
           "locationName":"certificateId"
         }
       },
       "documentation":"<p>The input for the CancelCertificateTransfer operation.</p>"
+    },
+    "CancelJobExecutionRequest":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "thingName"
+      ],
+      "members":{
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The ID of the job to be canceled.</p>",
+          "location":"uri",
+          "locationName":"jobId"
+        },
+        "thingName":{
+          "shape":"ThingName",
+          "documentation":"<p>The name of the thing whose execution of the job will be canceled.</p>",
+          "location":"uri",
+          "locationName":"thingName"
+        },
+        "force":{
+          "shape":"ForceFlag",
+          "documentation":"<p>(Optional) If <code>true</code> the job execution will be canceled if it has status IN_PROGRESS or QUEUED, otherwise the job execution will be canceled only if it has status QUEUED. If you attempt to cancel a job execution that is IN_PROGRESS, and you do not set <code>force</code> to <code>true</code>, then an <code>InvalidStateTransitionException</code> will be thrown. The default is <code>false</code>.</p> <p>Canceling a job execution which is \"IN_PROGRESS\", will cause the device to be unable to update the job execution status. Use caution and ensure that the device is able to recover to a valid state.</p>",
+          "location":"querystring",
+          "locationName":"force"
+        },
+        "expectedVersion":{
+          "shape":"ExpectedVersion",
+          "documentation":"<p>(Optional) The expected current version of the job execution. Each time you update the job execution, its version is incremented. If the version of the job execution stored in Jobs does not match, the update is rejected with a VersionMismatch error, and an ErrorResponse that contains the current job execution status data is returned. (This makes it unnecessary to perform a separate DescribeJobExecution request in order to obtain the job execution status data.)</p>"
+        },
+        "statusDetails":{
+          "shape":"DetailsMap",
+          "documentation":"<p>A collection of name/value pairs that describe the status of the job execution. If not specified, the statusDetails are unchanged. You can specify at most 10 name/value pairs.</p>"
+        }
+      }
     },
     "CancelJobRequest":{
       "type":"structure",
@@ -2668,6 +3529,12 @@
         "comment":{
           "shape":"Comment",
           "documentation":"<p>An optional comment string describing why the job was canceled.</p>"
+        },
+        "force":{
+          "shape":"ForceFlag",
+          "documentation":"<p>(Optional) If <code>true</code> job executions with status \"IN_PROGRESS\" and \"QUEUED\" are canceled, otherwise only job executions with status \"QUEUED\" are canceled. The default is <code>false</code>.</p> <p>Canceling a job which is \"IN_PROGRESS\", will cause a device which is executing the job to be unable to update the job execution status. Use caution and ensure that each device executing a job which is canceled is able to recover to a valid state.</p>",
+          "location":"querystring",
+          "locationName":"force"
         }
       }
     },
@@ -2688,6 +3555,7 @@
         }
       }
     },
+    "CanceledChecksCount":{"type":"integer"},
     "CanceledThings":{"type":"integer"},
     "CannedAccessControlList":{
       "type":"string",
@@ -2711,7 +3579,7 @@
         },
         "certificateId":{
           "shape":"CertificateId",
-          "documentation":"<p>The ID of the certificate.</p>"
+          "documentation":"<p>The ID of the certificate. (The last part of the certificate ARN contains the certificate ID.)</p>"
         },
         "status":{
           "shape":"CertificateStatus",
@@ -2776,12 +3644,22 @@
           "shape":"DateType",
           "documentation":"<p>The date and time the certificate was last modified.</p>"
         },
-        "customerVersion":{"shape":"CustomerVersion"},
+        "customerVersion":{
+          "shape":"CustomerVersion",
+          "documentation":"<p>The customer version of the certificate.</p>"
+        },
         "transferData":{
           "shape":"TransferData",
           "documentation":"<p>The transfer data.</p>"
         },
-        "generationId":{"shape":"GenerationId"}
+        "generationId":{
+          "shape":"GenerationId",
+          "documentation":"<p>The generation ID of the certificate.</p>"
+        },
+        "validity":{
+          "shape":"CertificateValidity",
+          "documentation":"<p>When the certificate is valid.</p>"
+        }
       },
       "documentation":"<p>Describes a certificate.</p>"
     },
@@ -2837,9 +3715,35 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "CertificateValidity":{
+      "type":"structure",
+      "members":{
+        "notBefore":{
+          "shape":"DateType",
+          "documentation":"<p>The certificate is not valid before this date.</p>"
+        },
+        "notAfter":{
+          "shape":"DateType",
+          "documentation":"<p>The certificate is not valid after this date.</p>"
+        }
+      },
+      "documentation":"<p>When the certificate is valid.</p>"
+    },
     "Certificates":{
       "type":"list",
       "member":{"shape":"Certificate"}
+    },
+    "ChannelName":{"type":"string"},
+    "CheckCompliant":{"type":"boolean"},
+    "Cidr":{
+      "type":"string",
+      "max":43,
+      "min":2,
+      "pattern":"[a-fA-F0-9:\\.\\/]+"
+    },
+    "Cidrs":{
+      "type":"list",
+      "member":{"shape":"Cidr"}
     },
     "ClearDefaultAuthorizerRequest":{
       "type":"structure",
@@ -2895,23 +3799,23 @@
           "documentation":"<p>The IAM role that allows access to the CloudWatch metric.</p>"
         },
         "metricNamespace":{
-          "shape":"MetricNamespace",
+          "shape":"String",
           "documentation":"<p>The CloudWatch metric namespace name.</p>"
         },
         "metricName":{
-          "shape":"MetricName",
+          "shape":"String",
           "documentation":"<p>The CloudWatch metric name.</p>"
         },
         "metricValue":{
-          "shape":"MetricValue",
+          "shape":"String",
           "documentation":"<p>The CloudWatch metric value.</p>"
         },
         "metricUnit":{
-          "shape":"MetricUnit",
+          "shape":"String",
           "documentation":"<p>The <a href=\"http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/cloudwatch_concepts.html#Unit\">metric unit</a> supported by CloudWatch.</p>"
         },
         "metricTimestamp":{
-          "shape":"MetricTimestamp",
+          "shape":"String",
           "documentation":"<p>An optional <a href=\"http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/cloudwatch_concepts.html#about_timestamp\">Unix timestamp</a>.</p>"
         }
       },
@@ -2970,6 +3874,20 @@
       "max":2028,
       "pattern":"[^\\p{C}]+"
     },
+    "ComparisonOperator":{
+      "type":"string",
+      "enum":[
+        "less-than",
+        "less-than-equals",
+        "greater-than",
+        "greater-than-equals",
+        "in-cidr-set",
+        "not-in-cidr-set",
+        "in-port-set",
+        "not-in-port-set"
+      ]
+    },
+    "CompliantChecksCount":{"type":"integer"},
     "Configuration":{
       "type":"structure",
       "members":{
@@ -2983,7 +3901,10 @@
     "ConflictingResourceUpdateException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"errorMessage"}
+        "message":{
+          "shape":"errorMessage",
+          "documentation":"<p>The message for the exception.</p>"
+        }
       },
       "documentation":"<p>A conflicting resource update exception. This exception is thrown when two pending updates cause a conflict.</p>",
       "error":{"httpStatusCode":409},
@@ -3111,10 +4032,6 @@
         "jobExecutionsRolloutConfig":{
           "shape":"JobExecutionsRolloutConfig",
           "documentation":"<p>Allows you to create a staged rollout of the job.</p>"
-        },
-        "documentParameters":{
-          "shape":"JobDocumentParameters",
-          "documentation":"<p>Parameters for the job document.</p>"
         }
       }
     },
@@ -3361,6 +4278,87 @@
         }
       }
     },
+    "CreateScheduledAuditRequest":{
+      "type":"structure",
+      "required":[
+        "frequency",
+        "targetCheckNames",
+        "scheduledAuditName"
+      ],
+      "members":{
+        "frequency":{
+          "shape":"AuditFrequency",
+          "documentation":"<p>How often the scheduled audit takes place. Can be one of \"DAILY\", \"WEEKLY\", \"BIWEEKLY\" or \"MONTHLY\". The actual start time of each audit is determined by the system.</p>"
+        },
+        "dayOfMonth":{
+          "shape":"DayOfMonth",
+          "documentation":"<p>The day of the month on which the scheduled audit takes place. Can be \"1\" through \"31\" or \"LAST\". This field is required if the \"frequency\" parameter is set to \"MONTHLY\". If days 29-31 are specified, and the month does not have that many days, the audit takes place on the \"LAST\" day of the month.</p>"
+        },
+        "dayOfWeek":{
+          "shape":"DayOfWeek",
+          "documentation":"<p>The day of the week on which the scheduled audit takes place. Can be one of \"SUN\", \"MON\", \"TUE\", \"WED\", \"THU\", \"FRI\" or \"SAT\". This field is required if the \"frequency\" parameter is set to \"WEEKLY\" or \"BIWEEKLY\".</p>"
+        },
+        "targetCheckNames":{
+          "shape":"TargetAuditCheckNames",
+          "documentation":"<p>Which checks are performed during the scheduled audit. Checks must be enabled for your account. (Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks including those that are enabled or <code>UpdateAccountAuditConfiguration</code> to select which checks are enabled.)</p>"
+        },
+        "scheduledAuditName":{
+          "shape":"ScheduledAuditName",
+          "documentation":"<p>The name you want to give to the scheduled audit. (Max. 128 chars)</p>",
+          "location":"uri",
+          "locationName":"scheduledAuditName"
+        }
+      }
+    },
+    "CreateScheduledAuditResponse":{
+      "type":"structure",
+      "members":{
+        "scheduledAuditArn":{
+          "shape":"ScheduledAuditArn",
+          "documentation":"<p>The ARN of the scheduled audit.</p>"
+        }
+      }
+    },
+    "CreateSecurityProfileRequest":{
+      "type":"structure",
+      "required":[
+        "securityProfileName",
+        "behaviors"
+      ],
+      "members":{
+        "securityProfileName":{
+          "shape":"SecurityProfileName",
+          "documentation":"<p>The name you are giving to the security profile.</p>",
+          "location":"uri",
+          "locationName":"securityProfileName"
+        },
+        "securityProfileDescription":{
+          "shape":"SecurityProfileDescription",
+          "documentation":"<p>A description of the security profile.</p>"
+        },
+        "behaviors":{
+          "shape":"Behaviors",
+          "documentation":"<p>Specifies the behaviors that, when violated by a device (thing), cause an alert.</p>"
+        },
+        "alertTargets":{
+          "shape":"AlertTargets",
+          "documentation":"<p>Specifies the destinations to which alerts are sent. (Alerts are always sent to the console.) Alerts are generated when a device (thing) violates a behavior.</p>"
+        }
+      }
+    },
+    "CreateSecurityProfileResponse":{
+      "type":"structure",
+      "members":{
+        "securityProfileName":{
+          "shape":"SecurityProfileName",
+          "documentation":"<p>The name you gave to the security profile.</p>"
+        },
+        "securityProfileArn":{
+          "shape":"SecurityProfileArn",
+          "documentation":"<p>The ARN of the security profile.</p>"
+        }
+      }
+    },
     "CreateStreamRequest":{
       "type":"structure",
       "required":[
@@ -3576,6 +4574,38 @@
       "min":1
     },
     "DateType":{"type":"timestamp"},
+    "DayOfMonth":{
+      "type":"string",
+      "pattern":"^([1-9]|[12][0-9]|3[01])$|^LAST$"
+    },
+    "DayOfWeek":{
+      "type":"string",
+      "enum":[
+        "SUN",
+        "MON",
+        "TUE",
+        "WED",
+        "THU",
+        "FRI",
+        "SAT"
+      ]
+    },
+    "DeleteAccountAuditConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "deleteScheduledAudits":{
+          "shape":"DeleteScheduledAudits",
+          "documentation":"<p>If true, all scheduled audits are deleted.</p>",
+          "location":"querystring",
+          "locationName":"deleteScheduledAudits"
+        }
+      }
+    },
+    "DeleteAccountAuditConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteAuthorizerRequest":{
       "type":"structure",
       "required":["authorizerName"],
@@ -3599,7 +4629,7 @@
       "members":{
         "certificateId":{
           "shape":"CertificateId",
-          "documentation":"<p>The ID of the certificate to delete.</p>",
+          "documentation":"<p>The ID of the certificate to delete. (The last part of the certificate ARN contains the certificate ID.)</p>",
           "location":"uri",
           "locationName":"caCertificateId"
         }
@@ -3618,7 +4648,7 @@
       "members":{
         "certificateId":{
           "shape":"CertificateId",
-          "documentation":"<p>The ID of the certificate.</p>",
+          "documentation":"<p>The ID of the certificate. (The last part of the certificate ARN contains the certificate ID.)</p>",
           "location":"uri",
           "locationName":"certificateId"
         },
@@ -3642,6 +4672,58 @@
       "documentation":"<p>You can't delete the resource because it is attached to one or more resources.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
+    },
+    "DeleteJobExecutionRequest":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "thingName",
+        "executionNumber"
+      ],
+      "members":{
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The ID of the job whose execution on a particular device will be deleted.</p>",
+          "location":"uri",
+          "locationName":"jobId"
+        },
+        "thingName":{
+          "shape":"ThingName",
+          "documentation":"<p>The name of the thing whose job execution will be deleted.</p>",
+          "location":"uri",
+          "locationName":"thingName"
+        },
+        "executionNumber":{
+          "shape":"ExecutionNumber",
+          "documentation":"<p>The ID of the job execution to be deleted. The <code>executionNumber</code> refers to the execution of a particular job on a particular device.</p> <p>Note that once a job execution is deleted, the <code>executionNumber</code> may be reused by IoT, so be sure you get and use the correct value here.</p>",
+          "location":"uri",
+          "locationName":"executionNumber"
+        },
+        "force":{
+          "shape":"ForceFlag",
+          "documentation":"<p>(Optional) When true, you can delete a job execution which is \"IN_PROGRESS\". Otherwise, you can only delete a job execution which is in a terminal state (\"SUCCEEDED\", \"FAILED\", \"REJECTED\", \"REMOVED\" or \"CANCELED\") or an exception will occur. The default is false.</p> <note> <p>Deleting a job execution which is \"IN_PROGRESS\", will cause the device to be unable to access job information or update the job execution status. Use caution and ensure that the device is able to recover to a valid state.</p> </note>",
+          "location":"querystring",
+          "locationName":"force"
+        }
+      }
+    },
+    "DeleteJobRequest":{
+      "type":"structure",
+      "required":["jobId"],
+      "members":{
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The ID of the job to be deleted.</p> <p>After a job deletion is completed, you may reuse this jobId when you create a new job. However, this is not recommended, and you must ensure that your devices are not using the jobId to refer to the deleted job.</p>",
+          "location":"uri",
+          "locationName":"jobId"
+        },
+        "force":{
+          "shape":"ForceFlag",
+          "documentation":"<p>(Optional) When true, you can delete a job which is \"IN_PROGRESS\". Otherwise, you can only delete a job which is in a terminal state (\"COMPLETED\" or \"CANCELED\") or an exception will occur. The default is false.</p> <note> <p>Deleting a job which is \"IN_PROGRESS\", will cause a device which is executing the job to be unable to access job information or update the job execution status. Use caution and ensure that each device executing a job which is deleted is able to recover to a valid state.</p> </note>",
+          "location":"querystring",
+          "locationName":"force"
+        }
+      }
     },
     "DeleteOTAUpdateRequest":{
       "type":"structure",
@@ -3720,6 +4802,47 @@
       }
     },
     "DeleteRoleAliasResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteScheduledAuditRequest":{
+      "type":"structure",
+      "required":["scheduledAuditName"],
+      "members":{
+        "scheduledAuditName":{
+          "shape":"ScheduledAuditName",
+          "documentation":"<p>The name of the scheduled audit you want to delete.</p>",
+          "location":"uri",
+          "locationName":"scheduledAuditName"
+        }
+      }
+    },
+    "DeleteScheduledAuditResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteScheduledAudits":{"type":"boolean"},
+    "DeleteSecurityProfileRequest":{
+      "type":"structure",
+      "required":["securityProfileName"],
+      "members":{
+        "securityProfileName":{
+          "shape":"SecurityProfileName",
+          "documentation":"<p>The name of the security profile to be deleted.</p>",
+          "location":"uri",
+          "locationName":"securityProfileName"
+        },
+        "expectedVersion":{
+          "shape":"OptionalVersion",
+          "documentation":"<p>The expected version of the security profile. A new version is generated whenever the security profile is updated. If you specify a value that is different than the actual version, a <code>VersionConflictException</code> is thrown.</p>",
+          "location":"querystring",
+          "locationName":"expectedVersion"
+        }
+      }
+    },
+    "DeleteSecurityProfileResponse":{
       "type":"structure",
       "members":{
       }
@@ -3881,6 +5004,69 @@
       "documentation":"<p>The output for the DeprecateThingType operation.</p>"
     },
     "DeprecationDate":{"type":"timestamp"},
+    "DescribeAccountAuditConfigurationRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DescribeAccountAuditConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the role that grants permission to AWS IoT to access information about your devices, policies, certificates and other items as necessary when performing an audit.</p> <p>On the first call to <code>UpdateAccountAuditConfiguration</code> this parameter is required.</p>"
+        },
+        "auditNotificationTargetConfigurations":{
+          "shape":"AuditNotificationTargetConfigurations",
+          "documentation":"<p>Information about the targets to which audit notifications are sent for this account.</p>"
+        },
+        "auditCheckConfigurations":{
+          "shape":"AuditCheckConfigurations",
+          "documentation":"<p>Which audit checks are enabled and disabled for this account.</p>"
+        }
+      }
+    },
+    "DescribeAuditTaskRequest":{
+      "type":"structure",
+      "required":["taskId"],
+      "members":{
+        "taskId":{
+          "shape":"AuditTaskId",
+          "documentation":"<p>The ID of the audit whose information you want to get.</p>",
+          "location":"uri",
+          "locationName":"taskId"
+        }
+      }
+    },
+    "DescribeAuditTaskResponse":{
+      "type":"structure",
+      "members":{
+        "taskStatus":{
+          "shape":"AuditTaskStatus",
+          "documentation":"<p>The status of the audit: one of \"IN_PROGRESS\", \"COMPLETED\", \"FAILED\", or \"CANCELED\".</p>"
+        },
+        "taskType":{
+          "shape":"AuditTaskType",
+          "documentation":"<p>The type of audit: \"ON_DEMAND_AUDIT_TASK\" or \"SCHEDULED_AUDIT_TASK\".</p>"
+        },
+        "taskStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the audit started.</p>"
+        },
+        "taskStatistics":{
+          "shape":"TaskStatistics",
+          "documentation":"<p>Statistical information about the audit.</p>"
+        },
+        "scheduledAuditName":{
+          "shape":"ScheduledAuditName",
+          "documentation":"<p>The name of the scheduled audit (only if the audit was a scheduled audit).</p>"
+        },
+        "auditDetails":{
+          "shape":"AuditDetails",
+          "documentation":"<p>Detailed information about each check performed during this audit.</p>"
+        }
+      }
+    },
     "DescribeAuthorizerRequest":{
       "type":"structure",
       "required":["authorizerName"],
@@ -3935,7 +5121,7 @@
       "members":{
         "certificateId":{
           "shape":"CertificateId",
-          "documentation":"<p>The ID of the certificate.</p>",
+          "documentation":"<p>The ID of the certificate. (The last part of the certificate ARN contains the certificate ID.)</p>",
           "location":"uri",
           "locationName":"certificateId"
         }
@@ -4118,6 +5304,96 @@
         "roleAliasDescription":{
           "shape":"RoleAliasDescription",
           "documentation":"<p>The role alias description.</p>"
+        }
+      }
+    },
+    "DescribeScheduledAuditRequest":{
+      "type":"structure",
+      "required":["scheduledAuditName"],
+      "members":{
+        "scheduledAuditName":{
+          "shape":"ScheduledAuditName",
+          "documentation":"<p>The name of the scheduled audit whose information you want to get.</p>",
+          "location":"uri",
+          "locationName":"scheduledAuditName"
+        }
+      }
+    },
+    "DescribeScheduledAuditResponse":{
+      "type":"structure",
+      "members":{
+        "frequency":{
+          "shape":"AuditFrequency",
+          "documentation":"<p>How often the scheduled audit takes place. One of \"DAILY\", \"WEEKLY\", \"BIWEEKLY\" or \"MONTHLY\". The actual start time of each audit is determined by the system.</p>"
+        },
+        "dayOfMonth":{
+          "shape":"DayOfMonth",
+          "documentation":"<p>The day of the month on which the scheduled audit takes place. Will be \"1\" through \"31\" or \"LAST\". If days 29-31 are specified, and the month does not have that many days, the audit takes place on the \"LAST\" day of the month.</p>"
+        },
+        "dayOfWeek":{
+          "shape":"DayOfWeek",
+          "documentation":"<p>The day of the week on which the scheduled audit takes place. One of \"SUN\", \"MON\", \"TUE\", \"WED\", \"THU\", \"FRI\" or \"SAT\".</p>"
+        },
+        "targetCheckNames":{
+          "shape":"TargetAuditCheckNames",
+          "documentation":"<p>Which checks are performed during the scheduled audit. (Note that checks must be enabled for your account. (Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks including those that are enabled or <code>UpdateAccountAuditConfiguration</code> to select which checks are enabled.)</p>"
+        },
+        "scheduledAuditName":{
+          "shape":"ScheduledAuditName",
+          "documentation":"<p>The name of the scheduled audit.</p>"
+        },
+        "scheduledAuditArn":{
+          "shape":"ScheduledAuditArn",
+          "documentation":"<p>The ARN of the scheduled audit.</p>"
+        }
+      }
+    },
+    "DescribeSecurityProfileRequest":{
+      "type":"structure",
+      "required":["securityProfileName"],
+      "members":{
+        "securityProfileName":{
+          "shape":"SecurityProfileName",
+          "documentation":"<p>The name of the security profile whose information you want to get.</p>",
+          "location":"uri",
+          "locationName":"securityProfileName"
+        }
+      }
+    },
+    "DescribeSecurityProfileResponse":{
+      "type":"structure",
+      "members":{
+        "securityProfileName":{
+          "shape":"SecurityProfileName",
+          "documentation":"<p>The name of the security profile.</p>"
+        },
+        "securityProfileArn":{
+          "shape":"SecurityProfileArn",
+          "documentation":"<p>The ARN of the security profile.</p>"
+        },
+        "securityProfileDescription":{
+          "shape":"SecurityProfileDescription",
+          "documentation":"<p>A description of the security profile (associated with the security profile when it was created or updated).</p>"
+        },
+        "behaviors":{
+          "shape":"Behaviors",
+          "documentation":"<p>Specifies the behaviors that, when violated by a device (thing), cause an alert.</p>"
+        },
+        "alertTargets":{
+          "shape":"AlertTargets",
+          "documentation":"<p>Where the alerts are sent. (Alerts are always sent to the console.)</p>"
+        },
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>The version of the security profile. A new version is generated whenever the security profile is updated.</p>"
+        },
+        "creationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the security profile was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the security profile was last modified.</p>"
         }
       }
     },
@@ -4376,6 +5652,32 @@
       },
       "documentation":"<p>The input for the DetachPrincipalPolicy operation.</p>"
     },
+    "DetachSecurityProfileRequest":{
+      "type":"structure",
+      "required":[
+        "securityProfileName",
+        "securityProfileTargetArn"
+      ],
+      "members":{
+        "securityProfileName":{
+          "shape":"SecurityProfileName",
+          "documentation":"<p>The security profile that is detached.</p>",
+          "location":"uri",
+          "locationName":"securityProfileName"
+        },
+        "securityProfileTargetArn":{
+          "shape":"SecurityProfileTargetArn",
+          "documentation":"<p>The ARN of the thing group from which the security profile is detached.</p>",
+          "location":"querystring",
+          "locationName":"securityProfileTargetArn"
+        }
+      }
+    },
+    "DetachSecurityProfileResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DetachThingPrincipalRequest":{
       "type":"structure",
       "required":[
@@ -4435,6 +5737,7 @@
       },
       "documentation":"<p>The input for the DisableTopicRuleRequest operation.</p>"
     },
+    "DurationSeconds":{"type":"integer"},
     "DynamoDBAction":{
       "type":"structure",
       "required":[
@@ -4587,6 +5890,7 @@
     "Enabled":{"type":"boolean"},
     "EndpointAddress":{"type":"string"},
     "EndpointType":{"type":"string"},
+    "ErrorCode":{"type":"string"},
     "ErrorInfo":{
       "type":"structure",
       "members":{
@@ -4620,10 +5924,15 @@
         "THING_GROUP_HIERARCHY",
         "THING_TYPE_ASSOCIATION",
         "JOB",
-        "JOB_EXECUTION"
+        "JOB_EXECUTION",
+        "POLICY",
+        "CERTIFICATE",
+        "CA_CERTIFICATE"
       ]
     },
+    "ExecutionNamePrefix":{"type":"string"},
     "ExecutionNumber":{"type":"long"},
+    "ExpectedVersion":{"type":"long"},
     "ExpiresInSec":{
       "type":"long",
       "max":3600,
@@ -4639,6 +5948,7 @@
       },
       "documentation":"<p>Information that explicitly denies authorization.</p>"
     },
+    "FailedChecksCount":{"type":"integer"},
     "FailedThings":{"type":"integer"},
     "FileId":{
       "type":"integer",
@@ -4674,6 +5984,8 @@
     },
     "Flag":{"type":"boolean"},
     "ForceDelete":{"type":"boolean"},
+    "ForceFlag":{"type":"boolean"},
+    "Forced":{"type":"boolean"},
     "FunctionArn":{"type":"string"},
     "GEMaxResults":{
       "type":"integer",
@@ -4817,9 +6129,18 @@
           "shape":"PolicyVersionId",
           "documentation":"<p>The default policy version ID.</p>"
         },
-        "creationDate":{"shape":"DateType"},
-        "lastModifiedDate":{"shape":"DateType"},
-        "generationId":{"shape":"GenerationId"}
+        "creationDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date the policy was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date the policy was last modified.</p>"
+        },
+        "generationId":{
+          "shape":"GenerationId",
+          "documentation":"<p>The generation ID of the policy.</p>"
+        }
       },
       "documentation":"<p>The output from the GetPolicy operation.</p>"
     },
@@ -4868,9 +6189,18 @@
           "shape":"IsDefaultVersion",
           "documentation":"<p>Specifies whether the policy version is the default.</p>"
         },
-        "creationDate":{"shape":"DateType"},
-        "lastModifiedDate":{"shape":"DateType"},
-        "generationId":{"shape":"GenerationId"}
+        "creationDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date the policy version was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date the policy version was last modified.</p>"
+        },
+        "generationId":{
+          "shape":"GenerationId",
+          "documentation":"<p>The generation ID of the policy version.</p>"
+        }
       },
       "documentation":"<p>The output from the GetPolicyVersion operation.</p>"
     },
@@ -4966,6 +6296,7 @@
       },
       "documentation":"<p>Information that implicitly denies authorization. When policy doesn't explicitly deny or allow an action on a resource it is considered an implicit deny.</p>"
     },
+    "InProgressChecksCount":{"type":"integer"},
     "InProgressThings":{"type":"integer"},
     "IndexName":{
       "type":"string",
@@ -4980,7 +6311,10 @@
     "IndexNotReadyException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"errorMessage"}
+        "message":{
+          "shape":"errorMessage",
+          "documentation":"<p>The message for the exception.</p>"
+        }
       },
       "documentation":"<p>The index is not ready.</p>",
       "error":{"httpStatusCode":400},
@@ -5025,7 +6359,10 @@
     "InvalidQueryException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"errorMessage"}
+        "message":{
+          "shape":"errorMessage",
+          "documentation":"<p>The message for the exception.</p>"
+        }
       },
       "documentation":"<p>The query is invalid.</p>",
       "error":{"httpStatusCode":400},
@@ -5046,11 +6383,44 @@
     "InvalidResponseException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"errorMessage"}
+        "message":{
+          "shape":"errorMessage",
+          "documentation":"<p>The message for the exception.</p>"
+        }
       },
       "documentation":"<p>The response is invalid.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "InvalidStateTransitionException":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"errorMessage",
+          "documentation":"<p>The message for the exception.</p>"
+        }
+      },
+      "documentation":"<p>An attempt was made to change to an invalid state, for example by deleting a job or a job execution which is \"IN_PROGRESS\" without setting the <code>force</code> parameter.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
+    "IotAnalyticsAction":{
+      "type":"structure",
+      "members":{
+        "channelArn":{
+          "shape":"AwsArn",
+          "documentation":"<p>(deprecated) The ARN of the IoT Analytics channel to which message data will be sent.</p>"
+        },
+        "channelName":{
+          "shape":"ChannelName",
+          "documentation":"<p>The name of the IoT Analytics channel to which message data will be sent.</p>"
+        },
+        "roleArn":{
+          "shape":"AwsArn",
+          "documentation":"<p>The ARN of the role which has a policy that grants IoT Analytics permission to send message data via IoT Analytics (iotanalytics:BatchPutMessage).</p>"
+        }
+      },
+      "documentation":"<p>Sends messge data to an AWS IoT Analytics channel.</p>"
     },
     "IsAuthenticated":{"type":"boolean"},
     "IsDefaultVersion":{"type":"boolean"},
@@ -5073,6 +6443,10 @@
         "status":{
           "shape":"JobStatus",
           "documentation":"<p>The status of the job, one of <code>IN_PROGRESS</code>, <code>CANCELED</code>, or <code>COMPLETED</code>. </p>"
+        },
+        "forceCanceled":{
+          "shape":"Forced",
+          "documentation":"<p>Will be <code>true</code> if the job was canceled with the optional <code>force</code> parameter set to <code>true</code>.</p>"
         },
         "comment":{
           "shape":"Comment",
@@ -5109,10 +6483,6 @@
         "jobProcessDetails":{
           "shape":"JobProcessDetails",
           "documentation":"<p>Details about the job process.</p>"
-        },
-        "documentParameters":{
-          "shape":"JobDocumentParameters",
-          "documentation":"<p>The parameters specified for the job document.</p>"
         }
       },
       "documentation":"<p>The <code>Job</code> object contains details about a job.</p>"
@@ -5126,12 +6496,6 @@
     "JobDocument":{
       "type":"string",
       "max":32768
-    },
-    "JobDocumentParameters":{
-      "type":"map",
-      "key":{"shape":"ParameterKey"},
-      "value":{"shape":"ParameterValue"},
-      "max":10
     },
     "JobDocumentSource":{
       "type":"string",
@@ -5148,6 +6512,10 @@
         "status":{
           "shape":"JobExecutionStatus",
           "documentation":"<p>The status of the job execution (IN_PROGRESS, QUEUED, FAILED, SUCCESS, CANCELED, or REJECTED).</p>"
+        },
+        "forceCanceled":{
+          "shape":"Forced",
+          "documentation":"<p>Will be <code>true</code> if the job execution was canceled with the optional <code>force</code> parameter set to <code>true</code>.</p>"
         },
         "statusDetails":{
           "shape":"JobExecutionStatusDetails",
@@ -5172,6 +6540,10 @@
         "executionNumber":{
           "shape":"ExecutionNumber",
           "documentation":"<p>A string (consisting of the digits \"0\" through \"9\") which identifies this particular job execution on this particular device. It can be used in commands which return or update job execution information. </p>"
+        },
+        "versionNumber":{
+          "shape":"VersionNumber",
+          "documentation":"<p>The version of the job execution. Job execution versions are incremented each time they are updated by a device.</p>"
         }
       },
       "documentation":"<p>The job execution object represents the execution of a job on a particular device.</p>"
@@ -5281,7 +6653,7 @@
       "members":{
         "processingTargets":{
           "shape":"ProcessingTargetNameList",
-          "documentation":"<p>The devices on which the job is executing.</p>"
+          "documentation":"<p>The target devices to which the job execution is being rolled out. This value will be null after the job execution has finished rolling out to all the target devices.</p>"
         },
         "numberOfCanceledThings":{
           "shape":"CanceledThings",
@@ -5319,7 +6691,8 @@
       "enum":[
         "IN_PROGRESS",
         "CANCELED",
-        "COMPLETED"
+        "COMPLETED",
+        "DELETION_IN_PROGRESS"
       ]
     },
     "JobSummary":{
@@ -5442,9 +6815,51 @@
           "documentation":"<p>The message for the exception.</p>"
         }
       },
-      "documentation":"<p>The number of attached entities exceeds the limit.</p>",
+      "documentation":"<p>A limit has been exceeded.</p>",
       "error":{"httpStatusCode":410},
       "exception":true
+    },
+    "ListActiveViolationsRequest":{
+      "type":"structure",
+      "members":{
+        "thingName":{
+          "shape":"ThingName",
+          "documentation":"<p>The name of the thing whose active violations are listed.</p>",
+          "location":"querystring",
+          "locationName":"thingName"
+        },
+        "securityProfileName":{
+          "shape":"SecurityProfileName",
+          "documentation":"<p>The name of the Device Defender security profile for which violations are listed.</p>",
+          "location":"querystring",
+          "locationName":"securityProfileName"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return at one time.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListActiveViolationsResponse":{
+      "type":"structure",
+      "members":{
+        "activeViolations":{
+          "shape":"ActiveViolations",
+          "documentation":"<p>The list of active violations.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.</p>"
+        }
+      }
     },
     "ListAttachedPoliciesRequest":{
       "type":"structure",
@@ -5486,6 +6901,110 @@
         "nextMarker":{
           "shape":"Marker",
           "documentation":"<p>The token to retrieve the next set of results, or ``null`` if there are no more results.</p>"
+        }
+      }
+    },
+    "ListAuditFindingsRequest":{
+      "type":"structure",
+      "members":{
+        "taskId":{
+          "shape":"AuditTaskId",
+          "documentation":"<p>A filter to limit results to the audit with the specified ID. You must specify either the taskId or the startTime and endTime, but not both.</p>"
+        },
+        "checkName":{
+          "shape":"AuditCheckName",
+          "documentation":"<p>A filter to limit results to the findings for the specified audit check.</p>"
+        },
+        "resourceIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>Information identifying the non-compliant resource.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return at one time. The default is 25.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter to limit results to those found after the specified time. You must specify either the startTime and endTime or the taskId, but not both.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter to limit results to those found before the specified time. You must specify either the startTime and endTime or the taskId, but not both.</p>"
+        }
+      }
+    },
+    "ListAuditFindingsResponse":{
+      "type":"structure",
+      "members":{
+        "findings":{
+          "shape":"AuditFindings",
+          "documentation":"<p>The findings (results) of the audit.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.</p>"
+        }
+      }
+    },
+    "ListAuditTasksRequest":{
+      "type":"structure",
+      "required":[
+        "startTime",
+        "endTime"
+      ],
+      "members":{
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The beginning of the time period. Note that audit information is retained for a limited time (180 days). Requesting a start time prior to what is retained results in an \"InvalidRequestException\".</p>",
+          "location":"querystring",
+          "locationName":"startTime"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end of the time period.</p>",
+          "location":"querystring",
+          "locationName":"endTime"
+        },
+        "taskType":{
+          "shape":"AuditTaskType",
+          "documentation":"<p>A filter to limit the output to the specified type of audit: can be one of \"ON_DEMAND_AUDIT_TASK\" or \"SCHEDULED__AUDIT_TASK\".</p>",
+          "location":"querystring",
+          "locationName":"taskType"
+        },
+        "taskStatus":{
+          "shape":"AuditTaskStatus",
+          "documentation":"<p>A filter to limit the output to audits with the specified completion status: can be one of \"IN_PROGRESS\", \"COMPLETED\", \"FAILED\" or \"CANCELED\".</p>",
+          "location":"querystring",
+          "locationName":"taskStatus"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return at one time. The default is 25.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListAuditTasksResponse":{
+      "type":"structure",
+      "members":{
+        "tasks":{
+          "shape":"AuditTaskMetadataList",
+          "documentation":"<p>The audits that were performed during the specified time period.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.</p>"
         }
       }
     },
@@ -5833,7 +7352,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token used to retreive the next set of results.</p>",
+          "documentation":"<p>A token used to retrieve the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -6053,7 +7572,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token used to get the next set of results, or <b>null</b> if there are no additional results.</p>",
+          "documentation":"<p>The token to retrieve the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -6119,6 +7638,109 @@
         "nextMarker":{
           "shape":"Marker",
           "documentation":"<p>A marker used to get the next set of results.</p>"
+        }
+      }
+    },
+    "ListScheduledAuditsRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return at one time. The default is 25.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListScheduledAuditsResponse":{
+      "type":"structure",
+      "members":{
+        "scheduledAudits":{
+          "shape":"ScheduledAuditMetadataList",
+          "documentation":"<p>The list of scheduled audits.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.</p>"
+        }
+      }
+    },
+    "ListSecurityProfilesForTargetRequest":{
+      "type":"structure",
+      "required":["securityProfileTargetArn"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return at one time.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "recursive":{
+          "shape":"Recursive",
+          "documentation":"<p>If true, return child groups as well.</p>",
+          "location":"querystring",
+          "locationName":"recursive"
+        },
+        "securityProfileTargetArn":{
+          "shape":"SecurityProfileTargetArn",
+          "documentation":"<p>The ARN of the target (thing group) whose attached security profiles you want to get.</p>",
+          "location":"querystring",
+          "locationName":"securityProfileTargetArn"
+        }
+      }
+    },
+    "ListSecurityProfilesForTargetResponse":{
+      "type":"structure",
+      "members":{
+        "securityProfileTargetMappings":{
+          "shape":"SecurityProfileTargetMappings",
+          "documentation":"<p>A list of security profiles and their associated targets.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.</p>"
+        }
+      }
+    },
+    "ListSecurityProfilesRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return at one time.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListSecurityProfilesResponse":{
+      "type":"structure",
+      "members":{
+        "securityProfileIdentifiers":{
+          "shape":"SecurityProfileIdentifiers",
+          "documentation":"<p>A list of security profile identifiers (names and ARNs).</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.</p>"
         }
       }
     },
@@ -6195,6 +7817,43 @@
         }
       }
     },
+    "ListTargetsForSecurityProfileRequest":{
+      "type":"structure",
+      "required":["securityProfileName"],
+      "members":{
+        "securityProfileName":{
+          "shape":"SecurityProfileName",
+          "documentation":"<p>The security profile.</p>",
+          "location":"uri",
+          "locationName":"securityProfileName"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return at one time.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListTargetsForSecurityProfileResponse":{
+      "type":"structure",
+      "members":{
+        "securityProfileTargets":{
+          "shape":"SecurityProfileTargets",
+          "documentation":"<p>The thing groups to which the security profile is attached.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.</p>"
+        }
+      }
+    },
     "ListThingGroupsForThingRequest":{
       "type":"structure",
       "required":["thingName"],
@@ -6207,7 +7866,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token used to get the next set of results, or <b>null</b> if there are no additional results.</p>",
+          "documentation":"<p>The token to retrieve the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -6237,7 +7896,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token used to get the next set of results, or <b>null</b> if there are no additional results.</p>",
+          "documentation":"<p>The token to retrieve the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -6349,7 +8008,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token to retrieve the next set of results.</p>"
+          "documentation":"<p>The token used to get the next set of results, or <b>null</b> if there are no additional results.</p>"
         }
       }
     },
@@ -6358,7 +8017,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token used to get the next set of results, or <b>null</b> if there are no additional results.</p>",
+          "documentation":"<p>The token to retrieve the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -6394,7 +8053,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token for the next set of results, or <b>null</b> if there are no additional results.</p>",
+          "documentation":"<p>The token to retrieve the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -6445,7 +8104,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token used to get the next set of results, or <b>null</b> if there are no additional results.</p>",
+          "documentation":"<p>The token to retrieve the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -6475,7 +8134,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token used to get the next set of results, or <b>null</b> if there are no additional results.</p>",
+          "documentation":"<p>The token to retrieve the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -6600,6 +8259,64 @@
         }
       }
     },
+    "ListViolationEventsRequest":{
+      "type":"structure",
+      "required":[
+        "startTime",
+        "endTime"
+      ],
+      "members":{
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time for the alerts to be listed.</p>",
+          "location":"querystring",
+          "locationName":"startTime"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time for the alerts to be listed.</p>",
+          "location":"querystring",
+          "locationName":"endTime"
+        },
+        "thingName":{
+          "shape":"ThingName",
+          "documentation":"<p>A filter to limit results to those alerts caused by the specified thing.</p>",
+          "location":"querystring",
+          "locationName":"thingName"
+        },
+        "securityProfileName":{
+          "shape":"SecurityProfileName",
+          "documentation":"<p>A filter to limit results to those alerts generated by the specified security profile.</p>",
+          "location":"querystring",
+          "locationName":"securityProfileName"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return at one time.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListViolationEventsResponse":{
+      "type":"structure",
+      "members":{
+        "violationEvents":{
+          "shape":"ViolationEvents",
+          "documentation":"<p>The security profile violation alerts issued for this account during the given time frame, potentially filtered by security profile, behavior violated, or thing (device) violating.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.</p>"
+        }
+      }
+    },
     "LogLevel":{
       "type":"string",
       "enum":[
@@ -6703,21 +8420,57 @@
         "JSON"
       ]
     },
-    "MetricName":{"type":"string"},
-    "MetricNamespace":{"type":"string"},
-    "MetricTimestamp":{"type":"string"},
-    "MetricUnit":{"type":"string"},
-    "MetricValue":{"type":"string"},
+    "MetricValue":{
+      "type":"structure",
+      "members":{
+        "count":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>If the <code>comparisonOperator</code> calls for a numeric value, use this to specify that numeric value to be compared with the <code>metric</code>.</p>"
+        },
+        "cidrs":{
+          "shape":"Cidrs",
+          "documentation":"<p>If the <code>comparisonOperator</code> calls for a set of CIDRs, use this to specify that set to be compared with the <code>metric</code>.</p>"
+        },
+        "ports":{
+          "shape":"Ports",
+          "documentation":"<p>If the <code>comparisonOperator</code> calls for a set of ports, use this to specify that set to be compared with the <code>metric</code>.</p>"
+        }
+      },
+      "documentation":"<p>The value to be compared with the <code>metric</code>.</p>"
+    },
     "MissingContextValue":{"type":"string"},
     "MissingContextValues":{
       "type":"list",
       "member":{"shape":"MissingContextValue"}
     },
     "NextToken":{"type":"string"},
+    "NonCompliantChecksCount":{"type":"integer"},
+    "NonCompliantResource":{
+      "type":"structure",
+      "members":{
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of the non-compliant resource.</p>"
+        },
+        "resourceIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>Information identifying the non-compliant resource.</p>"
+        },
+        "additionalInfo":{
+          "shape":"StringMap",
+          "documentation":"<p>Additional information about the non-compliant resource.</p>"
+        }
+      },
+      "documentation":"<p>Information about the resource that was non-compliant with the audit check.</p>"
+    },
+    "NonCompliantResourcesCount":{"type":"long"},
     "NotConfiguredException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"errorMessage"}
+        "message":{
+          "shape":"errorMessage",
+          "documentation":"<p>The message for the exception.</p>"
+        }
       },
       "documentation":"<p>The resource is not configured.</p>",
       "error":{"httpStatusCode":404},
@@ -6899,18 +8652,6 @@
       "min":1
     },
     "Parameter":{"type":"string"},
-    "ParameterKey":{
-      "type":"string",
-      "max":128,
-      "min":1,
-      "pattern":"[a-zA-Z0-9:_-]+"
-    },
-    "ParameterValue":{
-      "type":"string",
-      "max":1024,
-      "min":1,
-      "pattern":"[^\\p{C}]+"
-    },
     "Parameters":{
       "type":"map",
       "key":{"shape":"Parameter"},
@@ -6984,9 +8725,32 @@
       "type":"string",
       "pattern":"[0-9]+"
     },
+    "PolicyVersionIdentifier":{
+      "type":"structure",
+      "members":{
+        "policyName":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the policy.</p>"
+        },
+        "policyVersionId":{
+          "shape":"PolicyVersionId",
+          "documentation":"<p>The ID of the version of the policy associated with the resource.</p>"
+        }
+      },
+      "documentation":"<p>Information about the version of the policy associated with the resource.</p>"
+    },
     "PolicyVersions":{
       "type":"list",
       "member":{"shape":"PolicyVersion"}
+    },
+    "Port":{
+      "type":"integer",
+      "max":65535,
+      "min":0
+    },
+    "Ports":{
+      "type":"list",
+      "member":{"shape":"Port"}
     },
     "PresignedUrlConfig":{
       "type":"structure",
@@ -7059,6 +8823,8 @@
     "QueuedThings":{"type":"integer"},
     "RangeKeyField":{"type":"string"},
     "RangeKeyValue":{"type":"string"},
+    "ReasonForNonCompliance":{"type":"string"},
+    "ReasonForNonComplianceCode":{"type":"string"},
     "Recursive":{"type":"boolean"},
     "RecursiveWithoutDefault":{"type":"boolean"},
     "RegisterCACertificateRequest":{
@@ -7155,18 +8921,21 @@
       "members":{
         "templateBody":{
           "shape":"TemplateBody",
-          "documentation":"<p>The provisioning template. </p>"
+          "documentation":"<p>The provisioning template. See <a href=\"http://docs.aws.amazon.com/iot/latest/developerguide/programmatic-provisioning.html\">Programmatic Provisioning</a> for more information.</p>"
         },
         "parameters":{
           "shape":"Parameters",
-          "documentation":"<p>The parameters for provisioning a thing.</p>"
+          "documentation":"<p>The parameters for provisioning a thing. See <a href=\"http://docs.aws.amazon.com/iot/latest/developerguide/programmatic-provisioning.html\">Programmatic Provisioning</a> for more information.</p>"
         }
       }
     },
     "RegisterThingResponse":{
       "type":"structure",
       "members":{
-        "certificatePem":{"shape":"CertificatePem"},
+        "certificatePem":{
+          "shape":"CertificatePem",
+          "documentation":"<p>.</p>"
+        },
         "resourceArns":{
           "shape":"ResourceArns",
           "documentation":"<p>ARNs for the generated resources.</p>"
@@ -7228,7 +8997,7 @@
       "members":{
         "certificateId":{
           "shape":"CertificateId",
-          "documentation":"<p>The ID of the certificate.</p>",
+          "documentation":"<p>The ID of the certificate. (The last part of the certificate ARN contains the certificate ID.)</p>",
           "location":"uri",
           "locationName":"certificateId"
         },
@@ -7240,6 +9009,28 @@
       "documentation":"<p>The input for the RejectCertificateTransfer operation.</p>"
     },
     "RejectedThings":{"type":"integer"},
+    "RelatedResource":{
+      "type":"structure",
+      "members":{
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of resource.</p>"
+        },
+        "resourceIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>Information identifying the resource.</p>"
+        },
+        "additionalInfo":{
+          "shape":"StringMap",
+          "documentation":"<p>Additional information about the resource.</p>"
+        }
+      },
+      "documentation":"<p>Information about a related resource.</p>"
+    },
+    "RelatedResources":{
+      "type":"list",
+      "member":{"shape":"RelatedResource"}
+    },
     "RemoveAutoRegistration":{"type":"boolean"},
     "RemoveThingFromThingGroupRequest":{
       "type":"structure",
@@ -7342,6 +9133,36 @@
       "key":{"shape":"ResourceLogicalId"},
       "value":{"shape":"ResourceArn"}
     },
+    "ResourceIdentifier":{
+      "type":"structure",
+      "members":{
+        "deviceCertificateId":{
+          "shape":"CertificateId",
+          "documentation":"<p>The ID of the certificate attached to the resource.</p>"
+        },
+        "caCertificateId":{
+          "shape":"CertificateId",
+          "documentation":"<p>The ID of the CA certificate used to authorize the certificate.</p>"
+        },
+        "cognitoIdentityPoolId":{
+          "shape":"CognitoIdentityPoolId",
+          "documentation":"<p>The ID of the Cognito Identity Pool.</p>"
+        },
+        "clientId":{
+          "shape":"ClientId",
+          "documentation":"<p>The client ID.</p>"
+        },
+        "policyVersionIdentifier":{
+          "shape":"PolicyVersionIdentifier",
+          "documentation":"<p>The version of the policy associated with the resource.</p>"
+        },
+        "account":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The account with which the resource is associated.</p>"
+        }
+      },
+      "documentation":"<p>Information identifying the non-compliant resource.</p>"
+    },
     "ResourceLogicalId":{"type":"string"},
     "ResourceNotFoundException":{
       "type":"structure",
@@ -7358,11 +9179,25 @@
     "ResourceRegistrationFailureException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"errorMessage"}
+        "message":{
+          "shape":"errorMessage",
+          "documentation":"<p>The message for the exception.</p>"
+        }
       },
       "documentation":"<p>The resource registration failed.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "ResourceType":{
+      "type":"string",
+      "enum":[
+        "DEVICE_CERTIFICATE",
+        "CA_CERTIFICATE",
+        "IOT_POLICY",
+        "COGNITO_IDENTITY_POOL",
+        "CLIENT_ID",
+        "ACCOUNT_SETTINGS"
+      ]
     },
     "Resources":{
       "type":"list",
@@ -7382,7 +9217,10 @@
           "shape":"RoleAlias",
           "documentation":"<p>The role alias.</p>"
         },
-        "roleAliasArn":{"shape":"RoleAliasArn"},
+        "roleAliasArn":{
+          "shape":"RoleAliasArn",
+          "documentation":"<p>The ARN of the role alias.</p>"
+        },
         "roleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The role ARN.</p>"
@@ -7516,6 +9354,43 @@
       "type":"string",
       "min":40
     },
+    "ScheduledAuditArn":{"type":"string"},
+    "ScheduledAuditMetadata":{
+      "type":"structure",
+      "members":{
+        "scheduledAuditName":{
+          "shape":"ScheduledAuditName",
+          "documentation":"<p>The name of the scheduled audit.</p>"
+        },
+        "scheduledAuditArn":{
+          "shape":"ScheduledAuditArn",
+          "documentation":"<p>The ARN of the scheduled audit.</p>"
+        },
+        "frequency":{
+          "shape":"AuditFrequency",
+          "documentation":"<p>How often the scheduled audit takes place.</p>"
+        },
+        "dayOfMonth":{
+          "shape":"DayOfMonth",
+          "documentation":"<p>The day of the month on which the scheduled audit is run (if the <code>frequency</code> is \"MONTHLY\"). If days 29-31 are specified, and the month does not have that many days, the audit takes place on the \"LAST\" day of the month.</p>"
+        },
+        "dayOfWeek":{
+          "shape":"DayOfWeek",
+          "documentation":"<p>The day of the week on which the scheduled audit is run (if the <code>frequency</code> is \"WEEKLY\" or \"BIWEEKLY\").</p>"
+        }
+      },
+      "documentation":"<p>Information about the scheduled audit.</p>"
+    },
+    "ScheduledAuditMetadataList":{
+      "type":"list",
+      "member":{"shape":"ScheduledAuditMetadata"}
+    },
+    "ScheduledAuditName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
     "SearchIndexRequest":{
       "type":"structure",
       "required":["queryString"],
@@ -7560,6 +9435,74 @@
       "member":{"shape":"AttributeName"}
     },
     "Seconds":{"type":"integer"},
+    "SecurityProfileArn":{"type":"string"},
+    "SecurityProfileDescription":{
+      "type":"string",
+      "max":1000,
+      "pattern":"[\\p{Graph}\\x20]*"
+    },
+    "SecurityProfileIdentifier":{
+      "type":"structure",
+      "required":[
+        "name",
+        "arn"
+      ],
+      "members":{
+        "name":{
+          "shape":"SecurityProfileName",
+          "documentation":"<p>The name you have given to the security profile.</p>"
+        },
+        "arn":{
+          "shape":"SecurityProfileArn",
+          "documentation":"<p>The ARN of the security profile.</p>"
+        }
+      },
+      "documentation":"<p>Identifying information for a Device Defender security profile.</p>"
+    },
+    "SecurityProfileIdentifiers":{
+      "type":"list",
+      "member":{"shape":"SecurityProfileIdentifier"}
+    },
+    "SecurityProfileName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9:_-]+"
+    },
+    "SecurityProfileTarget":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"SecurityProfileTargetArn",
+          "documentation":"<p>The ARN of the security profile.</p>"
+        }
+      },
+      "documentation":"<p>A target to which an alert is sent when a security profile behavior is violated.</p>"
+    },
+    "SecurityProfileTargetArn":{"type":"string"},
+    "SecurityProfileTargetMapping":{
+      "type":"structure",
+      "members":{
+        "securityProfileIdentifier":{
+          "shape":"SecurityProfileIdentifier",
+          "documentation":"<p>Information that identifies the security profile.</p>"
+        },
+        "target":{
+          "shape":"SecurityProfileTarget",
+          "documentation":"<p>Information about the target (thing group) associated with the security profile.</p>"
+        }
+      },
+      "documentation":"<p>Information about a security profile and the target associated with it.</p>"
+    },
+    "SecurityProfileTargetMappings":{
+      "type":"list",
+      "member":{"shape":"SecurityProfileTargetMapping"}
+    },
+    "SecurityProfileTargets":{
+      "type":"list",
+      "member":{"shape":"SecurityProfileTarget"}
+    },
     "ServiceUnavailableException":{
       "type":"structure",
       "members":{
@@ -7655,7 +9598,7 @@
       "members":{
         "roleArn":{
           "shape":"AwsArn",
-          "documentation":"<p>The role ARN that allows IoT to write to Cloudwatch logs.</p>"
+          "documentation":"<p>The ARN of the role that allows IoT to write to Cloudwatch logs.</p>"
         },
         "defaultLogLevel":{
           "shape":"LogLevel",
@@ -7663,7 +9606,7 @@
         },
         "disableAllLogs":{
           "shape":"DisableAllLogs",
-          "documentation":"<p>Set to true to disable all logs, otherwise set to false.</p>"
+          "documentation":"<p>If true all logs are disabled. The default is false.</p>"
         }
       }
     },
@@ -7692,7 +9635,7 @@
         },
         "messageFormat":{
           "shape":"MessageFormat",
-          "documentation":"<p>The message format of the message to publish. Optional. Accepted values are \"JSON\" and \"RAW\". The default value of the attribute is \"RAW\". SNS uses this setting to determine if the payload should be parsed and relevant platform-specific bits of the payload should be extracted. To read more about SNS message formats, see <a href=\"http://docs.aws.amazon.com/sns/latest/dg/json-formats.html\">http://docs.aws.amazon.com/sns/latest/dg/json-formats.html</a> refer to their official documentation.</p>"
+          "documentation":"<p>(Optional) The message format of the message to publish. Accepted values are \"JSON\" and \"RAW\". The default value of the attribute is \"RAW\". SNS uses this setting to determine if the payload should be parsed and relevant platform-specific bits of the payload should be extracted. To read more about SNS message formats, see <a href=\"http://docs.aws.amazon.com/sns/latest/dg/json-formats.html\">http://docs.aws.amazon.com/sns/latest/dg/json-formats.html</a> refer to their official documentation.</p>"
         }
       },
       "documentation":"<p>Describes an action to publish to an Amazon SNS topic.</p>"
@@ -7731,6 +9674,25 @@
       },
       "documentation":"<p>Describes an action to publish data to an Amazon SQS queue.</p>"
     },
+    "StartOnDemandAuditTaskRequest":{
+      "type":"structure",
+      "required":["targetCheckNames"],
+      "members":{
+        "targetCheckNames":{
+          "shape":"TargetAuditCheckNames",
+          "documentation":"<p>Which checks are performed during the audit. The checks you specify must be enabled for your account or an exception occurs. Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks including those that are enabled or <code>UpdateAccountAuditConfiguration</code> to select which checks are enabled.</p>"
+        }
+      }
+    },
+    "StartOnDemandAuditTaskResponse":{
+      "type":"structure",
+      "members":{
+        "taskId":{
+          "shape":"AuditTaskId",
+          "documentation":"<p>The ID of the on-demand audit you started.</p>"
+        }
+      }
+    },
     "StartThingRegistrationTaskRequest":{
       "type":"structure",
       "required":[
@@ -7767,6 +9729,7 @@
         }
       }
     },
+    "StateMachineName":{"type":"string"},
     "StateReason":{"type":"string"},
     "StateValue":{"type":"string"},
     "Status":{
@@ -7778,6 +9741,28 @@
         "Cancelled",
         "Cancelling"
       ]
+    },
+    "StepFunctionsAction":{
+      "type":"structure",
+      "required":[
+        "stateMachineName",
+        "roleArn"
+      ],
+      "members":{
+        "executionNamePrefix":{
+          "shape":"ExecutionNamePrefix",
+          "documentation":"<p>(Optional) A name will be given to the state machine execution consisting of this prefix followed by a UUID. Step Functions automatically creates a unique name for each state machine execution if one is not provided.</p>"
+        },
+        "stateMachineName":{
+          "shape":"StateMachineName",
+          "documentation":"<p>The name of the Step Functions state machine whose execution will be started.</p>"
+        },
+        "roleArn":{
+          "shape":"AwsArn",
+          "documentation":"<p>The ARN of the role that grants IoT permission to start execution of a state machine (\"Action\":\"states:StartExecution\").</p>"
+        }
+      },
+      "documentation":"<p>Starts execution of a Step Functions state machine.</p>"
     },
     "StopThingRegistrationTaskRequest":{
       "type":"structure",
@@ -7912,10 +9897,20 @@
       "type":"list",
       "member":{"shape":"StreamSummary"}
     },
+    "String":{"type":"string"},
+    "StringMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
     "SucceededThings":{"type":"integer"},
     "TableName":{"type":"string"},
     "Target":{"type":"string"},
     "TargetArn":{"type":"string"},
+    "TargetAuditCheckNames":{
+      "type":"list",
+      "member":{"shape":"AuditCheckName"}
+    },
     "TargetSelection":{
       "type":"string",
       "enum":[
@@ -7935,6 +9930,40 @@
     "TaskIdList":{
       "type":"list",
       "member":{"shape":"TaskId"}
+    },
+    "TaskStatistics":{
+      "type":"structure",
+      "members":{
+        "totalChecks":{
+          "shape":"TotalChecksCount",
+          "documentation":"<p>The number of checks in this audit.</p>"
+        },
+        "inProgressChecks":{
+          "shape":"InProgressChecksCount",
+          "documentation":"<p>The number of checks in progress.</p>"
+        },
+        "waitingForDataCollectionChecks":{
+          "shape":"WaitingForDataCollectionChecksCount",
+          "documentation":"<p>The number of checks waiting for data collection.</p>"
+        },
+        "compliantChecks":{
+          "shape":"CompliantChecksCount",
+          "documentation":"<p>The number of checks that found compliant resources.</p>"
+        },
+        "nonCompliantChecks":{
+          "shape":"NonCompliantChecksCount",
+          "documentation":"<p>The number of checks that found non-compliant resources.</p>"
+        },
+        "failedChecks":{
+          "shape":"FailedChecksCount",
+          "documentation":"<p>The number of checks </p>"
+        },
+        "canceledChecks":{
+          "shape":"CanceledChecksCount",
+          "documentation":"<p>The number of checks that did not run because the audit was canceled.</p>"
+        }
+      },
+      "documentation":"<p>Statistics for the checks performed during the audit.</p>"
     },
     "TemplateBody":{"type":"string"},
     "TestAuthorizationRequest":{
@@ -8083,7 +10112,7 @@
         },
         "shadow":{
           "shape":"JsonDocument",
-          "documentation":"<p>The thing shadow.</p>"
+          "documentation":"<p>The shadow.</p>"
         }
       },
       "documentation":"<p>The thing search index document.</p>"
@@ -8266,9 +10295,10 @@
       "error":{"httpStatusCode":429},
       "exception":true
     },
+    "Timestamp":{"type":"timestamp"},
     "Token":{
       "type":"string",
-      "max":1024,
+      "max":6144,
       "min":1
     },
     "TokenKeyName":{
@@ -8387,6 +10417,8 @@
       },
       "documentation":"<p>Describes a rule.</p>"
     },
+    "TotalChecksCount":{"type":"integer"},
+    "TotalResourcesCount":{"type":"long"},
     "TransferAlreadyCompletedException":{
       "type":"structure",
       "members":{
@@ -8408,7 +10440,7 @@
       "members":{
         "certificateId":{
           "shape":"CertificateId",
-          "documentation":"<p>The ID of the certificate.</p>",
+          "documentation":"<p>The ID of the certificate. (The last part of the certificate ARN contains the certificate ID.)</p>",
           "location":"uri",
           "locationName":"certificateId"
         },
@@ -8486,6 +10518,32 @@
       "exception":true
     },
     "UndoDeprecate":{"type":"boolean"},
+    "UnsignedLong":{
+      "type":"long",
+      "min":0
+    },
+    "UpdateAccountAuditConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the role that grants permission to AWS IoT to access information about your devices, policies, certificates and other items as necessary when performing an audit.</p>"
+        },
+        "auditNotificationTargetConfigurations":{
+          "shape":"AuditNotificationTargetConfigurations",
+          "documentation":"<p>Information about the targets to which audit notifications are sent.</p>"
+        },
+        "auditCheckConfigurations":{
+          "shape":"AuditCheckConfigurations",
+          "documentation":"<p>Specifies which audit checks are enabled and disabled for this account. Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks including those that are currently enabled.</p> <p>Note that some data collection may begin immediately when certain checks are enabled. When a check is disabled, any data collected so far in relation to the check is deleted.</p> <p>You cannot disable a check if it is used by any scheduled audit. You must first delete the check from the scheduled audit or delete the scheduled audit itself.</p> <p>On the first call to <code>UpdateAccountAuditConfiguration</code> this parameter is required and must specify at least one enabled check.</p>"
+        }
+      }
+    },
+    "UpdateAccountAuditConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateAuthorizerRequest":{
       "type":"structure",
       "required":["authorizerName"],
@@ -8569,7 +10627,7 @@
       "members":{
         "certificateId":{
           "shape":"CertificateId",
-          "documentation":"<p>The ID of the certificate.</p>",
+          "documentation":"<p>The ID of the certificate. (The last part of the certificate ARN contains the certificate ID.)</p>",
           "location":"uri",
           "locationName":"certificateId"
         },
@@ -8640,6 +10698,110 @@
         "roleAliasArn":{
           "shape":"RoleAliasArn",
           "documentation":"<p>The role alias ARN.</p>"
+        }
+      }
+    },
+    "UpdateScheduledAuditRequest":{
+      "type":"structure",
+      "required":["scheduledAuditName"],
+      "members":{
+        "frequency":{
+          "shape":"AuditFrequency",
+          "documentation":"<p>How often the scheduled audit takes place. Can be one of \"DAILY\", \"WEEKLY\", \"BIWEEKLY\" or \"MONTHLY\". The actual start time of each audit is determined by the system.</p>"
+        },
+        "dayOfMonth":{
+          "shape":"DayOfMonth",
+          "documentation":"<p>The day of the month on which the scheduled audit takes place. Can be \"1\" through \"31\" or \"LAST\". This field is required if the \"frequency\" parameter is set to \"MONTHLY\". If days 29-31 are specified, and the month does not have that many days, the audit takes place on the \"LAST\" day of the month.</p>"
+        },
+        "dayOfWeek":{
+          "shape":"DayOfWeek",
+          "documentation":"<p>The day of the week on which the scheduled audit takes place. Can be one of \"SUN\", \"MON\", \"TUE\", \"WED\", \"THU\", \"FRI\" or \"SAT\". This field is required if the \"frequency\" parameter is set to \"WEEKLY\" or \"BIWEEKLY\".</p>"
+        },
+        "targetCheckNames":{
+          "shape":"TargetAuditCheckNames",
+          "documentation":"<p>Which checks are performed during the scheduled audit. Checks must be enabled for your account. (Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks including those that are enabled or <code>UpdateAccountAuditConfiguration</code> to select which checks are enabled.)</p>"
+        },
+        "scheduledAuditName":{
+          "shape":"ScheduledAuditName",
+          "documentation":"<p>The name of the scheduled audit. (Max. 128 chars)</p>",
+          "location":"uri",
+          "locationName":"scheduledAuditName"
+        }
+      }
+    },
+    "UpdateScheduledAuditResponse":{
+      "type":"structure",
+      "members":{
+        "scheduledAuditArn":{
+          "shape":"ScheduledAuditArn",
+          "documentation":"<p>The ARN of the scheduled audit.</p>"
+        }
+      }
+    },
+    "UpdateSecurityProfileRequest":{
+      "type":"structure",
+      "required":["securityProfileName"],
+      "members":{
+        "securityProfileName":{
+          "shape":"SecurityProfileName",
+          "documentation":"<p>The name of the security profile you want to update.</p>",
+          "location":"uri",
+          "locationName":"securityProfileName"
+        },
+        "securityProfileDescription":{
+          "shape":"SecurityProfileDescription",
+          "documentation":"<p>A description of the security profile.</p>"
+        },
+        "behaviors":{
+          "shape":"Behaviors",
+          "documentation":"<p>Specifies the behaviors that, when violated by a device (thing), cause an alert.</p>"
+        },
+        "alertTargets":{
+          "shape":"AlertTargets",
+          "documentation":"<p>Where the alerts are sent. (Alerts are always sent to the console.)</p>"
+        },
+        "expectedVersion":{
+          "shape":"OptionalVersion",
+          "documentation":"<p>The expected version of the security profile. A new version is generated whenever the security profile is updated. If you specify a value that is different than the actual version, a <code>VersionConflictException</code> is thrown.</p>",
+          "location":"querystring",
+          "locationName":"expectedVersion"
+        }
+      }
+    },
+    "UpdateSecurityProfileResponse":{
+      "type":"structure",
+      "members":{
+        "securityProfileName":{
+          "shape":"SecurityProfileName",
+          "documentation":"<p>The name of the security profile that was updated.</p>"
+        },
+        "securityProfileArn":{
+          "shape":"SecurityProfileArn",
+          "documentation":"<p>The ARN of the security profile that was updated.</p>"
+        },
+        "securityProfileDescription":{
+          "shape":"SecurityProfileDescription",
+          "documentation":"<p>The description of the security profile.</p>"
+        },
+        "behaviors":{
+          "shape":"Behaviors",
+          "documentation":"<p>Specifies the behaviors that, when violated by a device (thing), cause an alert.</p>"
+        },
+        "alertTargets":{
+          "shape":"AlertTargets",
+          "documentation":"<p>Where the alerts are sent. (Alerts are always sent to the console.)</p>"
+        },
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>The updated version of the security profile.</p>"
+        },
+        "creationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the security profile was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the security profile was last modified.</p>"
         }
       }
     },
@@ -8778,6 +10940,44 @@
       "documentation":"<p>The output from the UpdateThing operation.</p>"
     },
     "UseBase64":{"type":"boolean"},
+    "Valid":{"type":"boolean"},
+    "ValidateSecurityProfileBehaviorsRequest":{
+      "type":"structure",
+      "required":["behaviors"],
+      "members":{
+        "behaviors":{
+          "shape":"Behaviors",
+          "documentation":"<p>Specifies the behaviors that, when violated by a device (thing), cause an alert.</p>"
+        }
+      }
+    },
+    "ValidateSecurityProfileBehaviorsResponse":{
+      "type":"structure",
+      "members":{
+        "valid":{
+          "shape":"Valid",
+          "documentation":"<p>True if the behaviors were valid.</p>"
+        },
+        "validationErrors":{
+          "shape":"ValidationErrors",
+          "documentation":"<p>The list of any errors found in the behaviors.</p>"
+        }
+      }
+    },
+    "ValidationError":{
+      "type":"structure",
+      "members":{
+        "errorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The description of an error found in the behaviors.</p>"
+        }
+      },
+      "documentation":"<p>Information about an error found in a behavior specification.</p>"
+    },
+    "ValidationErrors":{
+      "type":"list",
+      "member":{"shape":"ValidationError"}
+    },
     "Value":{"type":"string"},
     "Version":{"type":"long"},
     "VersionConflictException":{
@@ -8788,10 +10988,11 @@
           "documentation":"<p>The message for the exception.</p>"
         }
       },
-      "documentation":"<p>An exception thrown when the version of a thing passed to a command is different than the version specified with the --version parameter.</p>",
+      "documentation":"<p>An exception thrown when the version of an entity specified with the <code>expectedVersion</code> parameter does not match the latest version in the system.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
+    "VersionNumber":{"type":"long"},
     "VersionsLimitExceededException":{
       "type":"structure",
       "members":{
@@ -8804,9 +11005,62 @@
       "error":{"httpStatusCode":409},
       "exception":true
     },
+    "ViolationEvent":{
+      "type":"structure",
+      "members":{
+        "violationId":{
+          "shape":"ViolationId",
+          "documentation":"<p>The ID of the violation event.</p>"
+        },
+        "thingName":{
+          "shape":"ThingName",
+          "documentation":"<p>The name of the thing responsible for the violation event.</p>"
+        },
+        "securityProfileName":{
+          "shape":"SecurityProfileName",
+          "documentation":"<p>The name of the security profile whose behavior was violated.</p>"
+        },
+        "behavior":{
+          "shape":"Behavior",
+          "documentation":"<p>The behavior which was violated.</p>"
+        },
+        "metricValue":{
+          "shape":"MetricValue",
+          "documentation":"<p>The value of the metric (the measurement).</p>"
+        },
+        "violationEventType":{
+          "shape":"ViolationEventType",
+          "documentation":"<p>The type of violation event.</p>"
+        },
+        "violationEventTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the violation event occurred.</p>"
+        }
+      },
+      "documentation":"<p>Information about a Device Defender security profile behavior violation.</p>"
+    },
+    "ViolationEventType":{
+      "type":"string",
+      "enum":[
+        "in-alarm",
+        "alarm-cleared",
+        "alarm-invalidated"
+      ]
+    },
+    "ViolationEvents":{
+      "type":"list",
+      "member":{"shape":"ViolationEvent"}
+    },
+    "ViolationId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\-]+"
+    },
+    "WaitingForDataCollectionChecksCount":{"type":"integer"},
     "errorMessage":{"type":"string"},
     "resourceArn":{"type":"string"},
     "resourceId":{"type":"string"}
   },
-  "documentation":"<fullname>AWS IoT</fullname> <p>AWS IoT provides secure, bi-directional communication between Internet-connected things (such as sensors, actuators, embedded devices, or smart appliances) and the AWS cloud. You can discover your custom IoT-Data endpoint to communicate with, configure rules for data processing and integration with other services, organize resources associated with each thing (Thing Registry), configure logging, and create and manage policies and credentials to authenticate things.</p> <p>For more information about how AWS IoT works, see the <a href=\"http://docs.aws.amazon.com/iot/latest/developerguide/aws-iot-how-it-works.html\">Developer Guide</a>.</p>"
+  "documentation":"<fullname>AWS IoT</fullname> <p>AWS IoT provides secure, bi-directional communication between Internet-connected devices (such as sensors, actuators, embedded devices, or smart appliances) and the AWS cloud. You can discover your custom IoT-Data endpoint to communicate with, configure rules for data processing and integration with other services, organize resources associated with each device (Registry), configure logging, and create and manage policies and credentials to authenticate devices.</p> <p>For more information about how AWS IoT works, see the <a href=\"http://docs.aws.amazon.com/iot/latest/developerguide/aws-iot-how-it-works.html\">Developer Guide</a>.</p> <p>For information about how to use the credentials provider for AWS IoT, see <a href=\"http://docs.aws.amazon.com/iot/latest/developerguide/authorizing-direct-aws.html\">Authorizing Direct Calls to AWS Services</a>.</p>"
 }

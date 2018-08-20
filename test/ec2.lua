@@ -38,13 +38,18 @@ if not r.code then
 	assert(r.value.DescribeInstancesResponse.xarg.xmlns:match("http://ec2.amazonaws.com/doc"))
 else
 	assert(false, 'error:' .. err)
-end
+end 
 
 -- describeInstance test (only with mock mode)
 if helper.MOCK_HOST() then
 	local cr = aws.EC2:api():runInstances({
+		InstanceType = "t2.nano",
 		MinCount = 2, 
 		MaxCount = 2,
+		TagSpecifications = { 
+			-- according to aws doc, ResourceType is not necessary but moto_server crashes
+			{ResourceType = "instance", Tags = {{Key = "name", Value = "lua-aws"}}},
+		},
 	})
 	-- helper.dump = true
 	-- helper.dump_res('ec2 runInstances', cr)
@@ -55,11 +60,13 @@ if helper.MOCK_HOST() then
 		InstanceIds = { iid }
 	})
 	local dri = dr.value.DescribeInstancesResponse.value.reservationSet.value.item.value.instancesSet.value.item
-	-- helper.dump_res('ec2 describeInstances', dr)
+	-- helper.dump_res('ec2 describeInstances.instanceSet', dri)
 	-- print('#dr', (#dri), dri.value.instanceId.value)
 	-- item should not be array (only single element returns)
 	assert((#dri) == 0)
 	assert(dri.value.instanceId.value == iid)
+	assert(dri.value.tagSet.value.item.value.key.value == "name")
+	assert(dri.value.tagSet.value.item.value.value.value == "lua-aws")
 
 	local dr2 = aws.EC2:api():describeInstances({
 		InstanceIds = { iid, iid2 }
