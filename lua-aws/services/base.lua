@@ -28,6 +28,7 @@ return class.AWS_Service {
 				apis[version] = API.new(self, data)
 				if (not latest) or (latest <= version) then
 					apis.latest = apis[version]
+					latest = version
 				end
 			end
 		end)
