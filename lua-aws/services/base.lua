@@ -17,7 +17,7 @@ return class.AWS_Service {
 		local aws = self._aws
 		local service_name = self._service_name:lower()
 		aws:fs().scandir(util.script_path()..'/specs/', service_name, function (path)
-			--print('defintion file:', path)
+			-- print('defintion file:', path)
 			local version
 			path:gsub('[^%-]*%-([%w%-]*)%.min%.js', function (s)
 				version = s
