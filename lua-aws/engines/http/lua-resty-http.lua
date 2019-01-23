@@ -31,7 +31,7 @@ return function( req )
     return {
         status = res.status,
         body = res.body,
-        header = res.headers
+        headers = res.headers,
     }
     
 end
