@@ -19,12 +19,16 @@ return class.AWS_JsonRequest.extends(Request) {
 	
 	extract_error = function (self, resp)
 		local err = {}
+
+		err.code = resp.headers['x-amzn-ErrorType'] or 'UnknownError'
+		if type(err.code) == 'string' then
+			err.code = util.split(err.code, ':')[1]
+		end
+
 		if #resp.body > 0 then
 			local e = self._api:json().decode(resp.body)
 			if e.__type or e.code then
 				err.code = (util.split(e.__type or e.code, '#'))[1]
-			else
-				err.code = 'UnknownError'
 			end
 			if err.code == 'RequestEntityTooLarge' then
 				err.message = 'Request body must be less than 1 MB'
