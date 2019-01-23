@@ -264,6 +264,13 @@ _M.join = function (array, seps)
 	end
 	return r
 end
+_M.slice = function (array, first, last)
+	local r = {}
+	for i = first, last or #array, 1 do
+		r[#r + 1] = array[i]
+	end
+	return r
+end
 _M.file_exists = function (path, type)
 	local cmd = ([[
 if [ %s "%s" ]; then
