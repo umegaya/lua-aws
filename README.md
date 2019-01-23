@@ -62,9 +62,10 @@ local AWS = require ('aws')
 AWS = AWS.new({
 	accessKeyId = os.getenv('AWS_ACCESS_KEY'),
 	secretAccessKey = os.getenv('AWS_SECRET_KEY'),
+	region = "ap-northeast-1",
 	-- if you write your own http engin
 	http_engine = your_http_engine,
-	-- if you don't set EC2_URL environment value
+	-- if you don't set region or EC2_URL environment value
 	endpoint = "https://ec2.ap-northeast-1.amazonaws.com",
 })
 

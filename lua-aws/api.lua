@@ -2,6 +2,7 @@ local class = require ('lua-aws.class')
 local util = require ('lua-aws.util')
 local Request = require ('lua-aws.request')
 local Shape = require('lua-aws.shape.shape')
+local regionConfig = require('lua-aws.region_config')
 
 local get_endpoint_from_env = function ()
 	local ec2url = os.getenv('EC2_URL')
@@ -29,6 +30,13 @@ return class.AWS_API {
 		self._service = service
 		self._defs = defs
 		self._shapes = false
+
+		self._config = util.merge_table({}, self._service:aws():config())
+		if not self._config.endpoint and not self:global_endpoint() and not os.getenv('EC2_URL') then
+			regionConfig(self)
+			self._config.endpoint = self:endpointFromTemplate(self._config.endpoint);
+		end
+
 		self:build_methods()
 	end,
 	version = function (self)
@@ -91,7 +99,7 @@ return class.AWS_API {
 		return util.date[tsf]()
 	end,
 	config = function (self)
-		return self._service:aws():config()
+		return self._config
 	end,
 	init_shapes = function (self)
 		if not self._shapes then
@@ -147,5 +155,24 @@ return class.AWS_API {
 				self[old_method] = self[method]
 			end
 		end
+	end,
+	endpointFromTemplate = function (self, endpoint)
+		if type(endpoint) ~= "string" then
+			return endpoint
+		end
+
+		local e = endpoint
+		e = string.gsub(e, "{service}", self:endpoint_prefix())
+		e = string.gsub(e, "{region}", self:region())
+
+		local scheme
+		if self:config().sslEnabled then
+			scheme = "https"
+		else
+			scheme = "http"
+		end
+		e = string.gsub(e, "{scheme}", scheme)
+
+		return e
 	end,
 }
