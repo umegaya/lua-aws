@@ -1,7 +1,7 @@
 local util = require ('lua-aws.util')
 local regionConfig = require ('lua-aws.region_config_data')
 
-function generateRegionPrefix(region)
+local function generateRegionPrefix(region)
 	if not region then
 		return
 	end
@@ -14,7 +14,7 @@ function generateRegionPrefix(region)
 	return util.join(util.slice(parts, 1, #parts - 2), "-") .. "-*"
 end
 
-function derivedKeys(api)
+local function derivedKeys(api)
 	local region = api:region()
 	local regionPrefix = generateRegionPrefix(region)
 	local endpointPrefix = api:endpoint_prefix()
@@ -29,7 +29,7 @@ function derivedKeys(api)
 	}
 end
 
-function applyConfig(api, config)
+local function applyConfig(api, config)
 	local c = api:config()
 	for key, value in pairs(config) do
 		if key ~= "globalEndpoint" and c[key] == nil then
@@ -38,7 +38,7 @@ function applyConfig(api, config)
 	end
 end
 
-function configureEndpoint(api)
+local function configureEndpoint(api)
 	local keys = derivedKeys(api)
 	for _, key in ipairs(keys) do
 		if key and regionConfig.rules[key] then
