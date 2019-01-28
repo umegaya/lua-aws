@@ -43,7 +43,7 @@ and more code snippets help me to build authentication routines. thanks!
 
 ## Installing
 
-now there is no rockspec so please copy them directory like /usr/local/share/lua/5.1/ manually.
+now there is only outdated rockspec so please copy them directory like /usr/local/share/lua/5.1/ manually.
 
 
 ## Caveats for lua 5.3 user
@@ -127,14 +127,29 @@ AWS = AWS.new({
 })
 ```
 
+### Contributing
+- if you fix something, better to make sure it passes test cases. there is 2 way to run test.
+  - 1. use real AWS infrastructure
+  ```
+  # make sure you have export below 2 environment variables.
+  export AWS_ACCESS_KEY="your aws access key"
+  export AWS_SECRET_KEY="your aws secret key"
+  # then just run this
+  make test
+  ```
+  - 2. use mock AWS infrastruture (but some testcases skipped)
+  ```
+  # install moto_server to mock AWS (instruction from https://github.com/spulec/moto#install)
+  pip install moto
+  # then run tests with MOCK=1
+  make test MOCK=1
+  ```
+
 
 ## License
 
-if it will be more solid, This SDK will be distributed under the
-[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
-
 ```no-highlight
-Copyright 2013. Takehiro Iyatomi (iyatomi@gmail.com). All Rights Reserved.
+Copyright 2013-2019. Takehiro Iyatomi (iyatomi@gmail.com). All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

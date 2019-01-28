@@ -1,25 +1,20 @@
 local helper = require 'test.helper.util'
 local util = require 'lua-aws.util'
-local AWS = require ('lua-aws.init')
+local AWS = require 'lua-aws.init'
 local dump_res = helper.dump_res
 
-if os.getenv('AWS_ACCESS_KEY') then
-	-- ignored in non-aws instance environment
-	return
-end
-
 local aws = AWS.new({
-	role = 'aws_auto_cred_test',
-	sslEnabled = not helper.MOCK_HOST(),
-	region = 'ap-northeast-1',
-	endpoint = helper.MOCK_HOST(),
+	accessKeyId = os.getenv('AWS_ACCESS_KEY'),
+	secretAccessKey = os.getenv('AWS_SECRET_KEY'),
+	region = 'us-east-1'
 })
 
-local ok,r = aws.EC2:api():describeInstances()
-
-if ok then
-	assert(r.value.DescribeInstancesResponse.xarg.xmlns:match("http://ec2.amazonaws.com/doc"))
-else
-	assert(false, 'error:' .. r)
+if not helper.MOCK_HOST() then
+	local roleName = "lua-aws-test-default-role"
+	local roleArn = helper.create_service_role(aws, roleName)
+	local roleArnFound = helper.find_service_role(aws, roleName)
+	assert(roleArn and (roleArn == roleArnFound), "role not created or found")
+	helper.delete_service_role(aws, roleName)
+	roleArnFound = helper.find_service_role(aws, roleName)
+	assert(not roleArnFound, "role should not be found")
 end
-

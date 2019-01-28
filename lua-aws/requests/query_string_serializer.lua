@@ -51,7 +51,8 @@ return class.AWS_RequestSerializer {
 					if #parts > 0 and parts[#parts] == "" then
 						table.remove(parts, #parts)
 					end
-					table.insert(parts, util.ucfirst(memberRules.name))
+					local part = util.ucfirst(memberRules.name)
+					table.insert(parts, part)
 					name = util.join(parts, '.')
 				end
 			else
