@@ -83,6 +83,7 @@ return class.AWS_Request {
 			method = 'POST'
 		}
 		req.headers['User-Agent'] = util.user_agent()
+		req.headers['Host'] = endpoint:host()
 		return req
 	end,
 

@@ -17,7 +17,6 @@ return class.AWS_QueryRequest.extends(Request) {
 	build_request = function (self, req, params)
 		req.path = '/'
 		req.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8'
-		req.headers['host'] = req.host
 		local query_params = {
 			Version = self._api:version(),
 			Action = self:method_name(),

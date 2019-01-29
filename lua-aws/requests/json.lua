@@ -12,7 +12,6 @@ return class.AWS_JsonRequest.extends(Request) {
 		req.path = '/'
 		req.headers['Content-Type'] = 'application/x-amz-json-'..version
 		req.headers['X-Amz-Target'] = target
-		req.headers['host'] = req.host
 		req.body = api:json().encode(params)
 		return req
 	end,
