@@ -266,7 +266,9 @@ _M.join = function (array, seps)
 end
 _M.slice = function (array, first, last)
 	local r = {}
-	for i = first, last or #array, 1 do
+	-- this API is required to be same spec as javascript's Array.slice(first, last) but index is +1. 
+	-- if so, it should not contain the element @ last. 
+	for i = first, (last or #array) - 1, 1 do
 		r[#r + 1] = array[i]
 	end
 	return r
