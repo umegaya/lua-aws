@@ -5,8 +5,17 @@ function _M.iterate_all_engines(test_name, test)
 	for _, h in ipairs(availables.http) do
 		for _, j in ipairs(availables.json) do
 			for _, f in ipairs(availables.fs) do
-				if (not ngx) and h == "lua-resty-http" then
-					print('lua-resty-http skipped because of no resty environment')
+				if ((not ngx) or _M.MOCK_HOST()) and h == "lua-resty-http" then
+					--[[ lua-resty-http with moto-server causes below error
+
+ 					127.0.0.1 - - [29/Jan/2019 01:21:52] code 400, message Bad request syntax ('\x16\x03\x01\x00\xbd\x01\x00\x00\xb9\x03\x03\xd7\xcfy\xf4')
+					127.0.0.1 - - [29/Jan/2019 01:21:52] "\xbd\xb9\xd7\xcfy\xf4" HTTPStatus.BAD_REQUEST -
+2019/01/29 01:21:52 [error] 201#201: *2 SSL_do_handshake() failed (SSL: error:1408F10B:SSL routines:ssl3_get_record:wrong version number), context: ngx.timer
+						
+					error:./lua-aws/engines/http/lua-resty-http.lua:29: handshake failed
+					
+					]] 
+					print('lua-resty-http skipped because of no resty environment or with mock server')
 				elseif h ~= "mock" and j ~= "mock" and f ~= "mock" then
 					test {
 						http = h,

@@ -13,6 +13,6 @@ RUN $LUAROCKS install luafilesystem && \
 	$LUAROCKS install lua-cjson && \
 	$LUAROCKS install --server=http://luarocks.org/dev ltn12
 
-RUN pip3 install moto
+RUN pip3 install moto flask
 
 RUN apt-get install -y zip
