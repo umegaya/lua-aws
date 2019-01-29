@@ -5,7 +5,9 @@ function _M.iterate_all_engines(test_name, test)
 	for _, h in ipairs(availables.http) do
 		for _, j in ipairs(availables.json) do
 			for _, f in ipairs(availables.fs) do
-				if h ~= "mock" and j ~= "mock" and f ~= "mock" then
+				if (not ngx) and h == "lua-resty-http" then
+					print('lua-resty-http skipped because of no resty environment')
+				elseif h ~= "mock" and j ~= "mock" and f ~= "mock" then
 					test {
 						http = h,
 						json = j,

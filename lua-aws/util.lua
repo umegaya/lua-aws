@@ -264,16 +264,36 @@ _M.join = function (array, seps)
 	end
 	return r
 end
-_M.file_exists = function (path, type)
-	local cmd = ([[
-if [ %s "%s" ]; then
+_M.slice = function (array, first, last)
+	local r = {}
+	for i = first, last or #array, 1 do
+		r[#r + 1] = array[i]
+	end
+	return r
+end
+_M.file_exists = function (path)
+	-- under resty cli, io.popen does not work correctly. see https://github.com/openresty/resty-cli/issues/35
+	if ngx then
+		-- use syscall via ffi. because resty uses luajit as its luaVM
+		local ffi = require ('ffi')
+		ffi.cdef [[
+			int access(const char *pathname, int mode);
+		]]
+		-- some unistd.h have different value for F_OK (see http://www.delorie.com/djgpp/doc/incs/unistd.h), 
+		-- but we only focused on linux.
+		local F_OK = 0
+		local r = ffi.C.access(path, F_OK)
+		return r == 0
+	else
+		local cmd = ([[
+if [ -r "%s" ]; then
 echo '1'
 else
 echo '0'
-fi
-]]):format(type or "-r", path)
-	local r = io.popen(cmd):read('*l')
-	return tonumber(r) ~= 0
+fi]]):format(path)
+		local r = io.popen(cmd):read('*a')
+		return tonumber(r) == 1
+	end
 end
 _M.search_path_with_lua_config = function (path)
 	local settings = _M.split(package.path, ';')

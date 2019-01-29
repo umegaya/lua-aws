@@ -1,9 +1,14 @@
 #!/bin/bash
 
 # decide which lua variant to use
-LUA=`which luajit`
-if [ $? -ne 0 ]; then
-	LUA=`which lua`
+if [ -z $LUA ]; then
+	LUA=`which resty`
+	if [ $? -ne 0 ]; then
+		LUA=`which luajit`
+		if [ $? -ne 0 ]; then
+			LUA=`which lua`
+		fi
+	fi
 fi
 
 set +e

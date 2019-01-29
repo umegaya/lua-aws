@@ -1,6 +1,7 @@
 local AWS = require ('lua-aws.init')
 local util = require ('lua-aws.util')
 local helper = require 'test.helper.util'
+local md5 = require 'test.helper.md5'
 helper.dump = true
 
 -- full functionality test
@@ -98,7 +99,7 @@ assert(r.Metadata.fuga == 'hoge')
 
 
 -- check contents stored correctly by comparing check sum
-local f1, f2 = os.execute("md5 -q "..DIR_PATH..FILE_NAME), os.execute("md5 -q "..DIR_PATH..DEST_FILE_NAME)
+local f1, f2 = md5.sum(io.open(DIR_PATH..FILE_NAME, "r"):read('*a')), md5.sum(io.open(DIR_PATH..DEST_FILE_NAME, "r"):read('*a'))
 if f1 ~= f2 then
 	error("both file should be same: but: " .. f1 .. " vs " .. f2)
 end
