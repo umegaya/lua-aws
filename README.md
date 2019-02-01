@@ -37,13 +37,14 @@ EDIT: now some guys seems to use this at least their playground. and v4 signatur
 - [sha2](http://lua-users.org/wiki/SecureHashAlgorithm) to generate SHA-256 hash
 - [hmac](https://github.com/bjc/prosody/blob/master/util/hmac.lua) to implement Hmac_SHA256 routine
 - [base64](http://lua-users.org/wiki/BaseSixtyFour) for base64 encoder
+- [md5](https://github.com/kikito/md5.lua) for s3 test file verification
 
 and more code snippets help me to build authentication routines. thanks!
 
 
 ## Installing
 
-now there is no rockspec so please copy them directory like /usr/local/share/lua/5.1/ manually.
+now there is only outdated rockspec so please copy them directory like /usr/local/share/lua/5.1/ manually.
 
 
 ## Caveats for lua 5.3 user
@@ -61,9 +62,10 @@ local AWS = require ('aws')
 AWS = AWS.new({
 	accessKeyId = os.getenv('AWS_ACCESS_KEY'),
 	secretAccessKey = os.getenv('AWS_SECRET_KEY'),
+	region = "ap-northeast-1",
 	-- if you write your own http engin
 	http_engine = your_http_engine,
-	-- if you don't set EC2_URL environment value
+	-- if you don't set region or EC2_URL environment value
 	endpoint = "https://ec2.ap-northeast-1.amazonaws.com",
 })
 
@@ -127,14 +129,27 @@ AWS = AWS.new({
 })
 ```
 
+### Contributing
+- if you fix something, better to make sure it passes test cases. there is 2 way to run test.
+  - 1. use real AWS infrastructure
+  ```
+  # make sure you have export below aws credentials related environment variables.
+  export AWS_ACCESS_KEY="your aws access key"
+  export AWS_SECRET_KEY="your aws secret key"
+  # then just run this
+  make ci
+  ```
+  - 2. use mock AWS infrastruture (but some testcases skipped)
+  ```
+  # run tests with MOCK=1
+  make ci MOCK=1
+  ```
+
 
 ## License
 
-if it will be more solid, This SDK will be distributed under the
-[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
-
 ```no-highlight
-Copyright 2013. Takehiro Iyatomi (iyatomi@gmail.com). All Rights Reserved.
+Copyright 2013-2019. Takehiro Iyatomi (iyatomi@gmail.com). All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

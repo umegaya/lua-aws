@@ -2,19 +2,24 @@ local class = require ('lua-aws.class')
 local util = require ('lua-aws.util')
 local Request = require ('lua-aws.request')
 local Shape = require('lua-aws.shape.shape')
+local regionConfig = require('lua-aws.region_config')
 
 local get_endpoint_from_env = function ()
 	local ec2url = os.getenv('EC2_URL')
-	if not ec2url then
- 		error('neither config.endpoint given nor EC2_URL environment set.')
+	if not ec2url or ec2url == '' then
+ 		error('neither config.endpoint given nor EC2_URL, AWS_DEFAULT_REGION environment set.')
 	else
 		return ec2url:gsub('https?://ec2%.', '')
 	end
 end
 local get_region_from_env = function ()
 	local ec2url = os.getenv('EC2_URL')
-	if not ec2url then
-		error('neither config.region given nor EC2_URL environment set.')
+	if not ec2url or ec2url == '' then
+		local default_region = os.getenv('AWS_DEFAULT_REGION')
+		if not default_region or default_region == '' then
+			error('neither config.region given nor EC2_URL, AWS_DEFAULT_REGION environment set.')
+		end
+		return default_region
 	else
 		local region = false
 		ec2url:gsub('https?://ec2%.(.*)%.amazonaws.com.*', function (s)
@@ -29,6 +34,14 @@ return class.AWS_API {
 		self._service = service
 		self._defs = defs
 		self._shapes = false
+
+		self._config = util.merge_table({}, self._service:aws():config())
+		-- if no endpoint configuration but can detect region, endpoint can be automatically generated
+		if not self._config.endpoint and not self:global_endpoint() and self:region() then
+			regionConfig(self)
+			self._config.endpoint = self:endpointFromTemplate(self._config.endpoint);
+		end
+
 		self:build_methods()
 	end,
 	version = function (self)
@@ -91,7 +104,7 @@ return class.AWS_API {
 		return util.date[tsf]()
 	end,
 	config = function (self)
-		return self._service:aws():config()
+		return self._config
 	end,
 	init_shapes = function (self)
 		if not self._shapes then
@@ -147,5 +160,24 @@ return class.AWS_API {
 				self[old_method] = self[method]
 			end
 		end
+	end,
+	endpointFromTemplate = function (self, endpoint)
+		if type(endpoint) ~= "string" then
+			return endpoint
+		end
+
+		local e = endpoint
+		e = string.gsub(e, "{service}", self:endpoint_prefix())
+		e = string.gsub(e, "{region}", self:region())
+
+		local scheme
+		if self:config().sslEnabled then
+			scheme = "https"
+		else
+			scheme = "http"
+		end
+		e = string.gsub(e, "{scheme}", scheme)
+
+		return e
 	end,
 }

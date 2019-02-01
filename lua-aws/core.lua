@@ -34,6 +34,7 @@ local AWS = class.AWS {
 		self.Athena = require('lua-aws.services.athena').new(self)
 		self.Firehose = require('lua-aws.services.firehose').new(self)
 		self.Lambda = require('lua-aws.services.lambda').new(self)
+		self.IAM = require('lua-aws.services.iam').new(self)
   	
 		--[[
 		require('./services/autoscaling')
