@@ -6,8 +6,7 @@ return function( req )
     local u = require 'lua-aws.util'
     u.fill_header( req )
     
-    -- req.protocol is being parsed and passed incorrectly by lua-aws, so hardcode it to https for now
-    local url = "https://" .. req.host .. ":" .. req.port .. req.path
+    local url = req.protocol .. "://" .. req.host .. ":" .. req.port .. req.path
     
     local opts = {
         -- To enable SSL certificate verification, set the lua_ssl_trusted_certificate line in nginx.conf
