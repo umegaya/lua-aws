@@ -2,6 +2,28 @@ local class = require ('lua-aws.class')
 local API = require ('lua-aws.api')
 local util = require ('lua-aws.util')
 
+local specs = {}
+
+local function get_spec(aws, service_name)
+	local spec = specs[service_name]
+	if spec then
+		return spec
+	end
+
+	spec = {}
+
+	aws:fs().scandir(util.script_path() .. '/specs/', service_name, function (path)
+		local version = path:match('[^%-]*%-([%w%-]*)%.min%.json')
+		if version then
+			local data = aws:json().decode(util.get_json_part(path))
+			spec[version] = data
+		end
+	end)
+
+	specs[service_name] = spec
+	return spec
+end
+
 return class.AWS_Service {
 	initialize = function (self, aws, service_name)
 		self._service_name = service_name or self.class.class_name:gsub('^AWS_', '')
@@ -16,22 +38,15 @@ return class.AWS_Service {
 		local apis = {}
 		local aws = self._aws
 		local service_name = self._service_name:lower()
-		aws:fs().scandir(util.script_path()..'/specs/', service_name, function (path)
-			-- print('defintion file:', path)
-			local version
-			path:gsub('[^%-]*%-([%w%-]*)%.min%.js', function (s)
-				version = s
-				return s
-			end)
-			if version then
-				local data = aws:json().decode(util.get_json_part(path))
-				apis[version] = API.new(self, data)
-				if (not latest) or (latest <= version) then
-					apis.latest = apis[version]
-					latest = version
-				end
+		local spec = get_spec(aws, service_name)
+
+		for version, data in pairs(spec) do
+			apis[version] = API.new(self, data)
+			if (not latest) or (latest <= version) then
+				apis.latest = apis[version]
+				latest = version
 			end
-		end)
+		end
 		assert(apis.latest, service_name .. ':no api defined.')
 		return apis
 	end,
