@@ -29,11 +29,7 @@ local class = (function ()
 			return nil
 		end
 		local __lookup = function(self, method)
-			local m = self.class[method]
-			if not m then	
-				error('no such method: ' .. method .. "\n" .. debug.traceback())
-			end
-			return m
+			return self.class[method]
 		end
 		local __conflict_detector = function (self)
 			return setmetatable({ __proxy = self }, {
