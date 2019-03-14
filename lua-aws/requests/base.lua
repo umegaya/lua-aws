@@ -65,7 +65,15 @@ return class.AWS_Request {
 	end,
 	validate_credentials = function (self, req)
 		local config = self._api:config()
-		return config.credentials:get()
+		local ok, err = config.credentials:get()
+		if not ok then
+			err = {
+				code = 'CredentialsError',
+				message = 'Missing credentials in config',
+				originalError = err,
+			}
+		end
+		return ok, err
 	end,
 	validate_region = function (self, req)
 	end,
