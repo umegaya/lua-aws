@@ -1,4 +1,5 @@
 local class = require('lua-aws.class')
+local Credentials = require('lua-aws.credentials')
 local util = require('lua-aws.util')
 local available_engines = require 'lua-aws.engines.available'
 assert(available_engines)
@@ -86,11 +87,15 @@ local AWS = class.AWS {
 				method = 'GET'
 			})
 			local obj = self._json_engine.decode(resp.body)
-			config.accessKeyId = obj.AccessKeyId
-			config.secretAccessKey = obj.SecretAccessKey
-			config.sessionToken = obj.Token
+			config.credentials = Credentials.new({
+				accessKeyId = obj.AccessKeyId,
+				secretAccessKey = obj.SecretAccessKey,
+				sessionToken = obj.Token,
+			})
+		elseif config.accessKeyId and config.secretAccessKey then
+			config.credentials = Credentials.new(config)
 		end
-		assert(config.accessKeyId and config.secretAccessKey)
+		assert(config.credentials)
 		return config
 	end,
 	init_engines = function (self, preferred)

@@ -18,13 +18,16 @@ return class.AWS_Request {
 	send = function (self, params, resp)
 		assert(params)
 		local req = self:base_build_request()
-                local params_for_sign
+		local params_for_sign
 		req, params_for_sign = self:build_request(req, params)
-		self:validate(req)
+		local ok, err = self:validate(req)
+		if not ok then
+			return false, err
+		end
 		local ts = self._api:signature_timestamp()
 		-- if params_for_sign is specified, use it as signature parameter.
-		req.params = params_for_sign or params 
-		self._signer:sign(req, self._api:config(), ts)
+		req.params = params_for_sign or params
+		self._signer:sign(req, self._api:config().credentials, ts)
 		req.params = nil
 		resp = self._api:http_request(req, resp)
 		-- aws sometimes returns 2xx codes other than 200. (eg. 204 No Content)
@@ -60,12 +63,28 @@ return class.AWS_Request {
 		end
 		return self._output
 	end,
+	validate_credentials = function (self, req)
+		local config = self._api:config()
+		local ok, err = config.credentials:get()
+		if not ok then
+			err = {
+				code = 'CredentialsError',
+				message = 'Missing credentials in config',
+				originalError = err,
+			}
+		end
+		return ok, err
+	end,
 	validate_region = function (self, req)
 	end,
 	validate_parameter = function (self, req)
 		-- local input = self:input_format()
 	end,
 	validate = function (self, req)
+		local ok, err = self:validate_credentials(req)
+		if not ok then
+			return false, err
+		end
 		self:validate_region(req)
 		self:validate_parameter(req)
 		return true
