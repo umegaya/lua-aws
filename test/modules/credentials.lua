@@ -5,7 +5,7 @@ local credentials = Credentials.new({
   secretAccessKey = os.getenv('AWS_SECRET_KEY'),
 })
 
-assert(credentials:accessKeyId)
-assert(credentials:secretAccessKey)
+assert(credentials.accessKeyId)
+assert(credentials.secretAccessKey)
 assert(not credentials:needsRefresh())
 assert(credentials:get())
