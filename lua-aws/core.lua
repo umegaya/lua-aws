@@ -92,8 +92,7 @@ local AWS = class.AWS {
 				secretAccessKey = obj.SecretAccessKey,
 				sessionToken = obj.Token,
 			})
-		end
-		if config.accessKeyId and config.secretAccessKey then
+		elseif config.accessKeyId and config.secretAccessKey then
 			config.credentials = Credentials.new(config)
 		end
 		assert(config.credentials)
