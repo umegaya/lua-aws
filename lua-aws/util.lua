@@ -512,7 +512,7 @@ _M.date = {
 
 function _M.script_path()
    local str = debug.getinfo(2, "S").source:sub(2):gsub([[\]],[[/]])
-   local res = str:match("(.*/)")
+   local res = str:match("(.*)/")
    return res
 end
 

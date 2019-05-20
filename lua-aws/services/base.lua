@@ -12,8 +12,10 @@ local function get_spec(aws, service_name)
 
 	spec = {}
 
+	local service_name_regexp = service_name:gsub('%-', '%%-')
+
 	aws:fs().scandir(util.script_path() .. '/specs/', service_name, function (path)
-		local version = path:match('[^%-]*%-([%w%-]*)%.min%.json')
+		local version = path:match('/' .. service_name_regexp .. '%-([%d%-]+)%.min%.json$')
 		if version then
 			local data = aws:json().decode(util.get_json_part(path))
 			spec[version] = data
