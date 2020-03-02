@@ -1,3 +1,4 @@
+local helper = require 'test.helper.util'
 local class = require ('lua-aws.class')
 local API = require ('lua-aws.api')
 local util = require ('lua-aws.util')

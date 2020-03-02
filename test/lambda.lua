@@ -51,7 +51,7 @@ exports.handler = (event, context, callback) => {
 		FunctionName = TestLambdaFuncName,
 		Handler = "index.handler",
 		Role = roleArn,
-		Runtime = "nodejs8.10"
+		Runtime = "nodejs12.x"
 	}
 	-- helper.dump = true
 	-- helper.dump_res('lambda-payload', payload)

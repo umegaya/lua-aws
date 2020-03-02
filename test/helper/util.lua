@@ -1,5 +1,40 @@
 local availables = require 'lua-aws.engines.available'
 local _M = {}
+if ngx then
+	local allow_write_global = function (GLOBALS_ALLOWED_IN_TEST)
+		-- avoid warning during test runs caused by
+		-- https://github.com/openresty/lua-nginx-module/blob/2524330e59f0a385a9c77d4d1b957476dce7cb33/src/ngx_http_lua_util.c#L810
+		setmetatable(_G, { __newindex = function(table, key, value) rawset(table, key, value) end })
+
+		-- if there's more constants need to be whitelisted for test runs, add here.
+		local newindex = function(table, key, value)
+			rawset(table, key, value)
+
+			local phase = ngx.get_phase()
+			if phase == "init_worker" or phase == "init" then
+			  return
+			end
+
+			-- we check only timer phase because resty-cli runs everything in timer phase
+			if phase == "timer" and GLOBALS_ALLOWED_IN_TEST[key] then
+			  return
+			end
+
+			local message = "at:" .. phase .. ", writing a global lua variable " .. key ..
+			  " which may lead to race conditions between concurrent requests, so prefer the use of 'local' variables "
+			-- it's important to do print here because ngx.log is mocked below
+			print(message)
+		end
+		setmetatable(_G, { __newindex = newindex })
+	end
+	allow_write_global({
+		socket = true,
+		TIMEOUT = true,
+		ltn12 = true,
+		mime = true,
+		lfs = true
+	})
+end
 
 function _M.iterate_all_engines(test_name, test)
 	for _, h in ipairs(availables.http) do

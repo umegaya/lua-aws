@@ -22,21 +22,9 @@ local AWS = class.AWS {
 		self._config = self:verify_and_fill_config(config)
 		--self._http_engine = http_engine or self:get_http_engine()
 		--> define service
-		self.DynamoDB = require('lua-aws.services.dynamodb').new(self)
-		self.EC2 = require('lua-aws.services.ec2').new(self)
-		self.Kinesis = require('lua-aws.services.kinesis').new(self)
-		self.SNS = require('lua-aws.services.sns').new(self)
-		self.SQS = require('lua-aws.services.sqs').new(self)
-		self.SWF = require('lua-aws.services.swf').new(self)
-		self.CloudWatch = require('lua-aws.services.cloudwatch').new(self, "monitoring")
-		self.CloudWatchLog = require('lua-aws.services.cloudwatchlog').new(self, "logs")
-		self.S3 = require('lua-aws.services.s3').new(self)
-		self.ECS = require('lua-aws.services.ecs').new(self)
-		self.Athena = require('lua-aws.services.athena').new(self)
-		self.Firehose = require('lua-aws.services.firehose').new(self)
-		self.Lambda = require('lua-aws.services.lambda').new(self)
-		self.IAM = require('lua-aws.services.iam').new(self)
-		self.STS = require('lua-aws.services.sts').new(self)
+		if not self._config.lazyInitialization then
+			self:init_services()
+		end
   	
 		--[[
 		require('./services/autoscaling')
@@ -68,6 +56,25 @@ local AWS = class.AWS {
 		require('./services/sts')
 		require('./services/support')
 		]]--	
+	end,
+	-- call proper place if you set lazyInitialization to your config
+	-- TODO: more lazy. (per service, when accessed)
+	init_services = function (self, config)
+		self.DynamoDB = require('lua-aws.services.dynamodb').new(self)
+		self.EC2 = require('lua-aws.services.ec2').new(self)
+		self.Kinesis = require('lua-aws.services.kinesis').new(self)
+		self.SNS = require('lua-aws.services.sns').new(self)
+		self.SQS = require('lua-aws.services.sqs').new(self)
+		self.SWF = require('lua-aws.services.swf').new(self)
+		self.CloudWatch = require('lua-aws.services.cloudwatch').new(self, "monitoring")
+		self.CloudWatchLog = require('lua-aws.services.cloudwatchlog').new(self, "logs")
+		self.S3 = require('lua-aws.services.s3').new(self)
+		self.ECS = require('lua-aws.services.ecs').new(self)
+		self.Athena = require('lua-aws.services.athena').new(self)
+		self.Firehose = require('lua-aws.services.firehose').new(self)
+		self.Lambda = require('lua-aws.services.lambda').new(self)
+		self.IAM = require('lua-aws.services.iam').new(self)
+		self.STS = require('lua-aws.services.sts').new(self)
 	end,
 	verify_and_fill_config = function (self, config)
 		if config.sslEnabled == nil then

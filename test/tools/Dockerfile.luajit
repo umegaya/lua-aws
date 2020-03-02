@@ -1,0 +1,33 @@
+FROM ubuntu:bionic
+
+ENV LUAJIT_VERSION=2.0.5
+ENV LUAROCKS_VERSION=3.3.0
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        build-essential \
+     	ca-certificates \
+        curl \
+        libcurl4-openssl-dev \
+        libssl-dev \
+        python3-pip python3-setuptools \
+        unzip zip \
+        make
+
+RUN curl -L -o /LuaJIT-$LUAJIT_VERSION.tar.gz https://luajit.org/download/LuaJIT-$LUAJIT_VERSION.tar.gz && \
+	tar zxpf /LuaJIT-$LUAJIT_VERSION.tar.gz && cd LuaJIT-$LUAJIT_VERSION && \
+	make && make install && rm -rf /LuaJIT*
+
+RUN curl -L -o /luarocks-$LUAROCKS_VERSION.tar.gz https://luarocks.org/releases/luarocks-$LUAROCKS_VERSION.tar.gz && \
+	tar zxpf /luarocks-$LUAROCKS_VERSION.tar.gz && cd luarocks-$LUAROCKS_VERSION && \
+	./configure && make && make install && rm -rf /luarocks*
+
+RUN luarocks install luafilesystem && \
+	luarocks install lua-curl CURL_INCDIR=/usr/include/x86_64-linux-gnu && \
+	luarocks install lua-resty-http && \
+	luarocks install luasec && \
+	luarocks install luasocket && \
+	luarocks install lua-cjson && \
+	luarocks install --server=http://luarocks.org/dev ltn12
+
+RUN bash -c "pip3 install moto flask"

@@ -1,3 +1,4 @@
+local helper = require 'test.helper.util'
 local AWS = require ('lua-aws.init')
 local rc = require ('lua-aws.region_config')
 

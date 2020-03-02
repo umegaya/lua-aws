@@ -1,6 +1,6 @@
+local helper = require 'test.helper.util'
 local AWS = require ('lua-aws.init')
 local util = require ('lua-aws.util')
-local helper = require 'test.helper.util'
 local md5 = require 'test.helper.md5'
 helper.dump = true
 
