@@ -1,5 +1,5 @@
-local util = require 'lua-aws.util'
 local helper = require 'test.helper.util'
+local util = require 'lua-aws.util'
 helper.dump = true
 
 local resp = [[<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">

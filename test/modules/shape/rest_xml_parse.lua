@@ -1,3 +1,4 @@
+local helper = require 'test.helper.util'
 local AWS = require ('lua-aws.init')
 local aws = AWS.new({
 	accessKeyId = os.getenv('AWS_ACCESS_KEY'),

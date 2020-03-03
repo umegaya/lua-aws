@@ -66,7 +66,7 @@ function _M.build(table, max_depth)
   return concat(res, '')
 end
 
-xmlbuilder_mt = {}
+local xmlbuilder_mt = {}
 xmlbuilder_mt.__index = xmlbuilder_mt
 function xmlbuilder_mt:ele(name)
   local child = setmetatable({ xml = name }, xmlbuilder_mt)

@@ -1,6 +1,7 @@
-local AWS = require ('lua-aws.init')
 local helper = require 'test.helper.util'
+local AWS = require ('lua-aws.init')
 local mock = require ('lua-aws.engines.fs.mock')
+local EC2 = require ('lua-aws.services.ec2')
 
 -- test issue #53 (PR #56)
 mock.mocking({
@@ -13,9 +14,12 @@ local aws = AWS.new({
 	secretAccessKey = os.getenv('AWS_SECRET_KEY'),
 	sslEnabled = not helper.MOCK_HOST(),
 	endpoint = helper.MOCK_HOST(),
+	lazyInitialization = true,
 	preferred_engines = {
 		fs = "mock",
 	},
 })
 
-assert(aws.EC2:api():version() == '2016-11-15', 'version wrong:'..aws.EC2:api():version())
+local ec2 = EC2.new(aws) 
+
+assert(ec2:api():version() == '2016-11-15', 'version wrong:'..ec2:api():version())

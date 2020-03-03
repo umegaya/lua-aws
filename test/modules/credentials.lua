@@ -1,3 +1,4 @@
+local helper = require 'test.helper.util'
 local Credentials = require ('lua-aws.credentials')
 
 local credentials = Credentials.new({
