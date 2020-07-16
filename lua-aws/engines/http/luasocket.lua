@@ -43,12 +43,15 @@ local run_http_engine = function (eng, req, resp)
 end
 
 local luasec_ok, luasec_https = pcall(require, 'ssl.https')
+if not luasec_ok then
+	error('luasocket must support https:' .. luasec_https)
+end
 return function (req, resp)
 	if req.protocol:match('https') then
 		if luasec_ok then
 			return run_http_engine(luasec_https, req, resp)
 		else
-			error('no https module available')
+			error('no https module available:' .. luasec_https)
 			return nil
 		end
 	end
