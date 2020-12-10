@@ -56,7 +56,8 @@
       "2017-03-25*",
       "2017-10-30*",
       "2018-06-18*",
-      "2018-11-05*"
+      "2018-11-05*",
+      "2019-03-26*"
     ],
     "cors": true
   },
@@ -865,5 +866,108 @@
   "codestarconnections": {
     "prefix": "codestar-connections",
     "name": "CodeStarconnections"
+  },
+  "synthetics": {
+    "name": "Synthetics"
+  },
+  "iotsitewise": {
+    "name": "IoTSiteWise"
+  },
+  "macie2": {
+    "name": "Macie2"
+  },
+  "codeartifact": {
+    "name": "CodeArtifact"
+  },
+  "honeycode": {
+    "name": "Honeycode"
+  },
+  "ivs": {
+    "name": "IVS"
+  },
+  "braket": {
+    "name": "Braket"
+  },
+  "identitystore": {
+    "name": "IdentityStore"
+  },
+  "appflow": {
+    "name": "Appflow"
+  },
+  "redshiftdata": {
+    "prefix": "redshift-data",
+    "name": "RedshiftData"
+  },
+  "ssoadmin": {
+    "prefix": "sso-admin",
+    "name": "SSOAdmin"
+  },
+  "timestreamquery": {
+    "prefix": "timestream-query",
+    "name": "TimestreamQuery"
+  },
+  "timestreamwrite": {
+    "prefix": "timestream-write",
+    "name": "TimestreamWrite"
+  },
+  "s3outposts": {
+    "name": "S3Outposts"
+  },
+  "databrew": {
+    "name": "DataBrew"
+  },
+  "servicecatalogappregistry": {
+    "prefix": "servicecatalog-appregistry",
+    "name": "ServiceCatalogAppRegistry"
+  },
+  "networkfirewall": {
+    "prefix": "network-firewall",
+    "name": "NetworkFirewall"
+  },
+  "mwaa": {
+    "name": "MWAA"
+  },
+  "amplifybackend": {
+    "name": "AmplifyBackend"
+  },
+  "appintegrations": {
+    "name": "AppIntegrations"
+  },
+  "connectcontactlens": {
+    "prefix": "connect-contact-lens",
+    "name": "ConnectContactLens"
+  },
+  "devopsguru": {
+    "prefix": "devops-guru",
+    "name": "DevOpsGuru"
+  },
+  "ecrpublic": {
+    "prefix": "ecr-public",
+    "name": "ECRPUBLIC"
+  },
+  "lookoutvision": {
+    "name": "LookoutVision"
+  },
+  "sagemakerfeaturestoreruntime": {
+    "prefix": "sagemaker-featurestore-runtime",
+    "name": "SageMakerFeatureStoreRuntime"
+  },
+  "customerprofiles": {
+    "prefix": "customer-profiles",
+    "name": "CustomerProfiles"
+  },
+  "auditmanager": {
+    "name": "AuditManager"
+  },
+  "emrcontainers": {
+    "prefix": "emr-containers",
+    "name": "EMRcontainers"
+  },
+  "healthlake": {
+    "name": "HealthLake"
+  },
+  "sagemakeredge": {
+    "prefix": "sagemaker-edge",
+    "name": "SagemakerEdge"
   }
 }

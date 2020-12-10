@@ -113,7 +113,7 @@
           "shape": "LimitExceededException"
         }
       ],
-      "documentation": "<p>Associates the specified product with the specified portfolio.</p>"
+      "documentation": "<p>Associates the specified product with the specified portfolio.</p> <p>A delegated admin is authorized to invoke this command.</p>"
     },
     "AssociateServiceActionWithProvisioningArtifact": {
       "name": "AssociateServiceActionWithProvisioningArtifact",
@@ -260,7 +260,7 @@
           "shape": "DuplicateResourceException"
         }
       ],
-      "documentation": "<p>Creates a constraint.</p>"
+      "documentation": "<p>Creates a constraint.</p> <p>A delegated admin is authorized to invoke this command.</p>"
     },
     "CreatePortfolio": {
       "name": "CreatePortfolio",
@@ -285,7 +285,7 @@
           "shape": "TagOptionNotMigratedException"
         }
       ],
-      "documentation": "<p>Creates a portfolio.</p>"
+      "documentation": "<p>Creates a portfolio.</p> <p>A delegated admin is authorized to invoke this command.</p>"
     },
     "CreatePortfolioShare": {
       "name": "CreatePortfolioShare",
@@ -316,7 +316,7 @@
           "shape": "InvalidStateException"
         }
       ],
-      "documentation": "<p>Shares the specified portfolio with the specified account or organization node. Shares to an organization node can only be created by the master account of an Organization. AWSOrganizationsAccess must be enabled in order to create a portfolio share to an organization node.</p>"
+      "documentation": "<p>Shares the specified portfolio with the specified account or organization node. Shares to an organization node can only be created by the management account of an organization or by a delegated administrator. You can share portfolios to an organization, an organizational unit, or a specific account.</p> <p>Note that if a delegated admin is de-registered, they can no longer create portfolio shares.</p> <p> <code>AWSOrganizationsAccess</code> must be enabled in order to create a portfolio share to an organization node.</p> <p>You can't share a shared resource. This includes portfolios that contain a shared product.</p>"
     },
     "CreateProduct": {
       "name": "CreateProduct",
@@ -341,7 +341,7 @@
           "shape": "TagOptionNotMigratedException"
         }
       ],
-      "documentation": "<p>Creates a product.</p>"
+      "documentation": "<p>Creates a product.</p> <p>A delegated admin is authorized to invoke this command.</p>"
     },
     "CreateProvisionedProductPlan": {
       "name": "CreateProvisionedProductPlan",
@@ -460,7 +460,7 @@
           "shape": "InvalidParametersException"
         }
       ],
-      "documentation": "<p>Deletes the specified constraint.</p>"
+      "documentation": "<p>Deletes the specified constraint.</p> <p>A delegated admin is authorized to invoke this command.</p>"
     },
     "DeletePortfolio": {
       "name": "DeletePortfolio",
@@ -488,7 +488,7 @@
           "shape": "TagOptionNotMigratedException"
         }
       ],
-      "documentation": "<p>Deletes the specified portfolio.</p> <p>You cannot delete a portfolio if it was shared with you or if it has associated products, users, constraints, or shared accounts.</p>"
+      "documentation": "<p>Deletes the specified portfolio.</p> <p>You cannot delete a portfolio if it was shared with you or if it has associated products, users, constraints, or shared accounts.</p> <p>A delegated admin is authorized to invoke this command.</p>"
     },
     "DeletePortfolioShare": {
       "name": "DeletePortfolioShare",
@@ -516,7 +516,7 @@
           "shape": "InvalidStateException"
         }
       ],
-      "documentation": "<p>Stops sharing the specified portfolio with the specified account or organization node. Shares to an organization node can only be deleted by the master account of an Organization.</p>"
+      "documentation": "<p>Stops sharing the specified portfolio with the specified account or organization node. Shares to an organization node can only be deleted by the management account of an organization or by a delegated administrator.</p> <p>Note that if a delegated admin is de-registered, portfolio shares created from that account are removed.</p>"
     },
     "DeleteProduct": {
       "name": "DeleteProduct",
@@ -544,7 +544,7 @@
           "shape": "TagOptionNotMigratedException"
         }
       ],
-      "documentation": "<p>Deletes the specified product.</p> <p>You cannot delete a product if it was shared with you or is associated with a portfolio.</p>"
+      "documentation": "<p>Deletes the specified product.</p> <p>You cannot delete a product if it was shared with you or is associated with a portfolio.</p> <p>A delegated admin is authorized to invoke this command.</p>"
     },
     "DeleteProvisionedProductPlan": {
       "name": "DeleteProvisionedProductPlan",
@@ -695,7 +695,7 @@
           "shape": "ResourceNotFoundException"
         }
       ],
-      "documentation": "<p>Gets information about the specified portfolio.</p>"
+      "documentation": "<p>Gets information about the specified portfolio.</p> <p>A delegated admin is authorized to invoke this command.</p>"
     },
     "DescribePortfolioShareStatus": {
       "name": "DescribePortfolioShareStatus",
@@ -720,7 +720,7 @@
           "shape": "OperationNotSupportedException"
         }
       ],
-      "documentation": "<p>Gets the status of the specified portfolio share operation. This API can only be called by the master account in the organization.</p>"
+      "documentation": "<p>Gets the status of the specified portfolio share operation. This API can only be called by the management account in the organization or by a delegated admin.</p>"
     },
     "DescribeProduct": {
       "name": "DescribeProduct",
@@ -759,6 +759,9 @@
       "errors": [
         {
           "shape": "ResourceNotFoundException"
+        },
+        {
+          "shape": "InvalidParametersException"
         }
       ],
       "documentation": "<p>Gets information about the specified product. This operation is run with administrator access.</p>"
@@ -800,6 +803,9 @@
       "errors": [
         {
           "shape": "ResourceNotFoundException"
+        },
+        {
+          "shape": "InvalidParametersException"
         }
       ],
       "documentation": "<p>Gets information about the specified provisioned product.</p>"
@@ -841,6 +847,9 @@
       "errors": [
         {
           "shape": "ResourceNotFoundException"
+        },
+        {
+          "shape": "InvalidParametersException"
         }
       ],
       "documentation": "<p>Gets information about the specified provisioning artifact (also known as a version) for the specified product.</p>"
@@ -972,7 +981,7 @@
           "shape": "OperationNotSupportedException"
         }
       ],
-      "documentation": "<p>Disable portfolio sharing through AWS Organizations feature. This feature will not delete your current shares but it will prevent you from creating new shares throughout your organization. Current shares will not be in sync with your organization structure if it changes after calling this API. This API can only be called by the master account in the organization.</p>"
+      "documentation": "<p>Disable portfolio sharing through AWS Organizations feature. This feature will not delete your current shares but it will prevent you from creating new shares throughout your organization. Current shares will not be in sync with your organization structure if it changes after calling this API. This API can only be called by the management account in the organization.</p> <p>This API can't be invoked if there are active delegated administrators in the organization.</p> <p>Note that a delegated administrator is not authorized to invoke <code>DisableAWSOrganizationsAccess</code>.</p>"
     },
     "DisassociateBudgetFromResource": {
       "name": "DisassociateBudgetFromResource",
@@ -1038,7 +1047,7 @@
           "shape": "InvalidParametersException"
         }
       ],
-      "documentation": "<p>Disassociates the specified product from the specified portfolio. </p>"
+      "documentation": "<p>Disassociates the specified product from the specified portfolio. </p> <p>A delegated admin is authorized to invoke this command.</p>"
     },
     "DisassociateServiceActionFromProvisioningArtifact": {
       "name": "DisassociateServiceActionFromProvisioningArtifact",
@@ -1104,7 +1113,7 @@
           "shape": "OperationNotSupportedException"
         }
       ],
-      "documentation": "<p>Enable portfolio sharing feature through AWS Organizations. This API will allow Service Catalog to receive updates on your organization in order to sync your shares with the current structure. This API can only be called by the master account in the organization.</p> <p>By calling this API Service Catalog will make a call to organizations:EnableAWSServiceAccess on your behalf so that your shares can be in sync with any changes in your AWS Organizations structure.</p>"
+      "documentation": "<p>Enable portfolio sharing feature through AWS Organizations. This API will allow Service Catalog to receive updates on your organization in order to sync your shares with the current structure. This API can only be called by the management account in the organization.</p> <p>By calling this API Service Catalog will make a call to organizations:EnableAWSServiceAccess on your behalf so that your shares can be in sync with any changes in your AWS Organizations structure.</p> <p>Note that a delegated administrator is not authorized to invoke <code>EnableAWSOrganizationsAccess</code>.</p>"
     },
     "ExecuteProvisionedProductPlan": {
       "name": "ExecuteProvisionedProductPlan",
@@ -1176,7 +1185,57 @@
           "shape": "OperationNotSupportedException"
         }
       ],
-      "documentation": "<p>Get the Access Status for AWS Organization portfolio share feature. This API can only be called by the master account in the organization.</p>"
+      "documentation": "<p>Get the Access Status for AWS Organization portfolio share feature. This API can only be called by the management account in the organization or by a delegated admin.</p>"
+    },
+    "GetProvisionedProductOutputs": {
+      "name": "GetProvisionedProductOutputs",
+      "http": {
+        "method": "POST",
+        "requestUri": "/"
+      },
+      "input": {
+        "shape": "GetProvisionedProductOutputsInput"
+      },
+      "output": {
+        "shape": "GetProvisionedProductOutputsOutput"
+      },
+      "errors": [
+        {
+          "shape": "InvalidParametersException"
+        },
+        {
+          "shape": "ResourceNotFoundException"
+        }
+      ],
+      "documentation": "<p>This API takes either a <code>ProvisonedProductId</code> or a <code>ProvisionedProductName</code>, along with a list of one or more output keys, and responds with the key/value pairs of those outputs.</p>"
+    },
+    "ImportAsProvisionedProduct": {
+      "name": "ImportAsProvisionedProduct",
+      "http": {
+        "method": "POST",
+        "requestUri": "/"
+      },
+      "input": {
+        "shape": "ImportAsProvisionedProductInput"
+      },
+      "output": {
+        "shape": "ImportAsProvisionedProductOutput"
+      },
+      "errors": [
+        {
+          "shape": "DuplicateResourceException"
+        },
+        {
+          "shape": "InvalidStateException"
+        },
+        {
+          "shape": "ResourceNotFoundException"
+        },
+        {
+          "shape": "InvalidParametersException"
+        }
+      ],
+      "documentation": "<p>Requests the import of a resource as a Service Catalog provisioned product that is associated to a Service Catalog product and provisioning artifact. Once imported all supported Service Catalog governance actions are supported on the provisioned product.</p> <p>Resource import only supports CloudFormation stack ARNs. CloudFormation StackSets and non-root nested stacks are not supported.</p> <p>The CloudFormation stack must have one of the following statuses to be imported: CREATE_COMPLETE, UPDATE_COMPLETE, UPDATE_ROLLBACK_COMPLETE, IMPORT_COMPLETE, IMPORT_ROLLBACK_COMPLETE.</p> <p>Import of the resource requires that the CloudFormation stack template matches the associated Service Catalog product provisioning artifact. </p>"
     },
     "ListAcceptedPortfolioShares": {
       "name": "ListAcceptedPortfolioShares",
@@ -1289,7 +1348,7 @@
           "shape": "OperationNotSupportedException"
         }
       ],
-      "documentation": "<p>Lists the organization nodes that have access to the specified portfolio. This API can only be called by the master account in the organization.</p>"
+      "documentation": "<p>Lists the organization nodes that have access to the specified portfolio. This API can only be called by the management account in the organization or by a delegated admin.</p> <p>If a delegated admin is de-registered, they can no longer perform this operation.</p>"
     },
     "ListPortfolioAccess": {
       "name": "ListPortfolioAccess",
@@ -1311,7 +1370,7 @@
           "shape": "InvalidParametersException"
         }
       ],
-      "documentation": "<p>Lists the account IDs that have access to the specified portfolio.</p>"
+      "documentation": "<p>Lists the account IDs that have access to the specified portfolio.</p> <p>A delegated admin can list the accounts that have access to the shared portfolio. Note that if a delegated admin is de-registered, they can no longer perform this operation.</p>"
     },
     "ListPortfolios": {
       "name": "ListPortfolios",
@@ -1929,7 +1988,7 @@
         },
         "PortfolioShareType": {
           "shape": "PortfolioShareType",
-          "documentation": "<p>The type of shared portfolios to accept. The default is to accept imported portfolios.</p> <ul> <li> <p> <code>AWS_ORGANIZATIONS</code> - Accept portfolios shared by the master account of your organization.</p> </li> <li> <p> <code>IMPORTED</code> - Accept imported portfolios.</p> </li> <li> <p> <code>AWS_SERVICECATALOG</code> - Not supported. (Throws ResourceNotFoundException.)</p> </li> </ul> <p>For example, <code>aws servicecatalog accept-portfolio-share --portfolio-id \"port-2qwzkwxt3y5fk\" --portfolio-share-type AWS_ORGANIZATIONS</code> </p>"
+          "documentation": "<p>The type of shared portfolios to accept. The default is to accept imported portfolios.</p> <ul> <li> <p> <code>AWS_ORGANIZATIONS</code> - Accept portfolios shared by the management account of your organization.</p> </li> <li> <p> <code>IMPORTED</code> - Accept imported portfolios.</p> </li> <li> <p> <code>AWS_SERVICECATALOG</code> - Not supported. (Throws ResourceNotFoundException.)</p> </li> </ul> <p>For example, <code>aws servicecatalog accept-portfolio-share --portfolio-id \"port-2qwzkwxt3y5fk\" --portfolio-share-type AWS_ORGANIZATIONS</code> </p>"
         }
       }
     },
@@ -2256,6 +2315,14 @@
         "Owner": {
           "shape": "AccountId",
           "documentation": "<p>The owner of the constraint.</p>"
+        },
+        "ProductId": {
+          "shape": "Id",
+          "documentation": "<p>The identifier of the product the constraint applies to. Note that a constraint applies to a specific instance of a product within a certain portfolio.</p>"
+        },
+        "PortfolioId": {
+          "shape": "Id",
+          "documentation": "<p>The identifier of the portfolio the product resides in. The constraint applies only to the instance of the product that lives within this portfolio.</p>"
         }
       },
       "documentation": "<p>Information about a constraint.</p>"
@@ -2385,7 +2452,7 @@
         },
         "Parameters": {
           "shape": "ConstraintParameters",
-          "documentation": "<p>The constraint parameters, in JSON format. The syntax depends on the constraint type as follows:</p> <dl> <dt>LAUNCH</dt> <dd> <p>Specify the <code>RoleArn</code> property as follows:</p> <p> <code>{\"RoleArn\" : \"arn:aws:iam::123456789012:role/LaunchRole\"}</code> </p> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>LAUNCH</code> constraint on a product and portfolio.</p> </dd> <dt>NOTIFICATION</dt> <dd> <p>Specify the <code>NotificationArns</code> property as follows:</p> <p> <code>{\"NotificationArns\" : [\"arn:aws:sns:us-east-1:123456789012:Topic\"]}</code> </p> </dd> <dt>RESOURCE_UPDATE</dt> <dd> <p>Specify the <code>TagUpdatesOnProvisionedProduct</code> property as follows:</p> <p> <code>{\"Version\":\"2.0\",\"Properties\":{\"TagUpdateOnProvisionedProduct\":\"String\"}}</code> </p> <p>The <code>TagUpdatesOnProvisionedProduct</code> property accepts a string value of <code>ALLOWED</code> or <code>NOT_ALLOWED</code>.</p> </dd> <dt>STACKSET</dt> <dd> <p>Specify the <code>Parameters</code> property as follows:</p> <p> <code>{\"Version\": \"String\", \"Properties\": {\"AccountList\": [ \"String\" ], \"RegionList\": [ \"String\" ], \"AdminRole\": \"String\", \"ExecutionRole\": \"String\"}}</code> </p> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>STACKSET</code> constraint on a product and portfolio.</p> <p>Products with a <code>STACKSET</code> constraint will launch an AWS CloudFormation stack set.</p> </dd> <dt>TEMPLATE</dt> <dd> <p>Specify the <code>Rules</code> property. For more information, see <a href=\"http://docs.aws.amazon.com/servicecatalog/latest/adminguide/reference-template_constraint_rules.html\">Template Constraint Rules</a>.</p> </dd> </dl>"
+          "documentation": "<p>The constraint parameters, in JSON format. The syntax depends on the constraint type as follows:</p> <dl> <dt>LAUNCH</dt> <dd> <p>You are required to specify either the <code>RoleArn</code> or the <code>LocalRoleName</code> but can't use both.</p> <p>Specify the <code>RoleArn</code> property as follows:</p> <p> <code>{\"RoleArn\" : \"arn:aws:iam::123456789012:role/LaunchRole\"}</code> </p> <p>Specify the <code>LocalRoleName</code> property as follows:</p> <p> <code>{\"LocalRoleName\": \"SCBasicLaunchRole\"}</code> </p> <p>If you specify the <code>LocalRoleName</code> property, when an account uses the launch constraint, the IAM role with that name in the account will be used. This allows launch-role constraints to be account-agnostic so the administrator can create fewer resources per shared account.</p> <note> <p>The given role name must exist in the account used to create the launch constraint and the account of the user who launches a product with this launch constraint.</p> </note> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>LAUNCH</code> constraint on a product and portfolio.</p> </dd> <dt>NOTIFICATION</dt> <dd> <p>Specify the <code>NotificationArns</code> property as follows:</p> <p> <code>{\"NotificationArns\" : [\"arn:aws:sns:us-east-1:123456789012:Topic\"]}</code> </p> </dd> <dt>RESOURCE_UPDATE</dt> <dd> <p>Specify the <code>TagUpdatesOnProvisionedProduct</code> property as follows:</p> <p> <code>{\"Version\":\"2.0\",\"Properties\":{\"TagUpdateOnProvisionedProduct\":\"String\"}}</code> </p> <p>The <code>TagUpdatesOnProvisionedProduct</code> property accepts a string value of <code>ALLOWED</code> or <code>NOT_ALLOWED</code>.</p> </dd> <dt>STACKSET</dt> <dd> <p>Specify the <code>Parameters</code> property as follows:</p> <p> <code>{\"Version\": \"String\", \"Properties\": {\"AccountList\": [ \"String\" ], \"RegionList\": [ \"String\" ], \"AdminRole\": \"String\", \"ExecutionRole\": \"String\"}}</code> </p> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>STACKSET</code> constraint on a product and portfolio.</p> <p>Products with a <code>STACKSET</code> constraint will launch an AWS CloudFormation stack set.</p> </dd> <dt>TEMPLATE</dt> <dd> <p>Specify the <code>Rules</code> property. For more information, see <a href=\"http://docs.aws.amazon.com/servicecatalog/latest/adminguide/reference-template_constraint_rules.html\">Template Constraint Rules</a>.</p> </dd> </dl>"
         },
         "Type": {
           "shape": "ConstraintType",
@@ -2487,7 +2554,7 @@
         },
         "OrganizationNode": {
           "shape": "OrganizationNode",
-          "documentation": "<p>The organization node to whom you are going to share. If <code>OrganizationNode</code> is passed in, <code>PortfolioShare</code> will be created for the node and its children (when applies), and a <code>PortfolioShareToken</code> will be returned in the output in order for the administrator to monitor the status of the <code>PortfolioShare</code> creation process.</p>"
+          "documentation": "<p>The organization node to whom you are going to share. If <code>OrganizationNode</code> is passed in, <code>PortfolioShare</code> will be created for the node an ListOrganizationPortfolioAccessd its children (when applies), and a <code>PortfolioShareToken</code> will be returned in the output in order for the administrator to monitor the status of the <code>PortfolioShare</code> creation process.</p>"
         }
       }
     },
@@ -2496,7 +2563,7 @@
       "members": {
         "PortfolioShareToken": {
           "shape": "Id",
-          "documentation": "<p>The portfolio share unique identifier. This will only be returned if portfolio is shared to an organization node.</p>"
+          "documentation": "<p>The portfolio shares a unique identifier that only returns if the portfolio is shared to an organization node.</p>"
         }
       }
     },
@@ -2552,7 +2619,7 @@
         },
         "ProvisioningArtifactParameters": {
           "shape": "ProvisioningArtifactProperties",
-          "documentation": "<p>The configuration of the provisioning artifact.</p>"
+          "documentation": "<p>The configuration of the provisioning artifact. The <code>info</code> field accepts <code>ImportFromPhysicalID</code>.</p>"
         },
         "IdempotencyToken": {
           "shape": "IdempotencyToken",
@@ -2570,7 +2637,7 @@
         },
         "ProvisioningArtifactDetail": {
           "shape": "ProvisioningArtifactDetail",
-          "documentation": "<p>Information about the provisioning artifact.</p>"
+          "documentation": "<p>Information about the provisioning artifact. </p>"
         },
         "Tags": {
           "shape": "Tags",
@@ -2679,7 +2746,7 @@
         },
         "Parameters": {
           "shape": "ProvisioningArtifactProperties",
-          "documentation": "<p>The configuration for the provisioning artifact.</p>"
+          "documentation": "<p>The configuration for the provisioning artifact. The <code>info</code> field accepts <code>ImportFromPhysicalID</code>. </p>"
         },
         "IdempotencyToken": {
           "shape": "IdempotencyToken",
@@ -2724,7 +2791,7 @@
         },
         "Definition": {
           "shape": "ServiceActionDefinitionMap",
-          "documentation": "<p>The self-service action definition. Can be one of the following:</p> <dl> <dt>Name</dt> <dd> <p>The name of the AWS Systems Manager Document. For example, <code>AWS-RestartEC2Instance</code>.</p> </dd> <dt>Version</dt> <dd> <p>The AWS Systems Manager automation document version. For example, <code>\"Version\": \"1\"</code> </p> </dd> <dt>AssumeRole</dt> <dd> <p>The Amazon Resource Name (ARN) of the role that performs the self-service actions on your behalf. For example, <code>\"AssumeRole\": \"arn:aws:iam::12345678910:role/ActionRole\"</code>.</p> <p>To reuse the provisioned product launch role, set to <code>\"AssumeRole\": \"LAUNCH_ROLE\"</code>.</p> </dd> <dt>Parameters</dt> <dd> <p>The list of parameters in JSON format.</p> <p>For example: <code>[{\\\"Name\\\":\\\"InstanceId\\\",\\\"Type\\\":\\\"TARGET\\\"}]</code> or <code>[{\\\"Name\\\":\\\"InstanceId\\\",\\\"Type\\\":\\\"TEXT_VALUE\\\"}]</code>.</p> </dd> </dl>"
+          "documentation": "<p>The self-service action definition. Can be one of the following:</p> <dl> <dt>Name</dt> <dd> <p>The name of the AWS Systems Manager document (SSM document). For example, <code>AWS-RestartEC2Instance</code>.</p> <p>If you are using a shared SSM document, you must provide the ARN instead of the name.</p> </dd> <dt>Version</dt> <dd> <p>The AWS Systems Manager automation document version. For example, <code>\"Version\": \"1\"</code> </p> </dd> <dt>AssumeRole</dt> <dd> <p>The Amazon Resource Name (ARN) of the role that performs the self-service actions on your behalf. For example, <code>\"AssumeRole\": \"arn:aws:iam::12345678910:role/ActionRole\"</code>.</p> <p>To reuse the provisioned product launch role, set to <code>\"AssumeRole\": \"LAUNCH_ROLE\"</code>.</p> </dd> <dt>Parameters</dt> <dd> <p>The list of parameters in JSON format.</p> <p>For example: <code>[{\\\"Name\\\":\\\"InstanceId\\\",\\\"Type\\\":\\\"TARGET\\\"}]</code> or <code>[{\\\"Name\\\":\\\"InstanceId\\\",\\\"Type\\\":\\\"TEXT_VALUE\\\"}]</code>.</p> </dd> </dl>"
         },
         "Description": {
           "shape": "ServiceActionDescription",
@@ -3105,9 +3172,6 @@
     },
     "DescribeProductAsAdminInput": {
       "type": "structure",
-      "required": [
-        "Id"
-      ],
       "members": {
         "AcceptLanguage": {
           "shape": "AcceptLanguage",
@@ -3116,6 +3180,10 @@
         "Id": {
           "shape": "Id",
           "documentation": "<p>The product identifier.</p>"
+        },
+        "Name": {
+          "shape": "ProductViewName",
+          "documentation": "<p>The product name.</p>"
         }
       }
     },
@@ -3146,9 +3214,6 @@
     },
     "DescribeProductInput": {
       "type": "structure",
-      "required": [
-        "Id"
-      ],
       "members": {
         "AcceptLanguage": {
           "shape": "AcceptLanguage",
@@ -3157,6 +3222,10 @@
         "Id": {
           "shape": "Id",
           "documentation": "<p>The product identifier.</p>"
+        },
+        "Name": {
+          "shape": "ProductViewName",
+          "documentation": "<p>The product name.</p>"
         }
       }
     },
@@ -3174,6 +3243,10 @@
         "Budgets": {
           "shape": "Budgets",
           "documentation": "<p>Information about the associated budgets.</p>"
+        },
+        "LaunchPaths": {
+          "shape": "LaunchPaths",
+          "documentation": "<p>Information about the associated launch paths.</p>"
         }
       }
     },
@@ -3208,9 +3281,6 @@
     },
     "DescribeProvisionedProductInput": {
       "type": "structure",
-      "required": [
-        "Id"
-      ],
       "members": {
         "AcceptLanguage": {
           "shape": "AcceptLanguage",
@@ -3218,9 +3288,14 @@
         },
         "Id": {
           "shape": "Id",
-          "documentation": "<p>The provisioned product identifier.</p>"
+          "documentation": "<p>The provisioned product identifier. You must provide the name or ID, but not both.</p> <p>If you do not provide a name or ID, or you provide both name and ID, an <code>InvalidParametersException</code> will occur.</p>"
+        },
+        "Name": {
+          "shape": "ProvisionedProductName",
+          "documentation": "<p>The name of the provisioned product. You must provide the name or ID, but not both.</p> <p>If you do not provide a name or ID, or you provide both name and ID, an <code>InvalidParametersException</code> will occur.</p>"
         }
-      }
+      },
+      "documentation": "DescribeProvisionedProductAPI input structure. AcceptLanguage - [Optional] The language code for localization. Id - [Optional] The provisioned product identifier. Name - [Optional] Another provisioned product identifier. Customers must provide either Id or Name."
     },
     "DescribeProvisionedProductOutput": {
       "type": "structure",
@@ -3278,10 +3353,6 @@
     },
     "DescribeProvisioningArtifactInput": {
       "type": "structure",
-      "required": [
-        "ProvisioningArtifactId",
-        "ProductId"
-      ],
       "members": {
         "AcceptLanguage": {
           "shape": "AcceptLanguage",
@@ -3294,6 +3365,14 @@
         "ProductId": {
           "shape": "Id",
           "documentation": "<p>The product identifier.</p>"
+        },
+        "ProvisioningArtifactName": {
+          "shape": "ProvisioningArtifactName",
+          "documentation": "<p>The provisioning artifact name.</p>"
+        },
+        "ProductName": {
+          "shape": "ProductViewName",
+          "documentation": "<p>The product name.</p>"
         },
         "Verbose": {
           "shape": "Verbose",
@@ -3320,10 +3399,6 @@
     },
     "DescribeProvisioningParametersInput": {
       "type": "structure",
-      "required": [
-        "ProductId",
-        "ProvisioningArtifactId"
-      ],
       "members": {
         "AcceptLanguage": {
           "shape": "AcceptLanguage",
@@ -3331,15 +3406,27 @@
         },
         "ProductId": {
           "shape": "Id",
-          "documentation": "<p>The product identifier.</p>"
+          "documentation": "<p>The product identifier. You must provide the product name or ID, but not both.</p>"
+        },
+        "ProductName": {
+          "shape": "ProductViewName",
+          "documentation": "<p>The name of the product. You must provide the name or ID, but not both.</p>"
         },
         "ProvisioningArtifactId": {
           "shape": "Id",
-          "documentation": "<p>The identifier of the provisioning artifact.</p>"
+          "documentation": "<p>The identifier of the provisioning artifact. You must provide the name or ID, but not both.</p>"
+        },
+        "ProvisioningArtifactName": {
+          "shape": "ProvisioningArtifactName",
+          "documentation": "<p>The name of the provisioning artifact. You must provide the name or ID, but not both.</p>"
         },
         "PathId": {
           "shape": "Id",
-          "documentation": "<p>The path identifier of the product. This value is optional if the product has a default path, and required if the product has more than one path. To list the paths for a product, use <a>ListLaunchPaths</a>.</p>"
+          "documentation": "<p>The path identifier of the product. This value is optional if the product has a default path, and required if the product has more than one path. To list the paths for a product, use <a>ListLaunchPaths</a>. You must provide the name or ID, but not both.</p>"
+        },
+        "PathName": {
+          "shape": "PortfolioDisplayName",
+          "documentation": "<p>The name of the path. You must provide the name or ID, but not both.</p>"
         }
       }
     },
@@ -3365,6 +3452,10 @@
         "ProvisioningArtifactPreferences": {
           "shape": "ProvisioningArtifactPreferences",
           "documentation": "<p>An object that contains information about preferences, such as regions and accounts, for the provisioning artifact.</p>"
+        },
+        "ProvisioningArtifactOutputs": {
+          "shape": "ProvisioningArtifactOutputs",
+          "documentation": "<p>The output of the provisioning artifact.</p>"
         }
       }
     },
@@ -3820,6 +3911,48 @@
         }
       }
     },
+    "GetProvisionedProductOutputsInput": {
+      "type": "structure",
+      "members": {
+        "AcceptLanguage": {
+          "shape": "AcceptLanguage",
+          "documentation": "<p>The language code.</p> <ul> <li> <p> <code>en</code> - English (default)</p> </li> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>"
+        },
+        "ProvisionedProductId": {
+          "shape": "Id",
+          "documentation": "<p>The identifier of the provisioned product that you want the outputs from.</p>"
+        },
+        "ProvisionedProductName": {
+          "shape": "ProvisionedProductName",
+          "documentation": "<p>The name of the provisioned product that you want the outputs from.</p>"
+        },
+        "OutputKeys": {
+          "shape": "OutputKeys",
+          "documentation": "<p>The list of keys that the API should return with their values. If none are provided, the API will return all outputs of the provisioned product.</p>"
+        },
+        "PageSize": {
+          "shape": "PageSize",
+          "documentation": "<p>The maximum number of items to return with this call.</p>"
+        },
+        "PageToken": {
+          "shape": "PageToken",
+          "documentation": "<p>The page token for the next set of results. To retrieve the first set of results, use null.</p>"
+        }
+      }
+    },
+    "GetProvisionedProductOutputsOutput": {
+      "type": "structure",
+      "members": {
+        "Outputs": {
+          "shape": "RecordOutputs",
+          "documentation": "<p>Information about the product created as the result of a request. For example, the output for a CloudFormation-backed product that creates an S3 bucket would include the S3 bucket URL. </p>"
+        },
+        "NextPageToken": {
+          "shape": "PageToken",
+          "documentation": "<p>The page token to use to retrieve the next set of results. If there are no additional results, this value is null.</p>"
+        }
+      }
+    },
     "HasDefaultPath": {
       "type": "boolean"
     },
@@ -3838,6 +3971,51 @@
     "IgnoreErrors": {
       "type": "boolean"
     },
+    "ImportAsProvisionedProductInput": {
+      "type": "structure",
+      "required": [
+        "ProductId",
+        "ProvisioningArtifactId",
+        "ProvisionedProductName",
+        "PhysicalId",
+        "IdempotencyToken"
+      ],
+      "members": {
+        "AcceptLanguage": {
+          "shape": "AcceptLanguage",
+          "documentation": "<p>The language code.</p> <ul> <li> <p> <code>en</code> - English (default)</p> </li> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>"
+        },
+        "ProductId": {
+          "shape": "Id",
+          "documentation": "<p>The product identifier.</p>"
+        },
+        "ProvisioningArtifactId": {
+          "shape": "Id",
+          "documentation": "<p>The identifier of the provisioning artifact.</p>"
+        },
+        "ProvisionedProductName": {
+          "shape": "ProvisionedProductName",
+          "documentation": "<p>The user-friendly name of the provisioned product. The value must be unique for the AWS account. The name cannot be updated after the product is provisioned. </p>"
+        },
+        "PhysicalId": {
+          "shape": "PhysicalId",
+          "documentation": "<p>The unique identifier of the resource to be imported. It only currently supports CloudFormation stack IDs.</p>"
+        },
+        "IdempotencyToken": {
+          "shape": "IdempotencyToken",
+          "documentation": "<p>A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.</p>",
+          "idempotencyToken": true
+        }
+      }
+    },
+    "ImportAsProvisionedProductOutput": {
+      "type": "structure",
+      "members": {
+        "RecordDetail": {
+          "shape": "RecordDetail"
+        }
+      }
+    },
     "InstructionType": {
       "type": "string"
     },
@@ -3846,6 +4024,20 @@
     },
     "LastRequestId": {
       "type": "string"
+    },
+    "LaunchPath": {
+      "type": "structure",
+      "members": {
+        "Id": {
+          "shape": "Id",
+          "documentation": "<p>The identifier of the launch path.</p>"
+        },
+        "Name": {
+          "shape": "PortfolioName",
+          "documentation": "<p>The name of the launch path.</p>"
+        }
+      },
+      "documentation": "<p>A launch path object.</p>"
     },
     "LaunchPathSummaries": {
       "type": "list",
@@ -3875,6 +4067,12 @@
       },
       "documentation": "<p>Summary information about a product path for a user.</p>"
     },
+    "LaunchPaths": {
+      "type": "list",
+      "member": {
+        "shape": "LaunchPath"
+      }
+    },
     "ListAcceptedPortfolioSharesInput": {
       "type": "structure",
       "members": {
@@ -3892,7 +4090,7 @@
         },
         "PortfolioShareType": {
           "shape": "PortfolioShareType",
-          "documentation": "<p>The type of shared portfolios to list. The default is to list imported portfolios.</p> <ul> <li> <p> <code>AWS_ORGANIZATIONS</code> - List portfolios shared by the master account of your organization</p> </li> <li> <p> <code>AWS_SERVICECATALOG</code> - List default portfolios</p> </li> <li> <p> <code>IMPORTED</code> - List imported portfolios</p> </li> </ul>"
+          "documentation": "<p>The type of shared portfolios to list. The default is to list imported portfolios.</p> <ul> <li> <p> <code>AWS_ORGANIZATIONS</code> - List portfolios shared by the management account of your organization</p> </li> <li> <p> <code>AWS_SERVICECATALOG</code> - List default portfolios</p> </li> <li> <p> <code>IMPORTED</code> - List imported portfolios</p> </li> </ul>"
         }
       }
     },
@@ -4089,7 +4287,7 @@
           "documentation": "<p>The page token for the next set of results. To retrieve the first set of results, use null.</p>"
         },
         "PageSize": {
-          "shape": "PageSize",
+          "shape": "PageSizeMax100",
           "documentation": "<p>The maximum number of items to return with this call.</p>"
         }
       }
@@ -4621,8 +4819,19 @@
         "shape": "OrganizationNode"
       }
     },
+    "OutputDescription": {
+      "type": "string",
+      "max": 1024
+    },
     "OutputKey": {
       "type": "string"
+    },
+    "OutputKeys": {
+      "type": "list",
+      "member": {
+        "shape": "OutputKey"
+      },
+      "max": 60
     },
     "OutputValue": {
       "type": "string"
@@ -4630,6 +4839,11 @@
     "PageSize": {
       "type": "integer",
       "max": 20,
+      "min": 0
+    },
+    "PageSizeMax100": {
+      "type": "integer",
+      "max": 100,
       "min": 0
     },
     "PageToken": {
@@ -4946,7 +5160,8 @@
     "PropertyKey": {
       "type": "string",
       "enum": [
-        "OWNER"
+        "OWNER",
+        "LAUNCH_ROLE"
       ],
       "max": 128,
       "min": 1
@@ -4957,7 +5172,7 @@
     "PropertyValue": {
       "type": "string",
       "max": 1024,
-      "min": 1
+      "min": 0
     },
     "ProviderName": {
       "type": "string",
@@ -4967,8 +5182,6 @@
     "ProvisionProductInput": {
       "type": "structure",
       "required": [
-        "ProductId",
-        "ProvisioningArtifactId",
         "ProvisionedProductName",
         "ProvisionToken"
       ],
@@ -4979,15 +5192,27 @@
         },
         "ProductId": {
           "shape": "Id",
-          "documentation": "<p>The product identifier.</p>"
+          "documentation": "<p>The product identifier. You must provide the name or ID, but not both.</p>"
+        },
+        "ProductName": {
+          "shape": "ProductViewName",
+          "documentation": "<p>The name of the product. You must provide the name or ID, but not both.</p>"
         },
         "ProvisioningArtifactId": {
           "shape": "Id",
-          "documentation": "<p>The identifier of the provisioning artifact.</p>"
+          "documentation": "<p>The identifier of the provisioning artifact. You must provide the name or ID, but not both.</p>"
+        },
+        "ProvisioningArtifactName": {
+          "shape": "ProvisioningArtifactName",
+          "documentation": "<p>The name of the provisioning artifact. You must provide the name or ID, but not both.</p>"
         },
         "PathId": {
           "shape": "Id",
-          "documentation": "<p>The path identifier of the product. This value is optional if the product has a default path, and required if the product has more than one path. To list the paths for a product, use <a>ListLaunchPaths</a>.</p>"
+          "documentation": "<p>The path identifier of the product. This value is optional if the product has a default path, and required if the product has more than one path. To list the paths for a product, use <a>ListLaunchPaths</a>. You must provide the name or ID, but not both.</p>"
+        },
+        "PathName": {
+          "shape": "PortfolioDisplayName",
+          "documentation": "<p>The name of the path. You must provide the name or ID, but not both.</p>"
         },
         "ProvisionedProductName": {
           "shape": "ProvisionedProductName",
@@ -5064,6 +5289,14 @@
           "shape": "Id",
           "documentation": "<p>The record identifier of the last request performed on this provisioned product.</p>"
         },
+        "LastProvisioningRecordId": {
+          "shape": "Id",
+          "documentation": "<p>The record identifier of the last request performed on this provisioned product of the following types:</p> <ul> <li> <p> ProvisionedProduct </p> </li> <li> <p> UpdateProvisionedProduct </p> </li> <li> <p> ExecuteProvisionedProductPlan </p> </li> <li> <p> TerminateProvisionedProduct </p> </li> </ul>"
+        },
+        "LastSuccessfulProvisioningRecordId": {
+          "shape": "Id",
+          "documentation": "<p>The record identifier of the last successful request performed on this provisioned product of the following types:</p> <ul> <li> <p> ProvisionedProduct </p> </li> <li> <p> UpdateProvisionedProduct </p> </li> <li> <p> ExecuteProvisionedProductPlan </p> </li> <li> <p> TerminateProvisionedProduct </p> </li> </ul>"
+        },
         "Tags": {
           "shape": "Tags",
           "documentation": "<p>One or more tags.</p>"
@@ -5076,9 +5309,17 @@
           "shape": "Id",
           "documentation": "<p>The product identifier.</p>"
         },
+        "ProductName": {
+          "shape": "ProductViewName",
+          "documentation": "<p>The name of the product.</p>"
+        },
         "ProvisioningArtifactId": {
           "shape": "Id",
           "documentation": "<p>The identifier of the provisioning artifact.</p>"
+        },
+        "ProvisioningArtifactName": {
+          "shape": "ProvisioningArtifactName",
+          "documentation": "<p>The name of the provisioning artifact.</p>"
         },
         "UserArn": {
           "shape": "UserArn",
@@ -5136,6 +5377,14 @@
           "shape": "LastRequestId",
           "documentation": "<p>The record identifier of the last request performed on this provisioned product.</p>"
         },
+        "LastProvisioningRecordId": {
+          "shape": "Id",
+          "documentation": "<p>The record identifier of the last request performed on this provisioned product of the following types:</p> <ul> <li> <p> ProvisionedProduct </p> </li> <li> <p> UpdateProvisionedProduct </p> </li> <li> <p> ExecuteProvisionedProductPlan </p> </li> <li> <p> TerminateProvisionedProduct </p> </li> </ul>"
+        },
+        "LastSuccessfulProvisioningRecordId": {
+          "shape": "Id",
+          "documentation": "<p>The record identifier of the last successful request performed on this provisioned product of the following types:</p> <ul> <li> <p> ProvisionedProduct </p> </li> <li> <p> UpdateProvisionedProduct </p> </li> <li> <p> ExecuteProvisionedProductPlan </p> </li> <li> <p> TerminateProvisionedProduct </p> </li> </ul>"
+        },
         "ProductId": {
           "shape": "Id",
           "documentation": "<p>The product identifier. For example, <code>prod-abcdzk7xy33qa</code>.</p>"
@@ -5143,6 +5392,10 @@
         "ProvisioningArtifactId": {
           "shape": "Id",
           "documentation": "<p>The identifier of the provisioning artifact. For example, <code>pa-4abcdjnxjj6ne</code>.</p>"
+        },
+        "LaunchRoleArn": {
+          "shape": "RoleArn",
+          "documentation": "<p>The ARN of the launch role associated with the provisioned product.</p>"
         }
       },
       "documentation": "<p>Information about a provisioned product.</p>"
@@ -5374,7 +5627,8 @@
       "type": "timestamp"
     },
     "ProvisioningArtifactDescription": {
-      "type": "string"
+      "type": "string",
+      "max": 8192
     },
     "ProvisioningArtifactDetail": {
       "type": "structure",
@@ -5441,7 +5695,35 @@
       "type": "string"
     },
     "ProvisioningArtifactName": {
-      "type": "string"
+      "type": "string",
+      "max": 8192
+    },
+    "ProvisioningArtifactOutput": {
+      "type": "structure",
+      "members": {
+        "Key": {
+          "shape": "ProvisioningArtifactOutputKey",
+          "documentation": "<p>The provisioning artifact output key.</p>"
+        },
+        "Description": {
+          "shape": "OutputDescription",
+          "documentation": "<p>Description of the provisioning artifact output key.</p>"
+        }
+      },
+      "documentation": "<p>Provisioning artifact output.</p>"
+    },
+    "ProvisioningArtifactOutputKey": {
+      "type": "string",
+      "max": 255,
+      "min": 1,
+      "pattern": "[a-zA-Z0-9]*"
+    },
+    "ProvisioningArtifactOutputs": {
+      "type": "list",
+      "member": {
+        "shape": "ProvisioningArtifactOutput"
+      },
+      "max": 60
     },
     "ProvisioningArtifactParameter": {
       "type": "structure",
@@ -5701,6 +5983,10 @@
         "RecordTags": {
           "shape": "RecordTags",
           "documentation": "<p>One or more tags.</p>"
+        },
+        "LaunchRoleArn": {
+          "shape": "RoleArn",
+          "documentation": "<p>The ARN of the launch role associated with the provisioned product.</p>"
         }
       },
       "documentation": "<p>Information about a request operation.</p>"
@@ -5820,7 +6106,7 @@
         },
         "PortfolioShareType": {
           "shape": "PortfolioShareType",
-          "documentation": "<p>The type of shared portfolios to reject. The default is to reject imported portfolios.</p> <ul> <li> <p> <code>AWS_ORGANIZATIONS</code> - Reject portfolios shared by the master account of your organization.</p> </li> <li> <p> <code>IMPORTED</code> - Reject imported portfolios.</p> </li> <li> <p> <code>AWS_SERVICECATALOG</code> - Not supported. (Throws ResourceNotFoundException.)</p> </li> </ul> <p>For example, <code>aws servicecatalog reject-portfolio-share --portfolio-id \"port-2qwzkwxt3y5fk\" --portfolio-share-type AWS_ORGANIZATIONS</code> </p>"
+          "documentation": "<p>The type of shared portfolios to reject. The default is to reject imported portfolios.</p> <ul> <li> <p> <code>AWS_ORGANIZATIONS</code> - Reject portfolios shared by the management account of your organization.</p> </li> <li> <p> <code>IMPORTED</code> - Reject imported portfolios.</p> </li> <li> <p> <code>AWS_SERVICECATALOG</code> - Not supported. (Throws ResourceNotFoundException.)</p> </li> </ul> <p>For example, <code>aws servicecatalog reject-portfolio-share --portfolio-id \"port-2qwzkwxt3y5fk\" --portfolio-share-type AWS_ORGANIZATIONS</code> </p>"
         }
       }
     },
@@ -5995,6 +6281,15 @@
     "ResourceType": {
       "type": "string"
     },
+    "RetainPhysicalResources": {
+      "type": "boolean"
+    },
+    "RoleArn": {
+      "type": "string",
+      "max": 1224,
+      "min": 1,
+      "pattern": "arn:[a-z0-9-\\.]{1,63}:iam::[a-z0-9-\\.]{0,63}:role\\/.{0,1023}"
+    },
     "ScanProvisionedProductsInput": {
       "type": "structure",
       "members": {
@@ -6150,7 +6445,7 @@
         },
         "Filters": {
           "shape": "ProvisionedProductFilters",
-          "documentation": "<p>The search filters.</p> <p>When the key is <code>SearchQuery</code>, the searchable fields are <code>arn</code>, <code>createdTime</code>, <code>id</code>, <code>lastRecordId</code>, <code>idempotencyToken</code>, <code>name</code>, <code>physicalId</code>, <code>productId</code>, <code>provisioningArtifact</code>, <code>type</code>, <code>status</code>, <code>tags</code>, <code>userArn</code>, and <code>userArnSession</code>.</p> <p>Example: <code>\"SearchQuery\":[\"status:AVAILABLE\"]</code> </p>"
+          "documentation": "<p>The search filters.</p> <p>When the key is <code>SearchQuery</code>, the searchable fields are <code>arn</code>, <code>createdTime</code>, <code>id</code>, <code>lastRecordId</code>, <code>idempotencyToken</code>, <code>name</code>, <code>physicalId</code>, <code>productId</code>, <code>provisioningArtifact</code>, <code>type</code>, <code>status</code>, <code>tags</code>, <code>userArn</code>, <code>userArnSession</code>, <code>lastProvisioningRecordId</code>, <code>lastSuccessfulProvisioningRecordId</code>, <code>productName</code>, and <code>provisioningArtifactName</code>.</p> <p>Example: <code>\"SearchQuery\":[\"status:AVAILABLE\"]</code> </p>"
         },
         "SortBy": {
           "shape": "SortField",
@@ -6640,6 +6935,10 @@
         "AcceptLanguage": {
           "shape": "AcceptLanguage",
           "documentation": "<p>The language code.</p> <ul> <li> <p> <code>en</code> - English (default)</p> </li> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>"
+        },
+        "RetainPhysicalResources": {
+          "shape": "RetainPhysicalResources",
+          "documentation": "<p>When this boolean parameter is set to true, the TerminateProvisionedProduct API deletes the Service Catalog provisioned product. However, it does not remove the CloudFormation stack, stack set, or the underlying resources of the deleted provisioned product. The default value is false.</p>"
         }
       }
     },
@@ -6675,7 +6974,7 @@
         },
         "Parameters": {
           "shape": "ConstraintParameters",
-          "documentation": "<p>The constraint parameters, in JSON format. The syntax depends on the constraint type as follows:</p> <dl> <dt>LAUNCH</dt> <dd> <p>Specify the <code>RoleArn</code> property as follows:</p> <p> <code>{\"RoleArn\" : \"arn:aws:iam::123456789012:role/LaunchRole\"}</code> </p> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>LAUNCH</code> constraint on a product and portfolio.</p> </dd> <dt>NOTIFICATION</dt> <dd> <p>Specify the <code>NotificationArns</code> property as follows:</p> <p> <code>{\"NotificationArns\" : [\"arn:aws:sns:us-east-1:123456789012:Topic\"]}</code> </p> </dd> <dt>RESOURCE_UPDATE</dt> <dd> <p>Specify the <code>TagUpdatesOnProvisionedProduct</code> property as follows:</p> <p> <code>{\"Version\":\"2.0\",\"Properties\":{\"TagUpdateOnProvisionedProduct\":\"String\"}}</code> </p> <p>The <code>TagUpdatesOnProvisionedProduct</code> property accepts a string value of <code>ALLOWED</code> or <code>NOT_ALLOWED</code>.</p> </dd> <dt>STACKSET</dt> <dd> <p>Specify the <code>Parameters</code> property as follows:</p> <p> <code>{\"Version\": \"String\", \"Properties\": {\"AccountList\": [ \"String\" ], \"RegionList\": [ \"String\" ], \"AdminRole\": \"String\", \"ExecutionRole\": \"String\"}}</code> </p> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>STACKSET</code> constraint on a product and portfolio.</p> <p>Products with a <code>STACKSET</code> constraint will launch an AWS CloudFormation stack set.</p> </dd> <dt>TEMPLATE</dt> <dd> <p>Specify the <code>Rules</code> property. For more information, see <a href=\"http://docs.aws.amazon.com/servicecatalog/latest/adminguide/reference-template_constraint_rules.html\">Template Constraint Rules</a>.</p> </dd> </dl>"
+          "documentation": "<p>The constraint parameters, in JSON format. The syntax depends on the constraint type as follows:</p> <dl> <dt>LAUNCH</dt> <dd> <p>You are required to specify either the <code>RoleArn</code> or the <code>LocalRoleName</code> but can't use both.</p> <p>Specify the <code>RoleArn</code> property as follows:</p> <p> <code>{\"RoleArn\" : \"arn:aws:iam::123456789012:role/LaunchRole\"}</code> </p> <p>Specify the <code>LocalRoleName</code> property as follows:</p> <p> <code>{\"LocalRoleName\": \"SCBasicLaunchRole\"}</code> </p> <p>If you specify the <code>LocalRoleName</code> property, when an account uses the launch constraint, the IAM role with that name in the account will be used. This allows launch-role constraints to be account-agnostic so the administrator can create fewer resources per shared account.</p> <note> <p>The given role name must exist in the account used to create the launch constraint and the account of the user who launches a product with this launch constraint.</p> </note> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>LAUNCH</code> constraint on a product and portfolio.</p> </dd> <dt>NOTIFICATION</dt> <dd> <p>Specify the <code>NotificationArns</code> property as follows:</p> <p> <code>{\"NotificationArns\" : [\"arn:aws:sns:us-east-1:123456789012:Topic\"]}</code> </p> </dd> <dt>RESOURCE_UPDATE</dt> <dd> <p>Specify the <code>TagUpdatesOnProvisionedProduct</code> property as follows:</p> <p> <code>{\"Version\":\"2.0\",\"Properties\":{\"TagUpdateOnProvisionedProduct\":\"String\"}}</code> </p> <p>The <code>TagUpdatesOnProvisionedProduct</code> property accepts a string value of <code>ALLOWED</code> or <code>NOT_ALLOWED</code>.</p> </dd> <dt>STACKSET</dt> <dd> <p>Specify the <code>Parameters</code> property as follows:</p> <p> <code>{\"Version\": \"String\", \"Properties\": {\"AccountList\": [ \"String\" ], \"RegionList\": [ \"String\" ], \"AdminRole\": \"String\", \"ExecutionRole\": \"String\"}}</code> </p> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>STACKSET</code> constraint on a product and portfolio.</p> <p>Products with a <code>STACKSET</code> constraint will launch an AWS CloudFormation stack set.</p> </dd> <dt>TEMPLATE</dt> <dd> <p>Specify the <code>Rules</code> property. For more information, see <a href=\"http://docs.aws.amazon.com/servicecatalog/latest/adminguide/reference-template_constraint_rules.html\">Template Constraint Rules</a>.</p> </dd> </dl>"
         }
       }
     },
@@ -6826,19 +7125,31 @@
         },
         "ProvisionedProductId": {
           "shape": "Id",
-          "documentation": "<p>The identifier of the provisioned product. You cannot specify both <code>ProvisionedProductName</code> and <code>ProvisionedProductId</code>.</p>"
+          "documentation": "<p>The identifier of the provisioned product. You must provide the name or ID, but not both.</p>"
         },
         "ProductId": {
           "shape": "Id",
-          "documentation": "<p>The identifier of the product.</p>"
+          "documentation": "<p>The identifier of the product. You must provide the name or ID, but not both.</p>"
+        },
+        "ProductName": {
+          "shape": "ProductViewName",
+          "documentation": "<p>The name of the product. You must provide the name or ID, but not both.</p>"
         },
         "ProvisioningArtifactId": {
           "shape": "Id",
           "documentation": "<p>The identifier of the provisioning artifact.</p>"
         },
+        "ProvisioningArtifactName": {
+          "shape": "ProvisioningArtifactName",
+          "documentation": "<p>The name of the provisioning artifact. You must provide the name or ID, but not both.</p>"
+        },
         "PathId": {
           "shape": "Id",
-          "documentation": "<p>The new path identifier. This value is optional if the product has a default path, and required if the product has more than one path.</p>"
+          "documentation": "<p>The path identifier. This value is optional if the product has a default path, and required if the product has more than one path. You must provide the name or ID, but not both.</p>"
+        },
+        "PathName": {
+          "shape": "PortfolioDisplayName",
+          "documentation": "<p>The name of the path. You must provide the name or ID, but not both.</p>"
         },
         "ProvisioningParameters": {
           "shape": "UpdateProvisioningParameters",
@@ -6886,7 +7197,7 @@
         },
         "ProvisionedProductProperties": {
           "shape": "ProvisionedProductProperties",
-          "documentation": "<p>A map that contains the provisioned product properties to be updated.</p> <p>The <code>OWNER</code> key only accepts user ARNs. The owner is the user that is allowed to see, update, terminate, and execute service actions in the provisioned product.</p> <p>The administrator can change the owner of a provisioned product to another IAM user within the same account. Both end user owners and administrators can see ownership history of the provisioned product using the <code>ListRecordHistory</code> API. The new owner can describe all past records for the provisioned product using the <code>DescribeRecord</code> API. The previous owner can no longer use <code>DescribeRecord</code>, but can still see the product's history from when he was an owner using <code>ListRecordHistory</code>.</p> <p>If a provisioned product ownership is assigned to an end user, they can see and perform any action through the API or Service Catalog console such as update, terminate, and execute service actions. If an end user provisions a product and the owner is updated to someone else, they will no longer be able to see or perform any actions through API or the Service Catalog console on that provisioned product.</p>"
+          "documentation": "<p>A map that contains the provisioned product properties to be updated.</p> <p>The <code>LAUNCH_ROLE</code> key accepts role ARNs. This key allows an administrator to call <code>UpdateProvisionedProductProperties</code> to update the launch role that is associated with a provisioned product. This role is used when an end user calls a provisioning operation such as <code>UpdateProvisionedProduct</code>, <code>TerminateProvisionedProduct</code>, or <code>ExecuteProvisionedProductServiceAction</code>. Only a role ARN is valid. A user ARN is invalid. </p> <p>The <code>OWNER</code> key accepts user ARNs and role ARNs. The owner is the user that has permission to see, update, terminate, and execute service actions in the provisioned product.</p> <p>The administrator can change the owner of a provisioned product to another IAM user within the same account. Both end user owners and administrators can see ownership history of the provisioned product using the <code>ListRecordHistory</code> API. The new owner can describe all past records for the provisioned product using the <code>DescribeRecord</code> API. The previous owner can no longer use <code>DescribeRecord</code>, but can still see the product's history from when he was an owner using <code>ListRecordHistory</code>.</p> <p>If a provisioned product ownership is assigned to an end user, they can see and perform any action through the API or Service Catalog console such as update, terminate, and execute service actions. If an end user provisions a product and the owner is updated to someone else, they will no longer be able to see or perform any actions through API or the Service Catalog console on that provisioned product.</p>"
         },
         "IdempotencyToken": {
           "shape": "IdempotencyToken",
@@ -7130,5 +7441,5 @@
       "type": "boolean"
     }
   },
-  "documentation": "<fullname>AWS Service Catalog</fullname> <p> <a href=\"https://aws.amazon.com/servicecatalog/\">AWS Service Catalog</a> enables organizations to create and manage catalogs of IT services that are approved for use on AWS. To get the most out of this documentation, you should be familiar with the terminology discussed in <a href=\"http://docs.aws.amazon.com/servicecatalog/latest/adminguide/what-is_concepts.html\">AWS Service Catalog Concepts</a>.</p>"
+  "documentation": "<fullname>AWS Service Catalog</fullname> <p> <a href=\"https://aws.amazon.com/servicecatalog/\">AWS Service Catalog</a> enables organizations to create and manage catalogs of IT services that are approved for AWS. To get the most out of this documentation, you should be familiar with the terminology discussed in <a href=\"http://docs.aws.amazon.com/servicecatalog/latest/adminguide/what-is_concepts.html\">AWS Service Catalog Concepts</a>.</p>"
 }
