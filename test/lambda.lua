@@ -56,7 +56,7 @@ exports.handler = (event, context, callback) => {
 	-- helper.dump = true
 	-- helper.dump_res('lambda-payload', payload)
 
-	--[[
+	---[[
 	local ok,r = aws.Lambda:api():createFunction(payload)
 
 	os.execute("rm -r /tmp/lua-aws-lambda-project*")
@@ -130,6 +130,21 @@ exports.handler = (event, context, callback) => {
 			helper.dump = true
 			helper.dump_res("lambda", r)
 			assert(false, 'function should be found')
+		end
+
+		-- wait for function being created (imageUrl based lambda takes time to create)
+		while true do
+			ok, r = aws.Lambda:api():getFunctionConfiguration({
+				FunctionName = Test2LambdaFuncName
+			})
+			assert(ok, r)
+			if r.State ~= "Active" then
+				print('function ' .. Test2LambdaFuncName .. ' state ' .. r.State .. ' reason ' .. r.StateReason)
+				helper.sleep(5)
+			else
+				print('function ' .. Test2LambdaFuncName .. ' get active')
+				break
+			end
 		end
 
 		ok, r = aws.Lambda:api():invoke({

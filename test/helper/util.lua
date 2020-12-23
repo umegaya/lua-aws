@@ -132,4 +132,15 @@ function _M.create_service_role(aws, name, policy)
 	return roleArn
 end
 
+function _M.sleep(seconds)
+	local ffi = require 'ffi'
+	if ffi then
+		ffi.cdef [[
+			unsigned int sleep(unsigned int seconds);
+		]]
+		ffi.C.sleep(seconds)
+	end
+end
+
+
 return _M
