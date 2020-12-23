@@ -494,7 +494,7 @@ _M.fill_header = function (req)
 	req.headers["Connection"] = "Keep-Alive"
 end
 _M.http_print = function (...)
-	-- print(...)
+	print(...)
 end
 
 _M.date = {

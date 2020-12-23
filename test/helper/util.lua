@@ -40,7 +40,12 @@ function _M.iterate_all_engines(test_name, test)
 	for _, h in ipairs(availables.http) do
 		for _, j in ipairs(availables.json) do
 			for _, f in ipairs(availables.fs) do
-				if ((not ngx) or _M.MOCK_HOST()) and h == "lua-resty-http" then
+				if ngx and (h == "luasocket" or h == "curl") then
+					-- using luasec/curl causes following error:
+					-- error loading module 'ssl.core' from file '/usr/local/openresty/luajit/lib/lua/5.1/ssl.so':
+					-- /usr/local/openresty/openssl/lib/libssl.so.1.1: version `OPENSSL_1_1_1' not found (required by /usr/local/openresty/luajit/lib/lua/5.1/ssl.so)
+					print('luasocket/curl skipped because of latest resty environment breaks luasec')
+				elseif ((not ngx) or _M.MOCK_HOST()) and h == "lua-resty-http" then
 					--[[ lua-resty-http with moto-server causes below error
 
  					127.0.0.1 - - [29/Jan/2019 01:21:52] code 400, message Bad request syntax ('\x16\x03\x01\x00\xbd\x01\x00\x00\xb9\x03\x03\xd7\xcfy\xf4')

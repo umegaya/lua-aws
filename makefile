@@ -1,6 +1,8 @@
 MOCK=
 LUA=
 IMAGE=umegaya/lua-aws-test
+ECR_REPO=871570535967.dkr.ecr.ap-northeast-1.amazonaws.com
+LAMBDA_IMAGE=$(ECR_REPO)/lua-aws-lambda-test
 
 .PHONY: test
 test:
@@ -20,3 +22,10 @@ shell:
 
 runtest:
 	find ./test -name "*.lua" | LUA=$(LUA) xargs -I {} ./test/tools/run.sh {} $(MOCK)
+
+image_lambda_test:
+	docker build ./test/tools/lambda -t $(LAMBDA_IMAGE)
+
+push_lambda_image:
+	aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin $(ECR_REPO)
+	docker push $(LAMBDA_IMAGE)
