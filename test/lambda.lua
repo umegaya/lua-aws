@@ -56,7 +56,7 @@ exports.handler = (event, context, callback) => {
 	-- helper.dump = true
 	-- helper.dump_res('lambda-payload', payload)
 
-	---[[
+	--[[
 	local ok,r = aws.Lambda:api():createFunction(payload)
 
 	os.execute("rm -r /tmp/lua-aws-lambda-project*")
@@ -110,6 +110,7 @@ exports.handler = (event, context, callback) => {
 		},
 		FunctionName = Test2LambdaFuncName,
 		Role = roleArn,
+		PackageType = "Image"
 	}
 	-- helper.dump = true
 	-- helper.dump_res('lambda-payload', payload)
@@ -121,7 +122,7 @@ exports.handler = (event, context, callback) => {
 	if ok then
 		local found = false
 		for idx,f in ipairs(r.Functions) do
-			if f.FunctionName == Test2LambdaFuncName and f.Handler == "index.lambdaHandler" then
+			if f.FunctionName == Test2LambdaFuncName then
 				found = true
 			end
 		end
@@ -133,14 +134,14 @@ exports.handler = (event, context, callback) => {
 
 		ok, r = aws.Lambda:api():invoke({
 			FunctionName = Test2LambdaFuncName,
-			Payload = {
+			Payload = aws.Lambda:api():json().encode({
 				text = "lua-aws"
-			}
+			})
 		})
 		local expected_blake2b_result = "8413443142d7424287f371029a6f9cb3c7a79482bace0e2625a34f28bd1d7443f84371d78977503bfe92a740c1a2fbdf76a1634030b47cb3ac10429afa969250"
 		assert(ok, r)
 		local payload = aws.Lambda:api():json().decode(r.Payload)
-		local bodyPayload = aws.Lambda:api():json().decode(payload.body)
+		local bodyPayload = payload.body
 		assert(bodyPayload.message == "hello lua aws from container in lambda:" .. expected_blake2b_result, "body wrong")
 
 		ok, r = aws.Lambda:api():deleteFunction({
