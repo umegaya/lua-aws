@@ -1,4 +1,4 @@
-FROM openresty/openresty:bionic
+FROM openresty/openresty:1.19.3.1-2-bionic
 
 ENV LUAROCKS /usr/local/openresty/luajit/bin/luarocks
 
