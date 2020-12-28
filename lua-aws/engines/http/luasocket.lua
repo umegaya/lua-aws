@@ -48,7 +48,7 @@ return function (req, resp)
 		if luasec_ok then
 			return run_http_engine(luasec_https, req, resp)
 		else
-			error('no https module available')
+			error('no https module available:' .. luasec_https)
 			return nil
 		end
 	end

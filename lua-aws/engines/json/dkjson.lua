@@ -7,4 +7,5 @@ return {
 	decode = function (data)
 		return json.decode(data, 1, json.null)
 	end,
+	null = json.null
 }

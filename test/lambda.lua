@@ -56,7 +56,7 @@ exports.handler = (event, context, callback) => {
 	-- helper.dump = true
 	-- helper.dump_res('lambda-payload', payload)
 
-	--[[]]
+	---[[
 	local ok,r = aws.Lambda:api():createFunction(payload)
 
 	os.execute("rm -r /tmp/lua-aws-lambda-project*")
@@ -93,6 +93,81 @@ exports.handler = (event, context, callback) => {
 		found = false
 		for idx,f in ipairs(r.Functions) do
 			if f.FunctionName == TestLambdaFuncName then
+				found = true
+			end
+		end
+		assert(not found, "function should be removed")
+	else
+		assert(false, "error:" .. r)
+	end
+	--]]--
+
+	-- test2 lambda by container image
+	local Test2LambdaFuncName = "hello_lua_aws_from_container"
+	local payload2 = {
+		Code = {
+			ImageUri = "871570535967.dkr.ecr.ap-northeast-1.amazonaws.com/lua-aws-lambda-test@sha256:21b43c2821cc9dccf17caafa47521fdacb51d41c0a2a6644f5df74884444fb51",
+		},
+		FunctionName = Test2LambdaFuncName,
+		Role = roleArn,
+		PackageType = "Image"
+	}
+	-- helper.dump = true
+	-- helper.dump_res('lambda-payload', payload)
+
+	--[[]]
+	local ok,r = aws.Lambda:api():createFunction(payload2)
+	ok,r = aws.Lambda:api():listFunctions()
+
+	if ok then
+		local found = false
+		for idx,f in ipairs(r.Functions) do
+			if f.FunctionName == Test2LambdaFuncName then
+				found = true
+			end
+		end
+		if not found then
+			helper.dump = true
+			helper.dump_res("lambda", r)
+			assert(false, 'function should be found')
+		end
+
+		-- wait for function being created (imageUrl based lambda takes time to create)
+		while true do
+			ok, r = aws.Lambda:api():getFunctionConfiguration({
+				FunctionName = Test2LambdaFuncName
+			})
+			assert(ok, r)
+			if r.State ~= "Active" then
+				print('function ' .. Test2LambdaFuncName .. ' state ' .. r.State .. ' reason ' .. r.StateReason)
+				helper.sleep(5)
+			else
+				print('function ' .. Test2LambdaFuncName .. ' get active')
+				break
+			end
+		end
+
+		ok, r = aws.Lambda:api():invoke({
+			FunctionName = Test2LambdaFuncName,
+			Payload = aws.Lambda:api():json().encode({
+				text = "lua-aws"
+			})
+		})
+		local expected_blake2b_result = "8413443142d7424287f371029a6f9cb3c7a79482bace0e2625a34f28bd1d7443f84371d78977503bfe92a740c1a2fbdf76a1634030b47cb3ac10429afa969250"
+		assert(ok, r)
+		local payload = aws.Lambda:api():json().decode(r.Payload)
+		local bodyPayload = payload.body
+		assert(bodyPayload.message == "hello lua aws from container in lambda:" .. expected_blake2b_result, "body wrong")
+
+		ok, r = aws.Lambda:api():deleteFunction({
+			FunctionName = Test2LambdaFuncName
+		})
+		assert(ok, r)
+
+		ok, r = aws.Lambda:api():listFunctions()
+		found = false
+		for idx,f in ipairs(r.Functions) do
+			if f.FunctionName == Test2LambdaFuncName then
 				found = true
 			end
 		end
