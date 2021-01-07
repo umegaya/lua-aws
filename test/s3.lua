@@ -99,7 +99,7 @@ assert(r.Metadata.fuga == 'hoge')
 
 
 -- check contents stored correctly by comparing check sum
-local f1, f2 = md5.sum(io.open(DIR_PATH..FILE_NAME, "r"):read('*a')), md5.sum(io.open(DIR_PATH..DEST_FILE_NAME, "r"):read('*a'))
+local f1, f2 = md5.sumhexa(io.open(DIR_PATH..FILE_NAME, "r"):read('*a')), md5.sumhexa(io.open(DIR_PATH..DEST_FILE_NAME, "r"):read('*a'))
 if f1 ~= f2 then
 	error("both file should be same: but: " .. f1 .. " vs " .. f2)
 end
