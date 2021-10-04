@@ -45,6 +45,7 @@ exports.handler = (event, context, callback) => {
 	local f = io.open("/tmp/lua-aws-lambda-project.zip", "rb")
 
 	local payload = {
+		Architecture = {"arm64"}
 		Code = {
 			ZipFile = f:read("*a"),
 		},
