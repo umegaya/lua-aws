@@ -10,11 +10,23 @@
       "limit_key": "MaxResults",
       "output_token": "NextToken"
     },
+    "ListAgentStatuses": {
+      "input_token": "NextToken",
+      "limit_key": "MaxResults",
+      "output_token": "NextToken",
+      "result_key": "AgentStatusSummaryList"
+    },
     "ListApprovedOrigins": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
       "output_token": "NextToken",
       "result_key": "Origins"
+    },
+    "ListBots": {
+      "input_token": "NextToken",
+      "limit_key": "MaxResults",
+      "output_token": "NextToken",
+      "result_key": "LexBots"
     },
     "ListContactFlows": {
       "input_token": "NextToken",
@@ -76,11 +88,23 @@
       "output_token": "NextToken",
       "result_key": "PromptSummaryList"
     },
+    "ListQueueQuickConnects": {
+      "input_token": "NextToken",
+      "limit_key": "MaxResults",
+      "output_token": "NextToken",
+      "result_key": "QuickConnectSummaryList"
+    },
     "ListQueues": {
       "input_token": "NextToken",
       "limit_key": "MaxResults",
       "output_token": "NextToken",
       "result_key": "QueueSummaryList"
+    },
+    "ListQuickConnects": {
+      "input_token": "NextToken",
+      "limit_key": "MaxResults",
+      "output_token": "NextToken",
+      "result_key": "QuickConnectSummaryList"
     },
     "ListRoutingProfileQueues": {
       "input_token": "NextToken",
