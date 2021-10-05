@@ -4,23 +4,37 @@
       "input_token": "NextToken",
       "output_token": "NextToken",
       "result_key": [
-        "CloudFormation"
+        "CloudFormation",
+        "Service"
+      ]
+    },
+    "GetCostEstimation": {
+      "input_token": "NextToken",
+      "non_aggregate_keys": [
+        "Status",
+        "TotalCost",
+        "TimeRange",
+        "ResourceCollection"
+      ],
+      "output_token": "NextToken",
+      "result_key": [
+        "Costs"
       ]
     },
     "GetResourceCollection": {
       "input_token": "NextToken",
+      "non_aggregate_keys": [
+        "ResourceCollection"
+      ],
       "output_token": "NextToken",
       "result_key": [
         "ResourceCollection.CloudFormation.StackNames"
-      ],
-      "non_aggregate_keys": [
-        "ResourceCollection"
       ]
     },
     "ListAnomaliesForInsight": {
       "input_token": "NextToken",
-      "output_token": "NextToken",
       "limit_key": "MaxResults",
+      "output_token": "NextToken",
       "result_key": [
         "ReactiveAnomalies",
         "ProactiveAnomalies"
@@ -28,14 +42,14 @@
     },
     "ListEvents": {
       "input_token": "NextToken",
-      "output_token": "NextToken",
       "limit_key": "MaxResults",
+      "output_token": "NextToken",
       "result_key": "Events"
     },
     "ListInsights": {
       "input_token": "NextToken",
-      "output_token": "NextToken",
       "limit_key": "MaxResults",
+      "output_token": "NextToken",
       "result_key": [
         "ProactiveInsights",
         "ReactiveInsights"
@@ -53,8 +67,8 @@
     },
     "SearchInsights": {
       "input_token": "NextToken",
-      "output_token": "NextToken",
       "limit_key": "MaxResults",
+      "output_token": "NextToken",
       "result_key": [
         "ProactiveInsights",
         "ReactiveInsights"

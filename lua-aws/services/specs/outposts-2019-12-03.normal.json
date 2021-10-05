@@ -13,6 +13,40 @@
     "uid": "outposts-2019-12-03"
   },
   "operations": {
+    "CreateOrder": {
+      "name": "CreateOrder",
+      "http": {
+        "method": "POST",
+        "requestUri": "/orders"
+      },
+      "input": {
+        "shape": "CreateOrderInput"
+      },
+      "output": {
+        "shape": "CreateOrderOutput"
+      },
+      "errors": [
+        {
+          "shape": "ValidationException"
+        },
+        {
+          "shape": "ConflictException"
+        },
+        {
+          "shape": "AccessDeniedException"
+        },
+        {
+          "shape": "NotFoundException"
+        },
+        {
+          "shape": "InternalServerException"
+        },
+        {
+          "shape": "ServiceQuotaExceededException"
+        }
+      ],
+      "documentation": "<p>Creates an order for an Outpost.</p>"
+    },
     "CreateOutpost": {
       "name": "CreateOutpost",
       "http": {
@@ -30,6 +64,9 @@
           "shape": "ValidationException"
         },
         {
+          "shape": "ConflictException"
+        },
+        {
           "shape": "NotFoundException"
         },
         {
@@ -42,7 +79,7 @@
           "shape": "ServiceQuotaExceededException"
         }
       ],
-      "documentation": "<p>Creates an Outpost.</p>"
+      "documentation": "<p>Creates an Outpost.</p> <p>You can specify <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code>.</p>"
     },
     "DeleteOutpost": {
       "name": "DeleteOutpost",
@@ -59,6 +96,9 @@
       "errors": [
         {
           "shape": "ValidationException"
+        },
+        {
+          "shape": "ConflictException"
         },
         {
           "shape": "NotFoundException"
@@ -87,6 +127,9 @@
       "errors": [
         {
           "shape": "ValidationException"
+        },
+        {
+          "shape": "ConflictException"
         },
         {
           "shape": "NotFoundException"
@@ -179,7 +222,7 @@
           "shape": "InternalServerException"
         }
       ],
-      "documentation": "<p>List the Outposts for your AWS account.</p>"
+      "documentation": "<p>Create a list of the Outposts for your AWS account. Add filters to your request to return a more specific list of results. Use filters to match an Outpost lifecycle status, Availibility Zone (<code>us-east-1a</code>), and AZ ID (<code>use1-az1</code>). </p> <p>If you specify multiple filters, the filters are joined with an <code>AND</code>, and the request returns only results that match all of the specified filters.</p>"
     },
     "ListSites": {
       "name": "ListSites",
@@ -205,6 +248,81 @@
         }
       ],
       "documentation": "<p>Lists the sites for the specified AWS account.</p>"
+    },
+    "ListTagsForResource": {
+      "name": "ListTagsForResource",
+      "http": {
+        "method": "GET",
+        "requestUri": "/tags/{ResourceArn}"
+      },
+      "input": {
+        "shape": "ListTagsForResourceRequest"
+      },
+      "output": {
+        "shape": "ListTagsForResourceResponse"
+      },
+      "errors": [
+        {
+          "shape": "InternalServerException"
+        },
+        {
+          "shape": "ValidationException"
+        },
+        {
+          "shape": "NotFoundException"
+        }
+      ],
+      "documentation": "<p>Lists the tags for the specified resource.</p>"
+    },
+    "TagResource": {
+      "name": "TagResource",
+      "http": {
+        "method": "POST",
+        "requestUri": "/tags/{ResourceArn}"
+      },
+      "input": {
+        "shape": "TagResourceRequest"
+      },
+      "output": {
+        "shape": "TagResourceResponse"
+      },
+      "errors": [
+        {
+          "shape": "InternalServerException"
+        },
+        {
+          "shape": "ValidationException"
+        },
+        {
+          "shape": "NotFoundException"
+        }
+      ],
+      "documentation": "<p>Adds tags to the specified resource.</p>"
+    },
+    "UntagResource": {
+      "name": "UntagResource",
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/tags/{ResourceArn}"
+      },
+      "input": {
+        "shape": "UntagResourceRequest"
+      },
+      "output": {
+        "shape": "UntagResourceResponse"
+      },
+      "errors": [
+        {
+          "shape": "InternalServerException"
+        },
+        {
+          "shape": "ValidationException"
+        },
+        {
+          "shape": "NotFoundException"
+        }
+      ],
+      "documentation": "<p>Removes tags from the specified resource.</p>"
     }
   },
   "shapes": {
@@ -212,21 +330,78 @@
       "type": "string",
       "documentation": "<p>The ID of the AWS account.</p>",
       "max": 12,
-      "min": 12
+      "min": 12,
+      "pattern": "\\d{12}"
+    },
+    "Arn": {
+      "type": "string",
+      "max": 1011,
+      "pattern": "^(arn:aws([a-z-]+)?:outposts:[a-z\\d-]+:\\d{12}:([a-z\\d-]+)/)[a-z]{2,8}-[a-f0-9]{17}$"
     },
     "AvailabilityZone": {
       "type": "string",
-      "documentation": "<p>The Availability Zone.</p> <p>You must specify <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code>.</p>",
+      "documentation": "<p>The Availability Zone.</p>",
       "max": 1000,
       "min": 1,
-      "pattern": "[a-z\\d-]+"
+      "pattern": "^([a-zA-Z]+-){1,3}([a-zA-Z]+)?(\\d+[a-zA-Z]?)?$"
     },
     "AvailabilityZoneId": {
       "type": "string",
-      "documentation": "<p>The ID of the Availability Zone.</p> <p>You must specify <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code>.</p>",
+      "documentation": "<p>The ID of the Availability Zone.</p>",
       "max": 255,
       "min": 1,
-      "pattern": "[a-z]+[0-9]+-az[0-9]+"
+      "pattern": "^[a-zA-Z]+\\d-[a-zA-Z]+\\d$"
+    },
+    "AvailabilityZoneIdList": {
+      "type": "list",
+      "member": {
+        "shape": "AvailabilityZoneId"
+      },
+      "max": 5,
+      "min": 1
+    },
+    "AvailabilityZoneList": {
+      "type": "list",
+      "member": {
+        "shape": "AvailabilityZone"
+      },
+      "max": 5,
+      "min": 1
+    },
+    "CreateOrderInput": {
+      "type": "structure",
+      "required": [
+        "OutpostIdentifier",
+        "LineItems",
+        "PaymentOption"
+      ],
+      "members": {
+        "OutpostIdentifier": {
+          "shape": "OutpostIdentifier",
+          "documentation": "<p> The ID or the Amazon Resource Name (ARN) of the Outpost. </p>"
+        },
+        "LineItems": {
+          "shape": "LineItemRequestListDefinition",
+          "documentation": "<p>The line items that make up the order.</p>"
+        },
+        "PaymentOption": {
+          "shape": "PaymentOption",
+          "documentation": "<p>The payment option for the order.</p>"
+        },
+        "PaymentTerm": {
+          "shape": "PaymentTerm",
+          "documentation": "<p>The payment terms for the order.</p>"
+        }
+      }
+    },
+    "CreateOrderOutput": {
+      "type": "structure",
+      "members": {
+        "Order": {
+          "shape": "Order",
+          "documentation": "<p>Information about this order.</p>"
+        }
+      }
     },
     "CreateOutpostInput": {
       "type": "structure",
@@ -272,6 +447,7 @@
       "members": {
         "OutpostId": {
           "shape": "OutpostId",
+          "documentation": "<p> The ID of the Outpost. </p>",
           "location": "uri",
           "locationName": "OutpostId"
         }
@@ -306,6 +482,7 @@
       "members": {
         "OutpostId": {
           "shape": "OutpostId",
+          "documentation": "<p> The ID of the Outpost. </p>",
           "location": "uri",
           "locationName": "OutpostId"
         }
@@ -319,6 +496,7 @@
       "members": {
         "OutpostId": {
           "shape": "OutpostId",
+          "documentation": "<p> The ID of the Outpost. </p>",
           "location": "uri",
           "locationName": "OutpostId"
         },
@@ -344,7 +522,8 @@
           "shape": "Token"
         },
         "OutpostId": {
-          "shape": "OutpostId"
+          "shape": "OutpostId",
+          "documentation": "<p> The ID of the Outpost. </p>"
         },
         "OutpostArn": {
           "shape": "OutpostArn"
@@ -358,6 +537,9 @@
           "shape": "Outpost"
         }
       }
+    },
+    "ISO8601Timestamp": {
+      "type": "timestamp"
     },
     "InstanceType": {
       "type": "string",
@@ -381,7 +563,77 @@
     },
     "LifeCycleStatus": {
       "type": "string",
-      "documentation": "<p>The life cycle status.</p>"
+      "documentation": "<p>The life cycle status.</p>",
+      "max": 20,
+      "min": 1,
+      "pattern": "^[ A-Za-z]+$"
+    },
+    "LifeCycleStatusList": {
+      "type": "list",
+      "member": {
+        "shape": "LifeCycleStatus"
+      },
+      "max": 5,
+      "min": 1
+    },
+    "LineItem": {
+      "type": "structure",
+      "members": {
+        "CatalogItemId": {
+          "shape": "SkuCode",
+          "documentation": "<p> The ID of the catalog item. </p>"
+        },
+        "LineItemId": {
+          "shape": "LineItemId",
+          "documentation": "<p>The ID of the line item.</p>"
+        },
+        "Quantity": {
+          "shape": "LineItemQuantity",
+          "documentation": "<p>The quantity of the line item.</p>"
+        },
+        "Status": {
+          "shape": "Status",
+          "documentation": "<p>The status of the line item.</p>"
+        }
+      },
+      "documentation": "<p>Information about a line item.</p>"
+    },
+    "LineItemId": {
+      "type": "string",
+      "pattern": "ooi-[a-f0-9]{17}"
+    },
+    "LineItemListDefinition": {
+      "type": "list",
+      "member": {
+        "shape": "LineItem"
+      }
+    },
+    "LineItemQuantity": {
+      "type": "integer",
+      "max": 20,
+      "min": 1
+    },
+    "LineItemRequest": {
+      "type": "structure",
+      "members": {
+        "CatalogItemId": {
+          "shape": "SkuCode",
+          "documentation": "<p>The ID of the catalog item.</p>"
+        },
+        "Quantity": {
+          "shape": "LineItemQuantity",
+          "documentation": "<p>The quantity of a line item request.</p>"
+        }
+      },
+      "documentation": "<p>Information about a line item request.</p>"
+    },
+    "LineItemRequestListDefinition": {
+      "type": "list",
+      "member": {
+        "shape": "LineItemRequest"
+      },
+      "max": 20,
+      "min": 1
     },
     "ListOutpostsInput": {
       "type": "structure",
@@ -395,6 +647,24 @@
           "shape": "MaxResults1000",
           "location": "querystring",
           "locationName": "MaxResults"
+        },
+        "LifeCycleStatusFilter": {
+          "shape": "LifeCycleStatusList",
+          "documentation": "<p> A filter for the lifecycle status of the Outpost. </p> <p> Filter values are case sensitive. If you specify multiple values for a filter, the values are joined with an <code>OR</code>, and the request returns all results that match any of the specified values. </p>",
+          "location": "querystring",
+          "locationName": "LifeCycleStatusFilter"
+        },
+        "AvailabilityZoneFilter": {
+          "shape": "AvailabilityZoneList",
+          "documentation": "<p> A filter for the Availibility Zone (<code>us-east-1a</code>) of the Outpost. </p> <p> Filter values are case sensitive. If you specify multiple values for a filter, the values are joined with an <code>OR</code>, and the request returns all results that match any of the specified values. </p>",
+          "location": "querystring",
+          "locationName": "AvailabilityZoneFilter"
+        },
+        "AvailabilityZoneIdFilter": {
+          "shape": "AvailabilityZoneIdList",
+          "documentation": "<p> A filter for the AZ IDs (<code>use1-az1</code>) of the Outpost. </p> <p> Filter values are case sensitive. If you specify multiple values for a filter, the values are joined with an <code>OR</code>, and the request returns all results that match any of the specified values. </p>",
+          "location": "querystring",
+          "locationName": "AvailabilityZoneIdFilter"
         }
       }
     },
@@ -435,6 +705,29 @@
         }
       }
     },
+    "ListTagsForResourceRequest": {
+      "type": "structure",
+      "required": [
+        "ResourceArn"
+      ],
+      "members": {
+        "ResourceArn": {
+          "shape": "Arn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the resource.</p>",
+          "location": "uri",
+          "locationName": "ResourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse": {
+      "type": "structure",
+      "members": {
+        "Tags": {
+          "shape": "TagMap",
+          "documentation": "<p>The resource tags.</p>"
+        }
+      }
+    },
     "MaxResults1000": {
       "type": "integer",
       "documentation": "<p>The maximum page size.</p>",
@@ -442,11 +735,63 @@
       "max": 1000,
       "min": 1
     },
+    "Order": {
+      "type": "structure",
+      "members": {
+        "OutpostId": {
+          "shape": "OutpostIdOnly",
+          "documentation": "<p> The ID of the Outpost. </p>"
+        },
+        "OrderId": {
+          "shape": "OrderId",
+          "documentation": "<p>The ID of the order.</p>"
+        },
+        "Status": {
+          "shape": "OrderStatus",
+          "documentation": "<p>The status of the order</p>"
+        },
+        "LineItems": {
+          "shape": "LineItemListDefinition",
+          "documentation": "<p>The line items for the order</p>"
+        },
+        "PaymentOption": {
+          "shape": "PaymentOption",
+          "documentation": "<p>The payment option for the order.</p>"
+        },
+        "OrderSubmissionDate": {
+          "shape": "ISO8601Timestamp",
+          "documentation": "<p>The submission date for the order.</p>"
+        },
+        "OrderFulfilledDate": {
+          "shape": "ISO8601Timestamp",
+          "documentation": "<p>The fulfillment date of the order.</p>"
+        }
+      },
+      "documentation": "<p>Information about an order.</p>"
+    },
+    "OrderId": {
+      "type": "string",
+      "max": 20,
+      "min": 1,
+      "pattern": "oo-[a-f0-9]{17}$"
+    },
+    "OrderStatus": {
+      "type": "string",
+      "enum": [
+        "RECEIVED",
+        "PENDING",
+        "PROCESSING",
+        "INSTALLING",
+        "FULFILLED",
+        "CANCELLED"
+      ]
+    },
     "Outpost": {
       "type": "structure",
       "members": {
         "OutpostId": {
-          "shape": "OutpostId"
+          "shape": "OutpostId",
+          "documentation": "<p> The ID of the Outpost. </p>"
         },
         "OwnerId": {
           "shape": "OwnerId"
@@ -475,6 +820,9 @@
         "Tags": {
           "shape": "TagMap",
           "documentation": "<p>The Outpost tags.</p>"
+        },
+        "SiteArn": {
+          "shape": "SiteArn"
         }
       },
       "documentation": "<p>Information about an Outpost.</p>"
@@ -488,14 +836,25 @@
     },
     "OutpostDescription": {
       "type": "string",
-      "documentation": "<p>The Outpost description.</p>",
+      "documentation": "<p>The description of the Outpost.</p>",
       "max": 1000,
-      "min": 1,
-      "pattern": "^[\\S ]+$"
+      "min": 0,
+      "pattern": "^[\\S ]*$"
     },
     "OutpostId": {
       "type": "string",
-      "documentation": "<p>The ID of the Outpost.</p>",
+      "max": 180,
+      "min": 1,
+      "pattern": "^(arn:aws([a-z-]+)?:outposts:[a-z\\d-]+:\\d{12}:outpost/)?op-[a-f0-9]{17}$"
+    },
+    "OutpostIdOnly": {
+      "type": "string",
+      "max": 20,
+      "min": 1,
+      "pattern": "^op-[a-f0-9]{17}$"
+    },
+    "OutpostIdentifier": {
+      "type": "string",
       "max": 180,
       "min": 1,
       "pattern": "^(arn:aws([a-z-]+)?:outposts:[a-z\\d-]+:\\d{12}:outpost/)?op-[a-f0-9]{17}$"
@@ -513,6 +872,20 @@
       "max": 12,
       "min": 12,
       "pattern": "\\d{12}"
+    },
+    "PaymentOption": {
+      "type": "string",
+      "enum": [
+        "ALL_UPFRONT",
+        "NO_UPFRONT",
+        "PARTIAL_UPFRONT"
+      ]
+    },
+    "PaymentTerm": {
+      "type": "string",
+      "enum": [
+        "THREE_YEARS"
+      ]
     },
     "Site": {
       "type": "structure",
@@ -532,14 +905,24 @@
         "Tags": {
           "shape": "TagMap",
           "documentation": "<p>The site tags.</p>"
+        },
+        "SiteArn": {
+          "shape": "SiteArn"
         }
       },
       "documentation": "<p>Information about a site.</p>"
     },
+    "SiteArn": {
+      "type": "string",
+      "documentation": "<p>The Amazon Resource Name (ARN) of the site.</p>",
+      "max": 255,
+      "min": 1,
+      "pattern": "^arn:aws([a-z-]+)?:outposts:[a-z\\d-]+:\\d{12}:site/(os-[a-f0-9]{17})$"
+    },
     "SiteDescription": {
       "type": "string",
       "documentation": "<p>The description of the site.</p>",
-      "max": 1000,
+      "max": 1001,
       "min": 1,
       "pattern": "^[\\S ]+$"
     },
@@ -548,11 +931,23 @@
       "documentation": "<p>The ID of the site.</p>",
       "max": 255,
       "min": 1,
-      "pattern": "os-[a-f0-9]{17}"
+      "pattern": "^(arn:aws([a-z-]+)?:outposts:[a-z\\d-]+:\\d{12}:site/)?(os-[a-f0-9]{17})$"
     },
     "SiteName": {
       "type": "string",
       "documentation": "<p>The name of the site.</p>",
+      "max": 1000,
+      "min": 1,
+      "pattern": "^[\\S ]+$"
+    },
+    "SkuCode": {
+      "type": "string",
+      "max": 10,
+      "min": 1,
+      "pattern": "OR-[A-Z0-9]{7}"
+    },
+    "Status": {
+      "type": "string",
       "max": 1000,
       "min": 1,
       "pattern": "^[\\S ]+$"
@@ -562,6 +957,14 @@
       "max": 128,
       "min": 1,
       "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$"
+    },
+    "TagKeyList": {
+      "type": "list",
+      "member": {
+        "shape": "TagKey"
+      },
+      "max": 50,
+      "min": 1
     },
     "TagMap": {
       "type": "map",
@@ -574,6 +977,29 @@
       "max": 50,
       "min": 1
     },
+    "TagResourceRequest": {
+      "type": "structure",
+      "required": [
+        "ResourceArn",
+        "Tags"
+      ],
+      "members": {
+        "ResourceArn": {
+          "shape": "Arn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the resource.</p>",
+          "location": "uri",
+          "locationName": "ResourceArn"
+        },
+        "Tags": {
+          "shape": "TagMap",
+          "documentation": "<p>The tags to add to the resource.</p>"
+        }
+      }
+    },
+    "TagResourceResponse": {
+      "type": "structure",
+      "members": {}
+    },
     "TagValue": {
       "type": "string",
       "max": 256,
@@ -584,7 +1010,32 @@
       "documentation": "<p>The pagination token.</p>",
       "max": 1005,
       "min": 1,
-      "pattern": ".*\\S.*"
+      "pattern": "^(\\d+)##(\\S+)$"
+    },
+    "UntagResourceRequest": {
+      "type": "structure",
+      "required": [
+        "ResourceArn",
+        "TagKeys"
+      ],
+      "members": {
+        "ResourceArn": {
+          "shape": "Arn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the resource.</p>",
+          "location": "uri",
+          "locationName": "ResourceArn"
+        },
+        "TagKeys": {
+          "shape": "TagKeyList",
+          "documentation": "<p>The tag keys.</p>",
+          "location": "querystring",
+          "locationName": "tagKeys"
+        }
+      }
+    },
+    "UntagResourceResponse": {
+      "type": "structure",
+      "members": {}
     },
     "outpostListDefinition": {
       "type": "list",
@@ -601,5 +1052,5 @@
       "documentation": "<p>Information about the sites.</p>"
     }
   },
-  "documentation": "<p>AWS Outposts is a fully-managed service that extends AWS infrastructure, APIs, and tools to customer premises. By providing local access to AWS-managed infrastructure, AWS Outposts enables customers to build and run applications on premises using the same programming interfaces as in AWS Regions, while using local compute and storage resources for lower latency and local data processing needs.</p>"
+  "documentation": "<p>AWS Outposts is a fully managed service that extends AWS infrastructure, APIs, and tools to customer premises. By providing local access to AWS managed infrastructure, AWS Outposts enables customers to build and run applications on premises using the same programming interfaces as in AWS Regions, while using local compute and storage resources for lower latency and local data processing needs.</p>"
 }
